@@ -10,8 +10,8 @@ import java.sql.Time;
 @Table(name = "EMPLOYEE", schema = "TEST_B", catalog = "")
 public class EmployeeEntity {
     private long id;
-    private String lastname;
     private String firstname;
+    private String lastname;
     private String middlename;
     private String gender;
     private Time birthdate;
@@ -30,16 +30,6 @@ public class EmployeeEntity {
     }
 
     @Basic
-    @Column(name = "LASTNAME")
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    @Basic
     @Column(name = "FIRSTNAME")
     public String getFirstname() {
         return firstname;
@@ -47,6 +37,16 @@ public class EmployeeEntity {
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+    }
+
+    @Basic
+    @Column(name = "LASTNAME")
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     @Basic
@@ -118,8 +118,8 @@ public class EmployeeEntity {
         EmployeeEntity that = (EmployeeEntity) o;
 
         if (id != that.id) return false;
-        if (lastname != null ? !lastname.equals(that.lastname) : that.lastname != null) return false;
         if (firstname != null ? !firstname.equals(that.firstname) : that.firstname != null) return false;
+        if (lastname != null ? !lastname.equals(that.lastname) : that.lastname != null) return false;
         if (middlename != null ? !middlename.equals(that.middlename) : that.middlename != null) return false;
         if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
         if (birthdate != null ? !birthdate.equals(that.birthdate) : that.birthdate != null) return false;
@@ -133,8 +133,8 @@ public class EmployeeEntity {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
         result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
+        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
         result = 31 * result + (middlename != null ? middlename.hashCode() : 0);
         result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (birthdate != null ? birthdate.hashCode() : 0);
