@@ -40,8 +40,6 @@ public class MainController {
     private final DepartmentTestRepository departmentTestRepository;
 
     private final EmployeeTestRepository testRepository;
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public MainController(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository,
@@ -90,11 +88,6 @@ public class MainController {
                                        @RequestParam(value="departmentId") Long departmentId,
                                        @RequestParam(value="salary") Long salary) {
         EmployeeEntity employee = new EmployeeEntity(firstName, lastName, middleName, gender, departmentId, salary);
-//        EntityManager entityManager = entityManagerFactory.createEntityManager();
-//        entityManager.getTransaction().begin();
-//        entityManager.persist(employee);
-//        entityManager.getTransaction().commit();
-//        entityManager.close();
         employeeRepository.save(employee);
 
 
