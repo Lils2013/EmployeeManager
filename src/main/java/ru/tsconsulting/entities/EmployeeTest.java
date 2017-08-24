@@ -59,4 +59,18 @@ public class EmployeeTest {
     public Long getSalary() {
         return salary;
     }
+
+    @Override
+    public String toString() {
+        return "EmployeeTest{" +
+                "id=" + id +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", middlename='" + middlename + '\'' +
+                ", gender='" + gender + '\'' +
+                ", birthdate=" + birthdate +
+                ", grade='" + grade + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
 }

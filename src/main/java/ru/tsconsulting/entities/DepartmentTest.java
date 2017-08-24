@@ -2,10 +2,7 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +17,14 @@ public class DepartmentTest {
     private long id;
     private String name;
     private String chiefId;
-    private Long parentId;
+
+    @JsonIgnore
+    @ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
+    private DepartmentTest parentDepartment;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="parentDepartment",fetch=FetchType.EAGER)
+    private Set<DepartmentTest> childDepartments = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(cascade=ALL, mappedBy = "department")
@@ -38,11 +42,24 @@ public class DepartmentTest {
         return chiefId;
     }
 
-    public Long getParentId() {
-        return parentId;
-    }
-
     public Set<EmployeeTest> getEmployees() {
         return employees;
+    }
+
+    public DepartmentTest getParentDepartment() {
+        return parentDepartment;
+    }
+
+    public Set<DepartmentTest> getChildDepartments() {
+        return childDepartments;
+    }
+
+    @Override
+    public String toString() {
+        return "DepartmentTest{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", chiefId='" + chiefId + '\'' +
+                '}';
     }
 }
