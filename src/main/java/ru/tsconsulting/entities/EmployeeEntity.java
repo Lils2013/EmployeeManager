@@ -1,6 +1,10 @@
 package ru.tsconsulting.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.context.annotation.Lazy;
+
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.sql.Time;
 
 /**
@@ -8,7 +12,9 @@ import java.sql.Time;
  */
 @Entity
 @Table(name = "EMPLOYEE", schema = "TEST_B", catalog = "")
+
 public class EmployeeEntity {
+
     private long id;
     private String firstname;
     private String lastname;
@@ -19,7 +25,22 @@ public class EmployeeEntity {
     private String grade;
     private Long salary;
 
+    public EmployeeEntity() {
+    }
+
+    public EmployeeEntity( String firstname, String lastname, String middlename, String gender, Long departmentId, Long salary) {
+
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.middlename = middlename;
+        this.gender = gender;
+        this.departmentId = departmentId;
+        this.salary = salary;
+    }
+
     @Id
+    @GenericGenerator(name="kaugen" , strategy="increment")
+    @GeneratedValue(generator="kaugen")
     @Column(name = "ID")
     public long getId() {
         return id;
