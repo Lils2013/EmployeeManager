@@ -22,7 +22,7 @@ public class EmployeeEntity {
     private Time birthdate;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private DepartmentEntity department;
     private String grade;
     private Long salary;
@@ -61,6 +61,38 @@ public class EmployeeEntity {
 
     public Long getSalary() {
         return salary;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setMiddlename(String middlename) {
+        this.middlename = middlename;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setBirthdate(Time birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public void setDepartment(DepartmentEntity department) {
+        this.department = department;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public void setSalary(Long salary) {
+        this.salary = salary;
     }
 
     @Override

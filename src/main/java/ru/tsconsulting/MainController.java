@@ -51,12 +51,6 @@ public class MainController {
         return employeeRepository.findByFirstname(name);
     }
 
-    @RequestMapping("/test")
-    public List<DepartmentEntity> test(@RequestParam(value="name") String name) {
-        return departmentTestRepository.findByEmployees_Firstname(name);
-    }
-
-
     @RequestMapping(path="/department/{depId}/employees",method = RequestMethod.GET)
     public List<EmployeeEntity> employeeByDep(@PathVariable Long depId) {
         return employeeRepository.findByDepartmentId(depId);
@@ -69,7 +63,7 @@ public class MainController {
 //            findChildDepartments(departmentTest,result);
 //        }
 //        return result;
-        return departmentTestRepository.findByParentDepartment_Name(name);
+        return departmentTestRepository.findByParent_Name(name);
     }
 
     @RequestMapping(path="/fifth",method = RequestMethod.GET)
@@ -78,7 +72,7 @@ public class MainController {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         DepartmentEntity original = entityManager.find(DepartmentEntity.class,departmentId);
-        original.setParentDepartment(entityManager.find(DepartmentEntity.class,newHeadDepartmentId));
+        original.setParent(entityManager.find(DepartmentEntity.class,newHeadDepartmentId));
         entityManager.getTransaction().commit();
         return new ArrayList<>();
     }

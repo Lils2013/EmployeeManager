@@ -9,6 +9,6 @@ public interface DepartmentTestRepository extends JpaRepository<DepartmentEntity
 
     List<DepartmentEntity> findByEmployees_Firstname(String name);
 
-    List<DepartmentEntity> findByParentDepartment_Name(String name);
+    List<DepartmentEntity> findByParent_Name(String name);
 
 }
