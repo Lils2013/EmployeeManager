@@ -38,6 +38,12 @@ public class DepartmentsController {
     @RequestMapping(path="/{depId}/changeHierarchy",method = RequestMethod.POST)
     public DepartmentEntity changeHierarchy(@PathVariable Long depId,
                                         @RequestParam(value="newHeadDepartmentId") Long newHeadDepartmentId) {
+        if (departmentRepository.findById(depId) == null) {
+            throw new DepartmentNotFoundException(depId);
+        }
+        if (departmentRepository.findById(newHeadDepartmentId) == null) {
+            throw new DepartmentNotFoundException(newHeadDepartmentId);
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         DepartmentEntity original = entityManager.find(DepartmentEntity.class,depId);
