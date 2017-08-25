@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
 
-    List<EmployeeEntity> findByLastname(String name);
-
     List<EmployeeEntity> findByFirstname(String name);
 
     List<EmployeeEntity> findByDepartmentId(Long id);

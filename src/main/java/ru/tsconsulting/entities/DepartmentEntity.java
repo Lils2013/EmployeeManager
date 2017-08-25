@@ -63,7 +63,7 @@ public class DepartmentEntity {
         this.chiefId = chiefId;
     }
 
-    public void setParent(DepartmentEntity parentDepartment) {
+    public void setParent(DepartmentEntity parent) {
         this.parent = parent;
     }
 
