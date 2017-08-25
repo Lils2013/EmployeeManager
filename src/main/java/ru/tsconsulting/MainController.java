@@ -1,6 +1,5 @@
 package ru.tsconsulting;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,11 +60,12 @@ public class MainController {
 
     @RequestMapping(path="/first",method = RequestMethod.GET)
     public List<DepartmentTest> first(@RequestParam(value="name") String name) {
-        List<DepartmentTest> result = new ArrayList<>();
-        for (DepartmentTest departmentTest : departmentTestRepository.findByParentDepartment_Name(name)) {
-            findChildDepartments(departmentTest,result);
-        }
-        return result;
+//        List<DepartmentTest> result = new ArrayList<>();
+//        for (DepartmentTest departmentTest : departmentTestRepository.findByParentDepartment_Name(name)) {
+//            findChildDepartments(departmentTest,result);
+//        }
+//        return result;
+        return departmentTestRepository.findByParentDepartment_Name(name);
     }
 
     private void findChildDepartments(DepartmentTest departmentTest, List<DepartmentTest> list) {

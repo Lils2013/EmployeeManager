@@ -22,7 +22,7 @@ public class DepartmentTest {
     @ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
     private DepartmentTest parentDepartment;
 
-    @JsonIgnore
+   // @JsonIgnore
     @OneToMany(mappedBy="parentDepartment",fetch=FetchType.EAGER)
     private Set<DepartmentTest> childDepartments = new HashSet<>();
 
