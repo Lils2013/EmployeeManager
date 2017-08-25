@@ -9,5 +9,5 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     List<EmployeeEntity> findByFirstname(String name);
 
-    List<EmployeeEntity> findByDepartmentId(Long id);
+    List<EmployeeEntity> findByDepartment_Id(Long id);
 }

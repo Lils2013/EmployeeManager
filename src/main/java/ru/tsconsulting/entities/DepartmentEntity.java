@@ -1,5 +1,6 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -20,7 +21,7 @@ public class DepartmentEntity {
     private String chiefId;
 
     @JsonIgnore
-    @ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
+    @ManyToOne(fetch=FetchType.EAGER)
     private DepartmentEntity parent;
 
    // @JsonIgnore
@@ -28,8 +29,13 @@ public class DepartmentEntity {
     private Set<DepartmentEntity> childDepartments = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(cascade=ALL, mappedBy = "department",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "department",fetch=FetchType.EAGER)
     private Set<EmployeeEntity> employees = new HashSet<>();
+
+    @JsonGetter("parent_id")
+    public long getDepartmentId() {
+        return parent.getId();
+    }
 
     public long getId() {
         return id;

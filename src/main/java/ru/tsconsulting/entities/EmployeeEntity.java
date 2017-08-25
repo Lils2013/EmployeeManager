@@ -1,5 +1,6 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -26,6 +27,11 @@ public class EmployeeEntity {
     private DepartmentEntity department;
     private String grade;
     private Long salary;
+
+    @JsonGetter("department_id")
+    public long getDepartmentId() {
+        return department.getId();
+    }
 
     public long getId() {
         return id;

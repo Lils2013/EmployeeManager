@@ -1,12 +1,12 @@
 package ru.tsconsulting.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
+import ru.tsconsulting.repositories.EmployeeRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,14 +16,17 @@ import javax.persistence.EntityManagerFactory;
 public class EmployeesController {
 
     private final EntityManagerFactory entityManagerFactory;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeesController(EntityManagerFactory entityManagerFactory) {
+    public EmployeesController(EntityManagerFactory entityManagerFactory,
+                               EmployeeRepository employeeRepository) {
         this.entityManagerFactory = entityManagerFactory;
+        this.employeeRepository = employeeRepository;
     }
 
     @RequestMapping(path="/transfer",method = RequestMethod.POST)
-    public EmployeeEntity fifth(@RequestParam(value="employeeId") long employeeId,
+    public EmployeeEntity transfer(@RequestParam(value="employeeId") long employeeId,
                                         @RequestParam(value="newDepartmentId") long newDepartmentId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
@@ -32,4 +35,16 @@ public class EmployeesController {
         entityManager.getTransaction().commit();
         return employee;
     }
+
+    @RequestMapping(path="/{employeeId}",method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
+        employeeRepository.delete(employeeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity employee){
+        return employeeRepository.save(employee);
+    }
+
 }
