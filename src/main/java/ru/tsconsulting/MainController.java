@@ -2,7 +2,14 @@ package ru.tsconsulting;
 
 import java.util.List;
 
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.provider.HibernateUtils;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +23,11 @@ import ru.tsconsulting.repositories.DepartmentTestRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.EmployeeTestRepository;
 
+import javax.persistence.*;
+import javax.transaction.Transactional;
+
 @RestController
+
 public class MainController {
 
     private final
@@ -67,7 +78,21 @@ public class MainController {
 //        return result;
         return departmentTestRepository.findByParentDepartment_Name(name);
     }
+    @RequestMapping(path="/create",method = RequestMethod.GET)
 
+    public List<EmployeeEntity> create(
+                                       @RequestParam(value="firstName") String firstName,
+                                       @RequestParam(value="lastName") String lastName,
+                                       @RequestParam(value="middleName") String middleName,
+                                       @RequestParam(value="gender") String gender,
+                                       @RequestParam(value="departmentId") Long departmentId,
+                                       @RequestParam(value="salary") Long salary) {
+        EmployeeEntity employee = new EmployeeEntity(firstName, lastName, middleName, gender, departmentId, salary);
+        employeeRepository.save(employee);
+
+
+       return employeeRepository.findByFirstname(firstName);
+    }
     private void findChildDepartments(DepartmentTest departmentTest, List<DepartmentTest> list) {
         list.add(departmentTest);
         if (!departmentTest.getChildDepartments().isEmpty()) {
