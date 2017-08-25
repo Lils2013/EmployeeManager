@@ -31,12 +31,12 @@ public class DepartmentsController {
         this.employeeRepository = employeeRepository;
     }
 
-    @RequestMapping(path="/changeHierarchy",method = RequestMethod.POST)
-    public DepartmentEntity changeHierarchy(@RequestParam(value="departmentId") long departmentId,
-                                        @RequestParam(value="newHeadDepartmentId") long newHeadDepartmentId) {
+    @RequestMapping(path="/{depId}/changeHierarchy",method = RequestMethod.POST)
+    public DepartmentEntity changeHierarchy(@PathVariable Long depId,
+                                        @RequestParam(value="newHeadDepartmentId") Long newHeadDepartmentId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        DepartmentEntity original = entityManager.find(DepartmentEntity.class,departmentId);
+        DepartmentEntity original = entityManager.find(DepartmentEntity.class,depId);
         original.setParent(entityManager.find(DepartmentEntity.class,newHeadDepartmentId));
         entityManager.getTransaction().commit();
         return original;
@@ -50,5 +50,10 @@ public class DepartmentsController {
     @RequestMapping(path="/{depId}/subs",method = RequestMethod.GET)
     public List<DepartmentEntity> findSubDeps(@PathVariable Long depId) {
         return departmentRepository.findByParent_Id(depId);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public DepartmentEntity createDepartment(@RequestBody DepartmentEntity department){
+        return departmentRepository.save(department);
     }
 }

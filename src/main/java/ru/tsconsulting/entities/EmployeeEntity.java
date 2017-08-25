@@ -29,7 +29,10 @@ public class EmployeeEntity {
     private Long salary;
 
     @JsonGetter("department_id")
-    public long getDepartmentId() {
+    public Long getDepartmentId() {
+        if (department == null) {
+            return null;
+        }
         return department.getId();
     }
 

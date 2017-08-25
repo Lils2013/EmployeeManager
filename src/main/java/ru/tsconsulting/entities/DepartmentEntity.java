@@ -2,12 +2,11 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "DEPARTMENT", schema = "TEST_B")
@@ -15,7 +14,8 @@ public class DepartmentEntity {
 
     public DepartmentEntity() {}
     @Id
-    @GeneratedValue
+    @GenericGenerator(name="incrementGenerator2" , strategy="increment")
+    @GeneratedValue(generator="incrementGenerator2")
     private long id;
     private String name;
     private String chiefId;
@@ -33,7 +33,10 @@ public class DepartmentEntity {
     private Set<EmployeeEntity> employees = new HashSet<>();
 
     @JsonGetter("parent_id")
-    public long getDepartmentId() {
+    public Long getDepartmentId() {
+        if (parent == null) {
+            return null;
+        }
         return parent.getId();
     }
 
