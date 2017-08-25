@@ -9,5 +9,5 @@ public interface EmployeeTestRepository extends JpaRepository<EmployeeTest, Long
 
     List<EmployeeTest> findByDepartment_Name(String name);
 
-
+    List<EmployeeTest> findByDepartment_Id(Long id);
 }

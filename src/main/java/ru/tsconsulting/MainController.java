@@ -1,5 +1,6 @@
 package ru.tsconsulting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
@@ -61,9 +62,9 @@ public class MainController {
         return departmentTestRepository.findByEmployees_Firstname(name);
     }
 
-    @RequestMapping(path="/second",method = RequestMethod.GET)
-    public List<EmployeeTest> second(@RequestParam(value="name") String name) {
-        return testRepository.findByDepartment_Name(name);
+    @RequestMapping(path="/department/{depId}/employees",method = RequestMethod.GET)
+    public List<EmployeeEntity> employeeByDep(@PathVariable Long depId) {
+        return employeeRepository.findByDepartmentId(depId);
     }
 
     @RequestMapping(path="/first",method = RequestMethod.GET)
@@ -81,12 +82,8 @@ public class MainController {
         return employeeRepository.save(employee);
     }
 
-    private void findChildDepartments(DepartmentTest departmentTest, List<DepartmentTest> list) {
-        list.add(departmentTest);
-        if (!departmentTest.getChildDepartments().isEmpty()) {
-            for (DepartmentTest departmentTest1 : departmentTest.getChildDepartments()) {
-                findChildDepartments(departmentTest1,list);
-            }
-        }
+    @RequestMapping(path="/department/{depId}/childs")
+    public List<DepartmentTest> findChildDepartments(@PathVariable Long depId) {
+        return departmentTestRepository.findByParentDepartment_Id(depId);
     }
 }
