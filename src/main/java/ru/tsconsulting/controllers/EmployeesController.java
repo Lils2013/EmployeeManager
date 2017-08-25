@@ -25,8 +25,8 @@ public class EmployeesController {
         this.employeeRepository = employeeRepository;
     }
 
-    @RequestMapping(path="/transfer",method = RequestMethod.POST)
-    public EmployeeEntity transfer(@RequestParam(value="employeeId") long employeeId,
+    @RequestMapping(path="/{employeeId}/transfer",method = RequestMethod.POST)
+    public EmployeeEntity transfer(@PathVariable Long employeeId,
                                         @RequestParam(value="newDepartmentId") long newDepartmentId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();

@@ -1,9 +1,13 @@
 package ru.tsconsulting.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
+import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
+import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
@@ -44,16 +48,31 @@ public class DepartmentsController {
 
     @RequestMapping(path="/{depId}/employees",method = RequestMethod.GET)
     public List<EmployeeEntity> employeeByDep(@PathVariable Long depId) {
-        return employeeRepository.findByDepartment_Id(depId);
+        if (departmentRepository.findById(depId) != null) {
+            return employeeRepository.findByDepartment_Id(depId);
+        } else {
+            throw new DepartmentNotFoundException(depId);
+        }
     }
 
     @RequestMapping(path="/{depId}/subs",method = RequestMethod.GET)
     public List<DepartmentEntity> findSubDeps(@PathVariable Long depId) {
-        return departmentRepository.findByParent_Id(depId);
+        if (departmentRepository.findById(depId) != null) {
+            return departmentRepository.findByParent_Id(depId);
+        } else {
+            throw new DepartmentNotFoundException(depId);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public DepartmentEntity createDepartment(@RequestBody DepartmentEntity department){
         return departmentRepository.save(department);
+    }
+
+    @ExceptionHandler(DepartmentNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public RestError departmentNotFound(DepartmentNotFoundException e) {
+        long departmentId = e.getDepartmentId();
+        return new RestError(1, "Department [" + departmentId + "] not found");
     }
 }

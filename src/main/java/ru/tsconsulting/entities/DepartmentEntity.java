@@ -24,7 +24,7 @@ public class DepartmentEntity {
     @ManyToOne(fetch=FetchType.EAGER)
     private DepartmentEntity parent;
 
-   // @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy="parent",fetch=FetchType.EAGER)
     private Set<DepartmentEntity> childDepartments = new HashSet<>();
 
