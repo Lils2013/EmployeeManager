@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
 import ru.tsconsulting.repositories.EmployeeRepository;
+import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,12 +18,15 @@ public class EmployeesController {
 
     private final EntityManagerFactory entityManagerFactory;
     private final EmployeeRepository employeeRepository;
+    private final PositionRepository positionRepository;
 
     @Autowired
     public EmployeesController(EntityManagerFactory entityManagerFactory,
-                               EmployeeRepository employeeRepository) {
+                               EmployeeRepository employeeRepository,
+                               PositionRepository positionRepository) {
         this.entityManagerFactory = entityManagerFactory;
         this.employeeRepository = employeeRepository;
+        this.positionRepository = positionRepository;
     }
 
     @RequestMapping(path="/{employeeId}/transfer",method = RequestMethod.POST)
@@ -47,4 +51,21 @@ public class EmployeesController {
         return employeeRepository.save(employee);
     }
 
+    @RequestMapping(path="/{employeeId}",method = RequestMethod.GET)
+    public EmployeeEntity selectEmployee(@PathVariable Long employeeId) {
+        return employeeRepository.findById(employeeId);
+    }
+
+    @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
+    public EmployeeEntity editEmployee(@PathVariable Long employeeId,
+                                       @RequestParam(value="newPositionId") long newPositionId,
+                                       @RequestParam(value="newGrade") String newGrade,
+                                       @RequestParam(value="newSalary") long newSalary) {
+        EmployeeEntity current = employeeRepository.findById(employeeId);
+        current.setPosition(positionRepository.findById(newPositionId));
+        current.setGrade(newGrade);
+        current.setSalary(newSalary); /*!!!!*/
+        employeeRepository.save(current);
+        return current;
+    }
 }

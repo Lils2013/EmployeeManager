@@ -22,6 +22,9 @@ public class EmployeeEntity {
     private String gender;
     private Time birthdate;
 
+    @ManyToOne(fetch=FetchType.EAGER)
+    private PositionEntity position;
+
     @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
     private DepartmentEntity department;
@@ -102,6 +105,18 @@ public class EmployeeEntity {
 
     public void setSalary(Long salary) {
         this.salary = salary;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public PositionEntity getPosition() {
+        return position;
+    }
+
+    public void setPosition(PositionEntity position) {
+        this.position = position;
     }
 
     @Override
