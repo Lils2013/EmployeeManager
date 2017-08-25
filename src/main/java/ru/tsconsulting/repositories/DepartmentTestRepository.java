@@ -11,5 +11,4 @@ public interface DepartmentTestRepository extends JpaRepository<DepartmentEntity
 
     List<DepartmentEntity> findByParentDepartment_Name(String name);
 
-
 }

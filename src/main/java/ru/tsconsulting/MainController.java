@@ -56,9 +56,10 @@ public class MainController {
         return departmentTestRepository.findByEmployees_Firstname(name);
     }
 
-    @RequestMapping(path="/second",method = RequestMethod.GET)
-    public List<EmployeeEntity> second(@RequestParam(value="name") String name) {
-        return testRepository.findByDepartment_Name(name);
+
+    @RequestMapping(path="/department/{depId}/employees",method = RequestMethod.GET)
+    public List<EmployeeEntity> employeeByDep(@PathVariable Long depId) {
+        return employeeRepository.findByDepartmentId(depId);
     }
 
     @RequestMapping(path="/first",method = RequestMethod.GET)
@@ -87,12 +88,4 @@ public class MainController {
         return employeeRepository.save(employee);
     }
 
-    private void findChildDepartments(DepartmentEntity departmentEntity, List<DepartmentEntity> list) {
-        list.add(departmentEntity);
-        if (!departmentEntity.getChildDepartments().isEmpty()) {
-            for (DepartmentEntity departmentEntity1 : departmentEntity.getChildDepartments()) {
-                findChildDepartments(departmentEntity1,list);
-            }
-        }
-    }
 }
