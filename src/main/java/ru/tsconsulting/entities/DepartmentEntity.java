@@ -21,10 +21,10 @@ public class DepartmentEntity {
 
     @JsonIgnore
     @ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
-    private DepartmentEntity parentDepartment;
+    private DepartmentEntity parent;
 
    // @JsonIgnore
-    @OneToMany(mappedBy="parentDepartment",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="parent",fetch=FetchType.EAGER)
     private Set<DepartmentEntity> childDepartments = new HashSet<>();
 
     @JsonIgnore
@@ -47,8 +47,8 @@ public class DepartmentEntity {
         return employees;
     }
 
-    public DepartmentEntity getParentDepartment() {
-        return parentDepartment;
+    public DepartmentEntity getParent() {
+        return parent;
     }
 
     public Set<DepartmentEntity> getChildDepartments() {
@@ -63,8 +63,8 @@ public class DepartmentEntity {
         this.chiefId = chiefId;
     }
 
-    public void setParentDepartment(DepartmentEntity parentDepartment) {
-        this.parentDepartment = parentDepartment;
+    public void setParent(DepartmentEntity parent) {
+        this.parent = parent;
     }
 
     public void setChildDepartments(Set<DepartmentEntity> childDepartments) {
