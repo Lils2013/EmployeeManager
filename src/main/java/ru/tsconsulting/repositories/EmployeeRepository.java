@@ -1,6 +1,5 @@
 package ru.tsconsulting.repositories;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.tsconsulting.entities.EmployeeEntity;
 

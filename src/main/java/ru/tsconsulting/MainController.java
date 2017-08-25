@@ -1,30 +1,21 @@
 package ru.tsconsulting;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.provider.HibernateUtils;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.entities.DepartmentTest;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
-import ru.tsconsulting.entities.EmployeeTest;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.DepartmentTestRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.EmployeeTestRepository;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 @RestController
-
 public class MainController {
 
     private final
@@ -37,13 +28,17 @@ public class MainController {
 
     private final EmployeeTestRepository testRepository;
 
+    private final EntityManagerFactory entityManagerFactory;
+
     @Autowired
     public MainController(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository,
-                          DepartmentTestRepository departmentTestRepository, EmployeeTestRepository testRepository) {
+                          DepartmentTestRepository departmentTestRepository, EmployeeTestRepository testRepository,
+                          EntityManagerFactory entityManagerFactory) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
         this.departmentTestRepository = departmentTestRepository;
         this.testRepository = testRepository;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @RequestMapping("/departments")
@@ -57,23 +52,34 @@ public class MainController {
     }
 
     @RequestMapping("/test")
-    public List<DepartmentTest> test(@RequestParam(value="name") String name) {
+    public List<DepartmentEntity> test(@RequestParam(value="name") String name) {
         return departmentTestRepository.findByEmployees_Firstname(name);
     }
 
     @RequestMapping(path="/second",method = RequestMethod.GET)
-    public List<EmployeeTest> second(@RequestParam(value="name") String name) {
+    public List<EmployeeEntity> second(@RequestParam(value="name") String name) {
         return testRepository.findByDepartment_Name(name);
     }
 
     @RequestMapping(path="/first",method = RequestMethod.GET)
-    public List<DepartmentTest> first(@RequestParam(value="name") String name) {
-//        List<DepartmentTest> result = new ArrayList<>();
-//        for (DepartmentTest departmentTest : departmentTestRepository.findByParentDepartment_Name(name)) {
+    public List<DepartmentEntity> first(@RequestParam(value="name") String name) {
+//        List<DepartmentEntity> result = new ArrayList<>();
+//        for (DepartmentEntity departmentTest : departmentTestRepository.findByParentDepartment_Name(name)) {
 //            findChildDepartments(departmentTest,result);
 //        }
 //        return result;
         return departmentTestRepository.findByParentDepartment_Name(name);
+    }
+
+    @RequestMapping(path="/fifth",method = RequestMethod.GET)
+    public List<DepartmentEntity> fifth(@RequestParam(value="departmentId") long departmentId,
+                                        @RequestParam(value="newHead") long newHeadDepartmentId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        DepartmentEntity original = entityManager.find(DepartmentEntity.class,departmentId);
+        original.setParentDepartment(entityManager.find(DepartmentEntity.class,newHeadDepartmentId));
+        entityManager.getTransaction().commit();
+        return new ArrayList<>();
     }
 
     @RequestMapping(path="/employee",method = RequestMethod.POST, headers = "Content-Type=application/json")
@@ -81,11 +87,11 @@ public class MainController {
         return employeeRepository.save(employee);
     }
 
-    private void findChildDepartments(DepartmentTest departmentTest, List<DepartmentTest> list) {
-        list.add(departmentTest);
-        if (!departmentTest.getChildDepartments().isEmpty()) {
-            for (DepartmentTest departmentTest1 : departmentTest.getChildDepartments()) {
-                findChildDepartments(departmentTest1,list);
+    private void findChildDepartments(DepartmentEntity departmentEntity, List<DepartmentEntity> list) {
+        list.add(departmentEntity);
+        if (!departmentEntity.getChildDepartments().isEmpty()) {
+            for (DepartmentEntity departmentEntity1 : departmentEntity.getChildDepartments()) {
+                findChildDepartments(departmentEntity1,list);
             }
         }
     }

@@ -1,79 +1,86 @@
 package ru.tsconsulting.entities;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * Created by avtsoy on 22.08.2017.
- */
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
+
 @Entity
-@Table(name = "DEPARTMENT", schema = "TEST_B", catalog = "")
+@Table(name = "DEPARTMENT", schema = "TEST_B")
 public class DepartmentEntity {
+
+    public DepartmentEntity() {}
+    @Id
+    @GeneratedValue
     private long id;
     private String name;
     private String chiefId;
-    private Long parentId;
 
-    @Id
-    @Column(name = "ID")
+    @JsonIgnore
+    @ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
+    private DepartmentEntity parentDepartment;
+
+   // @JsonIgnore
+    @OneToMany(mappedBy="parentDepartment",fetch=FetchType.EAGER)
+    private Set<DepartmentEntity> childDepartments = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(cascade=ALL, mappedBy = "department")
+    private Set<EmployeeEntity> employees = new HashSet<>();
+
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @Basic
-    @Column(name = "NAME")
     public String getName() {
         return name;
+    }
+
+    public String getChiefId() {
+        return chiefId;
+    }
+
+    public Set<EmployeeEntity> getEmployees() {
+        return employees;
+    }
+
+    public DepartmentEntity getParentDepartment() {
+        return parentDepartment;
+    }
+
+    public Set<DepartmentEntity> getChildDepartments() {
+        return childDepartments;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "CHIEF_ID")
-    public String getChiefId() {
-        return chiefId;
-    }
-
     public void setChiefId(String chiefId) {
         this.chiefId = chiefId;
     }
 
-    @Basic
-    @Column(name = "PARENT_ID")
-    public Long getParentId() {
-        return parentId;
+    public void setParentDepartment(DepartmentEntity parentDepartment) {
+        this.parentDepartment = parentDepartment;
     }
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
+    public void setChildDepartments(Set<DepartmentEntity> childDepartments) {
+        this.childDepartments = childDepartments;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DepartmentEntity that = (DepartmentEntity) o;
-
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (chiefId != null ? !chiefId.equals(that.chiefId) : that.chiefId != null) return false;
-        if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) return false;
-
-        return true;
+    public void setEmployees(Set<EmployeeEntity> employees) {
+        this.employees = employees;
     }
 
     @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (chiefId != null ? chiefId.hashCode() : 0);
-        result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
-        return result;
+    public String toString() {
+        return "DepartmentEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", chiefId='" + chiefId + '\'' +
+                '}';
     }
 }
