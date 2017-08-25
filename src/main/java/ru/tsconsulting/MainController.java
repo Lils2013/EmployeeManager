@@ -11,10 +11,7 @@ import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.transaction.annotation.Propagation;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.DepartmentTest;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
@@ -78,21 +75,12 @@ public class MainController {
         }
         return result;
     }
-    @RequestMapping(path="/create",method = RequestMethod.GET)
 
-    public List<EmployeeEntity> create(
-                                       @RequestParam(value="firstName") String firstName,
-                                       @RequestParam(value="lastName") String lastName,
-                                       @RequestParam(value="middleName") String middleName,
-                                       @RequestParam(value="gender") String gender,
-                                       @RequestParam(value="departmentId") Long departmentId,
-                                       @RequestParam(value="salary") Long salary) {
-        EmployeeEntity employee = new EmployeeEntity(firstName, lastName, middleName, gender, departmentId, salary);
-        employeeRepository.save(employee);
-
-
-       return employeeRepository.findByFirstname(firstName);
+    @RequestMapping(path="/employee",method = RequestMethod.POST, headers = "Content-Type=application/json")
+    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity employee){
+        return employeeRepository.save(employee);
     }
+
     private void findChildDepartments(DepartmentTest departmentTest, List<DepartmentTest> list) {
         list.add(departmentTest);
         if (!departmentTest.getChildDepartments().isEmpty()) {
