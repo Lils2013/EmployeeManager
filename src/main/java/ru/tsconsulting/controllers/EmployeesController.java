@@ -2,6 +2,7 @@ package ru.tsconsulting.controllers;
 
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,19 +92,10 @@ public class EmployeesController {
         AuditReader reader = AuditReaderFactory.get(entityManager);
         AuditQuery query = reader.createQuery().forRevisionsOfEntity(EmployeeEntity.class,
                 true, false);
-        List list = query.getResultList();
-        List<EmployeeEntity> result = new ArrayList<>();
-        for (Object e : list) {
-            if (e instanceof EmployeeEntity) {
-                EmployeeEntity employeeEntity = (EmployeeEntity) e;
-                System.out.println(employeeEntity);
-                if (employeeEntity.getId() == employeeId) {
-                    result.add(employeeEntity);
-                }
-            }
-        }
+        query.add(AuditEntity.id().eq(employeeId));
+        List<EmployeeEntity> list = query.getResultList();
         entityManager.getTransaction().commit();
-        return result;
+        return list;
     }
 
     @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
@@ -129,4 +121,5 @@ public class EmployeesController {
     public RestError entityNotFound(EntityNotFoundException e) {
         return new RestError(1, e.getMessage());
     }
+
 }

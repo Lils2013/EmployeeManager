@@ -104,7 +104,7 @@ public class DepartmentsController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public RestError departmentNotFound(EntityNotFoundException e) {
+    public RestError entityNotFound(EntityNotFoundException e) {
         return new RestError(1, e.getMessage());
     }
 
@@ -114,4 +114,5 @@ public class DepartmentsController {
         long departmentId = e.getDepartmentId();
         return new RestError(2, "Department [" + departmentId + "] is not empty.");
     }
+
 }
