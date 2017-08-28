@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
 import ru.tsconsulting.repositories.EmployeeRepository;
+import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.persistence.EntityManager;
@@ -19,14 +20,17 @@ public class EmployeesController {
     private final EntityManagerFactory entityManagerFactory;
     private final EmployeeRepository employeeRepository;
     private final PositionRepository positionRepository;
+    private final GradeRepository gradeRepository;
 
     @Autowired
     public EmployeesController(EntityManagerFactory entityManagerFactory,
                                EmployeeRepository employeeRepository,
-                               PositionRepository positionRepository) {
+                               PositionRepository positionRepository,
+                               GradeRepository gradeRepository) {
         this.entityManagerFactory = entityManagerFactory;
         this.employeeRepository = employeeRepository;
         this.positionRepository = positionRepository;
+        this.gradeRepository = gradeRepository;
     }
 
     @RequestMapping(path="/{employeeId}/transfer",method = RequestMethod.POST)
@@ -59,12 +63,12 @@ public class EmployeesController {
     @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
     public EmployeeEntity editEmployee(@PathVariable Long employeeId,
                                        @RequestParam(value="newPositionId") long newPositionId,
-                                       @RequestParam(value="newGrade") String newGrade,
+                                       @RequestParam(value="newGrade") long newGrade,
                                        @RequestParam(value="newSalary") long newSalary) {
         EmployeeEntity current = employeeRepository.findById(employeeId);
         current.setPosition(positionRepository.findById(newPositionId));
-        current.setGrade(newGrade);
-        current.setSalary(newSalary); /*!!!!*/
+        current.setGrade(gradeRepository.findById(newGrade));
+        current.setSalary(newSalary);
         employeeRepository.save(current);
         return current;
     }

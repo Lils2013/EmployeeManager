@@ -28,7 +28,9 @@ public class EmployeeEntity {
     @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
     private DepartmentEntity department;
-    private String grade;
+
+    @ManyToOne(fetch=FetchType.EAGER)
+    private GradeEntity grade;
     private Long salary;
 
     @JsonGetter("department_id")
@@ -67,10 +69,6 @@ public class EmployeeEntity {
         return department;
     }
 
-    public String getGrade() {
-        return grade;
-    }
-
     public Long getSalary() {
         return salary;
     }
@@ -99,10 +97,6 @@ public class EmployeeEntity {
         this.department = department;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
     public void setSalary(Long salary) {
         this.salary = salary;
     }
@@ -117,6 +111,14 @@ public class EmployeeEntity {
 
     public void setPosition(PositionEntity position) {
         this.position = position;
+    }
+
+    public GradeEntity getGrade() {
+        return grade;
+    }
+
+    public void setGrade(GradeEntity grade) {
+        this.grade = grade;
     }
 
     @Override
