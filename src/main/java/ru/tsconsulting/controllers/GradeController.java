@@ -23,4 +23,5 @@ public class GradeController {
     public GradeEntity createGrade(@RequestBody GradeEntity grade){
         return gradeRepository.save(grade);
     }
+
 }

@@ -1,16 +1,13 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
 import javax.persistence.*;
-import java.sql.Time;
+import java.util.Date;
 
 @Entity
 @Audited
@@ -27,7 +24,9 @@ public class EmployeeEntity {
     private String lastname;
     private String middlename;
     private String gender;
-    private Time birthdate;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date birthdate;
 
     @ManyToOne(fetch=FetchType.EAGER)
     private PositionEntity position;
@@ -68,7 +67,7 @@ public class EmployeeEntity {
         return gender;
     }
 
-    public Time getBirthdate() {
+    public Date getBirthdate() {
         return birthdate;
     }
 
@@ -96,7 +95,7 @@ public class EmployeeEntity {
         this.gender = gender;
     }
 
-    public void setBirthdate(Time birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 
