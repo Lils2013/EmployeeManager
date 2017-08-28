@@ -8,6 +8,7 @@ import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
 import ru.tsconsulting.errorHandling.DepartmentIsNotEmpty;
 import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
+import ru.tsconsulting.errorHandling.EntityNotFoundException;
 import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
@@ -101,11 +102,10 @@ public class DepartmentsController {
         }
     }
 
-    @ExceptionHandler(DepartmentNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public RestError departmentNotFound(DepartmentNotFoundException e) {
-        long departmentId = e.getDepartmentId();
-        return new RestError(1, "Department [" + departmentId + "] not found.");
+    public RestError departmentNotFound(EntityNotFoundException e) {
+        return new RestError(1, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentIsNotEmpty.class)
