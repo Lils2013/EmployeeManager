@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
 import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
+import ru.tsconsulting.entities.GradeEntity;
+import ru.tsconsulting.entities.PositionEntity;
+import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
@@ -19,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 
 @RestController
 
@@ -44,7 +48,8 @@ public class EmployeesController {
         this.departmentRepository = departmentRepository;
     }
 
-    @RequestMapping(path="/{employeeId}/transfer",method = RequestMethod.POST)
+    @Transactional(Transactional.TxType.REQUIRED)
+    @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
     public EmployeeEntity transfer(@PathVariable Long employeeId,
                                         @RequestParam(value="newDepartmentId") long newDepartmentId) {
         if (departmentRepository.findById(newDepartmentId) == null) {
@@ -58,18 +63,23 @@ public class EmployeesController {
         return employee;
     }
 
-    @RequestMapping(path="/{employeeId}",method = RequestMethod.DELETE)
+    @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
-        employeeRepository.delete(employeeId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        EmployeeEntity employee = employeeRepository.findById(employeeId);
+        if (employee != null) {
+            employeeRepository.delete(employeeId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            throw new EmployeeNotFoundException(employeeId);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity employee){
+    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity employee) {
         return employeeRepository.save(employee);
     }
 
-    @RequestMapping(path="/{employeeId}",method = RequestMethod.GET)
+    @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
     public EmployeeEntity selectEmployee(@PathVariable Long employeeId) {
         return employeeRepository.findById(employeeId);
     }
@@ -98,14 +108,25 @@ public class EmployeesController {
 
     @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
     public EmployeeEntity editEmployee(@PathVariable Long employeeId,
-                                       @RequestParam(value="newPositionId") long newPositionId,
-                                       @RequestParam(value="newGrade") long newGrade,
-                                       @RequestParam(value="newSalary") long newSalary) {
-        EmployeeEntity current = employeeRepository.findById(employeeId);
-        current.setPosition(positionRepository.findById(newPositionId));
-        current.setGrade(gradeRepository.findById(newGrade));
-        current.setSalary(newSalary);
-        employeeRepository.save(current);
-        return current;
+                                       @RequestParam(value = "newPositionId") long newPositionId,
+                                       @RequestParam(value = "newGrade") long newGrade,
+                                       @RequestParam(value = "newSalary") long newSalary) {
+        EmployeeEntity employee = employeeRepository.findById(employeeId);
+        if (employee==null)throw new EmployeeNotFoundException(employeeId);
+        PositionEntity position = positionRepository.findById(newPositionId);
+        if (position==null)throw new PositionNotFoundException(employeeId);
+        GradeEntity grade = gradeRepository.findById(newGrade);
+        if (grade==null)throw new GradeNotFoundException(employeeId);
+        employee.setPosition(position);
+        employee.setGrade(grade);
+        employee.setSalary(newSalary);
+        employeeRepository.save(employee);
+        return employee;
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public RestError entityNotFound(EntityNotFoundException e) {
+        return new RestError(1, e.getMessage());
     }
 }

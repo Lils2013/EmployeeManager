@@ -1,12 +1,12 @@
 package ru.tsconsulting.errorHandling;
 
-public class DepartmentNotFoundException extends RuntimeException {
+public class DepartmentNotFoundException extends EntityNotFoundException {
 
-    private long departmentId;
-    public DepartmentNotFoundException(long departmentId) {
-        this.departmentId = departmentId;
+    public DepartmentNotFoundException(long entityId) {
+        super(entityId);
     }
-    public long getDepartmentId() {
-        return departmentId;
+    @Override
+    public String getMessage() {
+        return "Department [" + getEntityId() + "] not found.";
     }
 }

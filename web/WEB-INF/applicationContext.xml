@@ -32,4 +32,5 @@
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
+
 </beans>
