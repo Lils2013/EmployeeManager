@@ -60,7 +60,7 @@ public class EmployeesController {
         return employeeRepository.findById(employeeId);
     }
 
-    @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
+    @RequestMapping(path="/{employeeId}",method = RequestMethod.POST)
     public EmployeeEntity editEmployee(@PathVariable Long employeeId,
                                        @RequestParam(value="newPositionId") long newPositionId,
                                        @RequestParam(value="newGrade") long newGrade,
