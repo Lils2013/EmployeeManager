@@ -2,14 +2,19 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
 @Entity
-@Table(name = "DEPARTMENT", schema = "TEST_B")
+@Audited
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "DEPARTMENT_HIB_TEST", schema = "TEST_B")
 public class DepartmentEntity {
 
     public DepartmentEntity() {}
@@ -25,10 +30,12 @@ public class DepartmentEntity {
     private DepartmentEntity parent;
 
     @JsonIgnore
+    @NotAudited
     @OneToMany(mappedBy="parent",fetch=FetchType.EAGER)
     private Set<DepartmentEntity> childDepartments = new HashSet<>();
 
     @JsonIgnore
+    @NotAudited
     @OneToMany(mappedBy = "department",fetch=FetchType.EAGER)
     private Set<EmployeeEntity> employees = new HashSet<>();
 

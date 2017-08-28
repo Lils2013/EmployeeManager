@@ -1,20 +1,30 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name = "GRADE", schema = "TEST_B", catalog = "")
+@Audited
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "GRADE_HIB_TEST", schema = "TEST_B", catalog = "")
 public class GradeEntity {
 
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
     private long id;
+
+    @JsonIgnore
+    @NotAudited
+    @OneToMany(mappedBy = "grade",fetch=FetchType.EAGER)
+    private Set<EmployeeEntity> employees;
 
     private String grade;
 

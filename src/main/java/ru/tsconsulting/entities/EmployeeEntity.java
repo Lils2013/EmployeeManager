@@ -2,13 +2,20 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.sql.Time;
 
 @Entity
-@Table(name = "EMPLOYEE", schema = "TEST_B")
+@Audited
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "EMPLOYEE_HIB_TEST", schema = "TEST_B")
 public class EmployeeEntity {
 
     public EmployeeEntity() {}
