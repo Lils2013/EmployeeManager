@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.tsconsulting.details.EmployeeEntityDetails;
 import ru.tsconsulting.entities.DepartmentEntity;
 import ru.tsconsulting.entities.EmployeeEntity;
 import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
@@ -21,7 +22,6 @@ import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 
@@ -76,8 +76,37 @@ public class EmployeesController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity employee) {
-        return employeeRepository.save(employee);
+    public EmployeeEntity createEmployee(@RequestBody EmployeeEntityDetails employeeDetails) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        EmployeeEntity employee = new EmployeeEntity(employeeDetails);
+        if (employeeDetails.getGrade() != null) {
+            if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
+                throw new GradeNotFoundException(employeeDetails.getGrade());
+            } else {
+                employee.setGrade(gradeRepository.findById(employeeDetails.getGrade()));
+            }
+        }
+        if (employeeDetails.getPosition() != null) {
+            if (positionRepository.findById(employeeDetails.getPosition()) == null) {
+                throw new GradeNotFoundException(employeeDetails.getPosition());
+            } else {
+                employee.setPosition(positionRepository.findById(employeeDetails.getPosition()));
+            }
+        }
+        if (employeeDetails.getDepartment() == null) {
+            throw new DepartmentNotSpecifiedException();
+        } else {
+            DepartmentEntity department = departmentRepository.findById(employeeDetails.getDepartment());
+            if (department == null) {
+                throw new DepartmentNotFoundException(employeeDetails.getDepartment());
+            } else {
+                employee.setDepartment(department);
+            }
+        }
+        EmployeeEntity result = employeeRepository.save(employee);
+        entityManager.getTransaction().commit();
+        return result;
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
@@ -120,6 +149,12 @@ public class EmployeesController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public RestError entityNotFound(EntityNotFoundException e) {
         return new RestError(1, e.getMessage());
+    }
+
+    @ExceptionHandler(DepartmentNotSpecifiedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public RestError departmentNotSpecified(DepartmentNotSpecifiedException e) {
+        return new RestError(3, "Department was not specified");
     }
 
 }

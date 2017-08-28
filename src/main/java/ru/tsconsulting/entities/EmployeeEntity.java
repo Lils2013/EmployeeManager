@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
+import ru.tsconsulting.details.EmployeeEntityDetails;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,6 +18,14 @@ import java.util.Date;
 public class EmployeeEntity {
 
     public EmployeeEntity() {}
+    public EmployeeEntity(EmployeeEntityDetails employeeEntityDetails) {
+        setFirstname(employeeEntityDetails.getFirstname());
+        setLastname(employeeEntityDetails.getLastname());
+        setMiddlename(employeeEntityDetails.getMiddlename());
+        setGender(employeeEntityDetails.getGender());
+        setBirthdate(employeeEntityDetails.getBirthdate());
+        setSalary(employeeEntityDetails.getSalary());
+    }
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
