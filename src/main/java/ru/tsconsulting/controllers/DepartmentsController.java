@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.entities.DepartmentEntity;
-import ru.tsconsulting.entities.EmployeeEntity;
-import ru.tsconsulting.errorHandling.DepartmentIsNotEmpty;
+import ru.tsconsulting.entities.Department;
+import ru.tsconsulting.entities.Employee;
+import ru.tsconsulting.errorHandling.DepartmentIsNotEmptyException;
 import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
 import ru.tsconsulting.errorHandling.EntityNotFoundException;
 import ru.tsconsulting.errorHandling.RestError;
@@ -38,8 +38,8 @@ public class DepartmentsController {
     }
 
     @RequestMapping(path = "/{depId}/changeHierarchy", method = RequestMethod.POST)
-    public DepartmentEntity changeHierarchy(@PathVariable Long depId,
-                                            @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId) {
+    public Department changeHierarchy(@PathVariable Long depId,
+                                      @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId) {
         if (departmentRepository.findById(depId) == null) {
             throw new DepartmentNotFoundException(depId);
         }
@@ -48,14 +48,14 @@ public class DepartmentsController {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        DepartmentEntity original = entityManager.find(DepartmentEntity.class, depId);
-        original.setParent(entityManager.find(DepartmentEntity.class, newHeadDepartmentId));
+        Department original = entityManager.find(Department.class, depId);
+        original.setParent(entityManager.find(Department.class, newHeadDepartmentId));
         entityManager.getTransaction().commit();
         return original;
     }
 
     @RequestMapping(path = "/{depId}/employees", method = RequestMethod.GET)
-    public List<EmployeeEntity> employeeByDep(@PathVariable Long depId) {
+    public List<Employee> employeeByDep(@PathVariable Long depId) {
         if (departmentRepository.findById(depId) != null) {
             return employeeRepository.findByDepartment_Id(depId);
         } else {
@@ -64,7 +64,7 @@ public class DepartmentsController {
     }
 
     @RequestMapping(path = "/{depId}/subs", method = RequestMethod.GET)
-    public List<DepartmentEntity> findSubDeps(@PathVariable Long depId) {
+    public List<Department> findSubDeps(@PathVariable Long depId) {
         if (departmentRepository.findById(depId) != null) {
             return departmentRepository.findByParent_Id(depId);
         } else {
@@ -73,29 +73,29 @@ public class DepartmentsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public DepartmentEntity createDepartment(@RequestBody DepartmentEntity department) {
+    public Department createDepartment(@RequestBody Department department) {
         return departmentRepository.save(department);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<DepartmentEntity> findAllDeps() {
+    public List<Department> findAllDeps() {
         return departmentRepository.findAll();
     }
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.GET)
-    public DepartmentEntity selectEmployee(@PathVariable Long depId) {
+    public Department selectEmployee(@PathVariable Long depId) {
         return departmentRepository.findById(depId);
     }
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteEmployee(@PathVariable Long depId) {
-        DepartmentEntity current = departmentRepository.findById(depId);
+        Department current = departmentRepository.findById(depId);
         if (current != null) {
             if (employeeRepository.findByDepartment_Id(depId).isEmpty()) {
                 departmentRepository.delete(depId);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                throw new DepartmentIsNotEmpty(depId);
+                throw new DepartmentIsNotEmptyException(depId);
             }
         } else {
             throw new DepartmentNotFoundException(depId);
@@ -108,9 +108,9 @@ public class DepartmentsController {
         return new RestError(1, e.getMessage());
     }
 
-    @ExceptionHandler(DepartmentIsNotEmpty.class)
+    @ExceptionHandler(DepartmentIsNotEmptyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError departmentIsNotEmpty(DepartmentIsNotEmpty e) {
+    public RestError departmentIsNotEmpty(DepartmentIsNotEmptyException e) {
         long departmentId = e.getDepartmentId();
         return new RestError(2, "Department [" + departmentId + "] is not empty.");
     }

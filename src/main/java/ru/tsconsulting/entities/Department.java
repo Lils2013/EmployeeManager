@@ -15,9 +15,9 @@ import java.util.Set;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "DEPARTMENT_HIB_TEST", schema = "TEST_B")
-public class DepartmentEntity {
+public class Department {
 
-    public DepartmentEntity() {}
+    public Department() {}
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator2")
@@ -27,17 +27,17 @@ public class DepartmentEntity {
 
     @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
-    private DepartmentEntity parent;
+    private Department parent;
 
     @JsonIgnore
     @NotAudited
     @OneToMany(mappedBy="parent",fetch=FetchType.EAGER)
-    private Set<DepartmentEntity> childDepartments = new HashSet<>();
+    private Set<Department> childDepartments = new HashSet<>();
 
     @JsonIgnore
     @NotAudited
     @OneToMany(mappedBy = "department",fetch=FetchType.EAGER)
-    private Set<EmployeeEntity> employees = new HashSet<>();
+    private Set<Employee> employees = new HashSet<>();
 
     @JsonGetter("parent_id")
     public Long getDepartmentId() {
@@ -59,15 +59,15 @@ public class DepartmentEntity {
         return chiefId;
     }
 
-    public Set<EmployeeEntity> getEmployees() {
+    public Set<Employee> getEmployees() {
         return employees;
     }
 
-    public DepartmentEntity getParent() {
+    public Department getParent() {
         return parent;
     }
 
-    public Set<DepartmentEntity> getChildDepartments() {
+    public Set<Department> getChildDepartments() {
         return childDepartments;
     }
 
@@ -79,21 +79,21 @@ public class DepartmentEntity {
         this.chiefId = chiefId;
     }
 
-    public void setParent(DepartmentEntity parent) {
+    public void setParent(Department parent) {
         this.parent = parent;
     }
 
-    public void setChildDepartments(Set<DepartmentEntity> childDepartments) {
+    public void setChildDepartments(Set<Department> childDepartments) {
         this.childDepartments = childDepartments;
     }
 
-    public void setEmployees(Set<EmployeeEntity> employees) {
+    public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
     }
 
     @Override
     public String toString() {
-        return "DepartmentEntity{" +
+        return "Department{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", chiefId='" + chiefId + '\'' +

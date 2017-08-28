@@ -13,8 +13,8 @@ import java.util.Set;
 @Audited
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "POSITION_HIB_TEST", schema = "TEST_B")
-public class PositionEntity {
+@Table(name = "GRADE_HIB_TEST", schema = "TEST_B", catalog = "")
+public class Grade {
 
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
@@ -23,10 +23,10 @@ public class PositionEntity {
 
     @JsonIgnore
     @NotAudited
-    @OneToMany(mappedBy = "position",fetch=FetchType.EAGER)
-    private Set<EmployeeEntity> employees;
+    @OneToMany(mappedBy = "grade",fetch=FetchType.EAGER)
+    private Set<Employee> employees;
 
-    private String name;
+    private String grade;
 
     public long getId() {
         return id;
@@ -36,11 +36,11 @@ public class PositionEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 }

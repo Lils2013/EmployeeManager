@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @RevisionEntity(EmployeeListener.class)
 @Table(name = "EMPLOYEE_REVINFO_HIB_TEST", schema = "TEST_B")
-public class EmployeeRevEntity {
+public class EmployeeRev {
 
     @Id
     @GenericGenerator(name="incrementGenerator3" , strategy="increment")

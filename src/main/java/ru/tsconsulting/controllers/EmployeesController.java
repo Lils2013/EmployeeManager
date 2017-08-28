@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.details.EmployeeEntityDetails;
-import ru.tsconsulting.entities.DepartmentEntity;
-import ru.tsconsulting.entities.EmployeeEntity;
+import ru.tsconsulting.details.EmployeeDetails;
+import ru.tsconsulting.entities.Department;
+import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
-import ru.tsconsulting.entities.GradeEntity;
-import ru.tsconsulting.entities.PositionEntity;
+import ru.tsconsulting.entities.Grade;
+import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
@@ -51,22 +51,22 @@ public class EmployeesController {
 
     @Transactional(Transactional.TxType.REQUIRED)
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
-    public EmployeeEntity transfer(@PathVariable Long employeeId,
-                                        @RequestParam(value="newDepartmentId") long newDepartmentId) {
+    public Employee transfer(@PathVariable Long employeeId,
+                             @RequestParam(value="newDepartmentId") long newDepartmentId) {
         if (departmentRepository.findById(newDepartmentId) == null) {
             throw new DepartmentNotFoundException(newDepartmentId);
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        EmployeeEntity employee = entityManager.find(EmployeeEntity.class,employeeId);
-        employee.setDepartment(entityManager.find(DepartmentEntity.class,newDepartmentId));
+        Employee employee = entityManager.find(Employee.class,employeeId);
+        employee.setDepartment(entityManager.find(Department.class,newDepartmentId));
         entityManager.getTransaction().commit();
         return employee;
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
-        EmployeeEntity employee = employeeRepository.findById(employeeId);
+        Employee employee = employeeRepository.findById(employeeId);
         if (employee != null) {
             employeeRepository.delete(employeeId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -76,10 +76,10 @@ public class EmployeesController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public EmployeeEntity createEmployee(@RequestBody EmployeeEntityDetails employeeDetails) {
+    public Employee createEmployee(@RequestBody EmployeeDetails employeeDetails) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        EmployeeEntity employee = new EmployeeEntity(employeeDetails);
+        Employee employee = new Employee(employeeDetails);
         if (employeeDetails.getGrade() != null) {
             if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
                 throw new GradeNotFoundException(employeeDetails.getGrade());
@@ -97,46 +97,46 @@ public class EmployeesController {
         if (employeeDetails.getDepartment() == null) {
             throw new DepartmentNotSpecifiedException();
         } else {
-            DepartmentEntity department = departmentRepository.findById(employeeDetails.getDepartment());
+            Department department = departmentRepository.findById(employeeDetails.getDepartment());
             if (department == null) {
                 throw new DepartmentNotFoundException(employeeDetails.getDepartment());
             } else {
                 employee.setDepartment(department);
             }
         }
-        EmployeeEntity result = employeeRepository.save(employee);
+        Employee result = employeeRepository.save(employee);
         entityManager.getTransaction().commit();
         return result;
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
-    public EmployeeEntity selectEmployee(@PathVariable Long employeeId) {
+    public Employee selectEmployee(@PathVariable Long employeeId) {
         return employeeRepository.findById(employeeId);
     }
 
     @RequestMapping(path="/{employeeId}/history",method = RequestMethod.GET)
-    public List<EmployeeEntity> getHistory(@PathVariable Long employeeId) {
+    public List<Employee> getHistory(@PathVariable Long employeeId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         AuditReader reader = AuditReaderFactory.get(entityManager);
-        AuditQuery query = reader.createQuery().forRevisionsOfEntity(EmployeeEntity.class,
+        AuditQuery query = reader.createQuery().forRevisionsOfEntity(Employee.class,
                 true, false);
         query.add(AuditEntity.id().eq(employeeId));
-        List<EmployeeEntity> list = query.getResultList();
+        List<Employee> list = query.getResultList();
         entityManager.getTransaction().commit();
         return list;
     }
 
     @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
-    public EmployeeEntity editEmployee(@PathVariable Long employeeId,
-                                       @RequestParam(value = "newPositionId") long newPositionId,
-                                       @RequestParam(value = "newGrade") long newGrade,
-                                       @RequestParam(value = "newSalary") long newSalary) {
-        EmployeeEntity employee = employeeRepository.findById(employeeId);
+    public Employee editEmployee(@PathVariable Long employeeId,
+                                 @RequestParam(value = "newPositionId") long newPositionId,
+                                 @RequestParam(value = "newGrade") long newGrade,
+                                 @RequestParam(value = "newSalary") long newSalary) {
+        Employee employee = employeeRepository.findById(employeeId);
         if (employee==null)throw new EmployeeNotFoundException(employeeId);
-        PositionEntity position = positionRepository.findById(newPositionId);
+        Position position = positionRepository.findById(newPositionId);
         if (position==null)throw new PositionNotFoundException(employeeId);
-        GradeEntity grade = gradeRepository.findById(newGrade);
+        Grade grade = gradeRepository.findById(newGrade);
         if (grade==null)throw new GradeNotFoundException(employeeId);
         employee.setPosition(position);
         employee.setGrade(grade);

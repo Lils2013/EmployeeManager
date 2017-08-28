@@ -1,10 +1,10 @@
 package ru.tsconsulting.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.tsconsulting.entities.PositionEntity;
+import ru.tsconsulting.entities.Position;
 
 
-public interface PositionRepository extends JpaRepository<PositionEntity, Long> {
+public interface PositionRepository extends JpaRepository<Position, Long> {
 
-    PositionEntity findById(Long id);
+    Position findById(Long id);
 }

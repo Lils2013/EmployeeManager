@@ -1,12 +1,13 @@
 package ru.tsconsulting.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.tsconsulting.entities.EmployeeEntity;
+import ru.tsconsulting.entities.Employee;
+
 import java.util.List;
 
-public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    List<EmployeeEntity> findByDepartment_Id(Long id);
+    List<Employee> findByDepartment_Id(Long id);
 
-    EmployeeEntity findById (Long id);
+    Employee findById (Long id);
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
-public class EmployeeEntityDetails {
+public class EmployeeDetails {
 
     private String firstname;
     private String lastname;
@@ -20,7 +20,7 @@ public class EmployeeEntityDetails {
     private Long grade;
     private Long salary;
 
-    public EmployeeEntityDetails() {
+    public EmployeeDetails() {
     }
 
     public String getFirstname() {

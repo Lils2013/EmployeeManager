@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
-import ru.tsconsulting.details.EmployeeEntityDetails;
+import ru.tsconsulting.details.EmployeeDetails;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,16 +15,16 @@ import java.util.Date;
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "EMPLOYEE_HIB_TEST", schema = "TEST_B")
-public class EmployeeEntity {
+public class Employee {
 
-    public EmployeeEntity() {}
-    public EmployeeEntity(EmployeeEntityDetails employeeEntityDetails) {
-        setFirstname(employeeEntityDetails.getFirstname());
-        setLastname(employeeEntityDetails.getLastname());
-        setMiddlename(employeeEntityDetails.getMiddlename());
-        setGender(employeeEntityDetails.getGender());
-        setBirthdate(employeeEntityDetails.getBirthdate());
-        setSalary(employeeEntityDetails.getSalary());
+    public Employee() {}
+    public Employee(EmployeeDetails employeeDetails) {
+        setFirstname(employeeDetails.getFirstname());
+        setLastname(employeeDetails.getLastname());
+        setMiddlename(employeeDetails.getMiddlename());
+        setGender(employeeDetails.getGender());
+        setBirthdate(employeeDetails.getBirthdate());
+        setSalary(employeeDetails.getSalary());
     }
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
@@ -39,14 +39,14 @@ public class EmployeeEntity {
     private Date birthdate;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    private PositionEntity position;
+    private Position position;
 
     @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
-    private DepartmentEntity department;
+    private Department department;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    private GradeEntity grade;
+    private Grade grade;
     private Long salary;
 
     @JsonGetter("department_id")
@@ -81,7 +81,7 @@ public class EmployeeEntity {
         return birthdate;
     }
 
-    public DepartmentEntity getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
@@ -109,7 +109,7 @@ public class EmployeeEntity {
         this.birthdate = birthdate;
     }
 
-    public void setDepartment(DepartmentEntity department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 
@@ -121,25 +121,25 @@ public class EmployeeEntity {
         this.id = id;
     }
 
-    public PositionEntity getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(PositionEntity position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 
-    public GradeEntity getGrade() {
+    public Grade getGrade() {
         return grade;
     }
 
-    public void setGrade(GradeEntity grade) {
+    public void setGrade(Grade grade) {
         this.grade = grade;
     }
 
     @Override
     public String toString() {
-        return "EmployeeEntity{" +
+        return "Employee{" +
                 "id=" + id +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +

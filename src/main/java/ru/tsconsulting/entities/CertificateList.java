@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "CERTIFICATE_LIST", schema = "TEST_B", catalog = "")
-public class CertificateListEntity {
+public class CertificateList {
     private long id;
 
     @Id
@@ -28,7 +28,7 @@ public class CertificateListEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CertificateListEntity that = (CertificateListEntity) o;
+        CertificateList that = (CertificateList) o;
 
         if (id != that.id) return false;
 

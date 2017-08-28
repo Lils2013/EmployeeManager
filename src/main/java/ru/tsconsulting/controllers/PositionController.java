@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import ru.tsconsulting.entities.GradeEntity;
-import ru.tsconsulting.entities.PositionEntity;
-import ru.tsconsulting.repositories.GradeRepository;
+import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.repositories.PositionRepository;
 
 @RestController
@@ -22,7 +20,7 @@ public class PositionController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public PositionEntity createPosition(@RequestBody PositionEntity position){
+    public Position createPosition(@RequestBody Position position){
         return positionRepository.save(position);
     }
 }
