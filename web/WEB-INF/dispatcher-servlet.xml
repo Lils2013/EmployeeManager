@@ -13,6 +13,4 @@ http://www.springframework.org/schema/data/jpa
 
     <context:component-scan base-package="ru.tsconsulting"/>
 
-    <jpa:repositories base-package="ru.tsconsulting.repositories"/>
-
 </beans>

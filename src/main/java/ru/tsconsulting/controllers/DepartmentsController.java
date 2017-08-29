@@ -13,7 +13,6 @@ import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
@@ -46,12 +45,9 @@ public class DepartmentsController {
         if (departmentRepository.findById(newHeadDepartmentId) == null) {
             throw new DepartmentNotFoundException(newHeadDepartmentId);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Department original = entityManager.find(Department.class, depId);
-        original.setParent(entityManager.find(Department.class, newHeadDepartmentId));
-        entityManager.getTransaction().commit();
-        return original;
+        Department original = departmentRepository.findById(depId);
+        original.setParent(departmentRepository.findById(newHeadDepartmentId));
+        return departmentRepository.save(original);
     }
 
     @RequestMapping(path = "/{depId}/employees", method = RequestMethod.GET)
@@ -92,7 +88,8 @@ public class DepartmentsController {
         Department current = departmentRepository.findById(depId);
         if (current != null) {
             if (employeeRepository.findByDepartment_Id(depId).isEmpty()) {
-                departmentRepository.delete(depId);
+                current.setDismissed(true);
+                departmentRepository.save(current);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 throw new DepartmentIsNotEmptyException(depId);

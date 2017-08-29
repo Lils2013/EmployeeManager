@@ -34,10 +34,12 @@ public class Employee {
     private String lastname;
     private String middlename;
     private String gender;
+    private boolean isFired = false;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date birthdate;
 
+    @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
     private Position position;
 
@@ -45,6 +47,7 @@ public class Employee {
     @ManyToOne(fetch=FetchType.EAGER)
     private Department department;
 
+    @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
     private Grade grade;
     private Long salary;
@@ -55,6 +58,22 @@ public class Employee {
             return null;
         }
         return department.getId();
+    }
+
+    @JsonGetter("position_id")
+    public Long getPositionId() {
+        if (position == null) {
+            return null;
+        }
+        return position.getId();
+    }
+
+    @JsonGetter("grade_id")
+    public Long getGradeId() {
+        if (grade == null) {
+            return null;
+        }
+        return grade.getId();
     }
 
     public long getId() {
@@ -135,6 +154,14 @@ public class Employee {
 
     public void setGrade(Grade grade) {
         this.grade = grade;
+    }
+
+    public boolean isFired() {
+        return isFired;
+    }
+
+    public void setFired(boolean fired) {
+        isFired = fired;
     }
 
     @Override

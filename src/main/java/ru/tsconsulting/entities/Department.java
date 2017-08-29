@@ -6,13 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
 @Entity
 @Audited
-
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "DEPARTMENT_HIB_TEST", schema = "TEST_B")
 public class Department {
@@ -24,6 +23,7 @@ public class Department {
     private long id;
     private String name;
     private String chiefId;
+    private boolean isDismissed = false;
 
     @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
@@ -89,6 +89,14 @@ public class Department {
 
     public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
+    }
+
+    public boolean isDismissed() {
+        return isDismissed;
+    }
+
+    public void setDismissed(boolean dismissed) {
+        isDismissed = dismissed;
     }
 
     @Override

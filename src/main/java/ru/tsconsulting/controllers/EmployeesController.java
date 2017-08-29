@@ -56,19 +56,18 @@ public class EmployeesController {
         if (departmentRepository.findById(newDepartmentId) == null) {
             throw new DepartmentNotFoundException(newDepartmentId);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Employee employee = entityManager.find(Employee.class,employeeId);
-        employee.setDepartment(entityManager.find(Department.class,newDepartmentId));
-        entityManager.getTransaction().commit();
-        return employee;
+        Employee employee = employeeRepository.findById(employeeId);
+        employee.setDepartment(departmentRepository.findById(newDepartmentId));
+        Employee result = employeeRepository.save(employee);
+        return result;
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee != null) {
-            employeeRepository.delete(employeeId);
+            employee.setFired(true);
+            employeeRepository.save(employee);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             throw new EmployeeNotFoundException(employeeId);
@@ -111,7 +110,11 @@ public class EmployeesController {
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
     public Employee selectEmployee(@PathVariable Long employeeId) {
-        return employeeRepository.findById(employeeId);
+        Employee employee = employeeRepository.findById(employeeId);
+        if (employee == null) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
+        return employee;
     }
 
     @RequestMapping(path="/{employeeId}/history",method = RequestMethod.GET)
@@ -157,4 +160,12 @@ public class EmployeesController {
         return new RestError(3, "Department was not specified");
     }
 
+    private void simulateSlowService() {
+        try {
+            long time = 10000L;
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 }
