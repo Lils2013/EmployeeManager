@@ -6,7 +6,10 @@ import org.hibernate.envers.Audited;
 import ru.tsconsulting.details.EmployeeDetails;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
+
+import static javax.persistence.TemporalType.DATE;
 
 @Entity
 @Audited
@@ -34,7 +37,8 @@ public class Employee {
     private Boolean isFired = false;
 
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date birthdate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate birthdate;
 
     @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
@@ -93,7 +97,7 @@ public class Employee {
         return gender;
     }
 
-    public Date getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
@@ -121,7 +125,7 @@ public class Employee {
         this.gender = gender;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 

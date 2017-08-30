@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Entity
 @Audited
-
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "POSITION_HIB_TEST", schema = "TEST_B")
 public class Position {

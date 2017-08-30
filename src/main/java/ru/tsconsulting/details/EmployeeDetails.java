@@ -2,6 +2,7 @@ package ru.tsconsulting.details;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class EmployeeDetails {
@@ -12,7 +13,7 @@ public class EmployeeDetails {
     private String gender;
 
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date birthdate;
+    private LocalDate birthdate;
 
     private Long position;
 
@@ -55,11 +56,11 @@ public class EmployeeDetails {
         this.gender = gender;
     }
 
-    public Date getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 
