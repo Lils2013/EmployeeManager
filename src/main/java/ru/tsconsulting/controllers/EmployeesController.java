@@ -108,7 +108,7 @@ public class EmployeesController {
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
-    public Employee selectEmployee(@PathVariable Long employeeId) {
+    public Employee getEmployee(@PathVariable Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {
             throw new EmployeeNotFoundException(employeeId);

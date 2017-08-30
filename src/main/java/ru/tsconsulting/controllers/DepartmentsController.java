@@ -76,12 +76,16 @@ public class DepartmentsController {
     }
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.GET)
-    public Department selectEmployee(@PathVariable Long depId) {
-        return departmentRepository.findById(depId);
+    public Department getDepartment(@PathVariable Long depId) {
+        Department department = departmentRepository.findById(depId);
+        if (department == null) {
+            throw new DepartmentNotFoundException(depId);
+        }
+        return department;
     }
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteEmployee(@PathVariable Long depId) {
+    public ResponseEntity<?> deleteDepartment(@PathVariable Long depId) {
         Department current = departmentRepository.findByIdAndIsDismissedIsFalse(depId);
         if (current != null) {
             if (employeeRepository.findByDepartment_IdAndIsFiredIsFalse(depId).isEmpty()) {
