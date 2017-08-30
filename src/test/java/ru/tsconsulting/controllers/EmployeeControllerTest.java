@@ -50,8 +50,8 @@ public class EmployeeControllerTest {
 		String lastName = "Cena";
 		String middleName = "Undertaker";
 		String gender = "M";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = dateFormat.parse("2013-04-02");
+		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		//Date date = dateFormat.parse("2013-04-02");
 
 		Position position = new Position();
 		position.setId(12L);
@@ -70,7 +70,7 @@ public class EmployeeControllerTest {
 		employee.setLastname(lastName);
 		employee.setMiddlename(middleName);
 		employee.setGender(gender);
-		employee.setBirthdate(date);
+	//	employee.setBirthdate(date);
 		employee.setPosition(position);
 		employee.setGrade(grade);
 		employee.setSalary(salary);
