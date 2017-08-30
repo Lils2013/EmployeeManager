@@ -19,7 +19,7 @@ public class Grade {
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
-    private long id;
+    private Long id;
 
     @JsonIgnore
     @NotAudited
@@ -28,11 +28,11 @@ public class Grade {
 
     private String grade;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

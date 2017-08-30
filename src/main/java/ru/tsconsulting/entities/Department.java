@@ -20,10 +20,10 @@ public class Department {
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator2")
-    private long id;
+    private Long id;
     private String name;
     private String chiefId;
-    private boolean isDismissed = false;
+    private Boolean isDismissed = false;
 
     @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
@@ -47,7 +47,7 @@ public class Department {
         return parent.getId();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -71,7 +71,7 @@ public class Department {
         return childDepartments;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -95,11 +95,11 @@ public class Department {
         this.employees = employees;
     }
 
-    public boolean isDismissed() {
+    public Boolean isDismissed() {
         return isDismissed;
     }
 
-    public void setDismissed(boolean dismissed) {
+    public void setDismissed(Boolean dismissed) {
         isDismissed = dismissed;
     }
 

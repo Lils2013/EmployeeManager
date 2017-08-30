@@ -26,12 +26,12 @@ public class Employee {
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
-    private long id;
+    private Long id;
     private String firstname;
     private String lastname;
     private String middlename;
     private String gender;
-    private boolean isFired = false;
+    private Boolean isFired = false;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date birthdate;
@@ -73,7 +73,7 @@ public class Employee {
         return grade.getId();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -133,7 +133,7 @@ public class Employee {
         this.salary = salary;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -153,11 +153,11 @@ public class Employee {
         this.grade = grade;
     }
 
-    public boolean isFired() {
+    public Boolean isFired() {
         return isFired;
     }
 
-    public void setFired(boolean fired) {
+    public void setFired(Boolean fired) {
         isFired = fired;
     }
 
