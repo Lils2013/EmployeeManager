@@ -77,7 +77,7 @@ public class DepartmentsController {
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.GET)
     public Department selectEmployee(@PathVariable Long depId) {
-        return departmentRepository.findByIdAndIsDismissedIsFalse(depId);
+        return departmentRepository.findById(depId);
     }
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.DELETE)

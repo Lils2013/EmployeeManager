@@ -78,7 +78,7 @@ public class EmployeeControllerTest {
 
 		ResultActions resultActions;
 
-		when(employeeRepository.findById(id)).thenReturn(employee);
+		when(employeeRepository.findByIdAndIsFiredIsFalse(id)).thenReturn(employee);
 		resultActions = mockMvc.perform(get("/employees/{id}", id))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
