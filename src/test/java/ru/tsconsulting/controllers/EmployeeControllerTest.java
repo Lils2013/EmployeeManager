@@ -16,7 +16,10 @@ import ru.tsconsulting.entities.Grade;
 import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.mockito.Mockito.*;
@@ -27,6 +30,7 @@ import static org.hamcrest.Matchers.*;
 
 public class EmployeeControllerTest {
 	private MockMvc mockMvc;
+
 
 	@Mock
 	private EmployeeRepository employeeRepository;
@@ -42,17 +46,13 @@ public class EmployeeControllerTest {
 				.build();
 	}
 
-
-	@Test
-	public void test_get_by_id_success() throws Exception {
+	private Employee employeeSetUp() {
 		Long id = 100L;
 		String firstName = "John";
 		String lastName = "Cena";
 		String middleName = "Undertaker";
 		String gender = "M";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = dateFormat.parse("2013-04-02");
-
+		LocalDate date = LocalDate.now();
 		Position position = new Position();
 		position.setId(12L);
 		Grade grade = new Grade();
@@ -67,36 +67,38 @@ public class EmployeeControllerTest {
 		employee.setLastname(lastName);
 		employee.setMiddlename(middleName);
 		employee.setGender(gender);
-		employee.setBirthdate(date);
+//		employee.setBirthdate(date);
 		employee.setPosition(position);
 		employee.setGrade(grade);
 		employee.setSalary(salary);
 		employee.setDepartment(department);
+		return employee;
+	}
+
+	@Test
+	public void test_get_by_id_success() throws Exception {
+		Employee employee = employeeSetUp();
 
 		ResultActions resultActions;
 
-		when(employeeRepository.findById(id)).thenReturn(employee);
-		resultActions = mockMvc.perform(get("/employees/{id}", id))
+		when(employeeRepository.findById(employee.getId())).thenReturn(employee);
+		resultActions = mockMvc.perform(get("/employees/{id}", employee.getId()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(jsonPath("$.id", anyOf((is(id)), is(id.intValue()))))
-				.andExpect(jsonPath("$.firstname", is(firstName)))
-				.andExpect(jsonPath("$.lastname", is(lastName)))
-				.andExpect(jsonPath("$.middlename", is(middleName)))
-				.andExpect(jsonPath("$.gender", is(gender)))
+				.andExpect(jsonPath("$.id", anyOf((is(employee.getId())), is(employee.getId().intValue()))))
+				.andExpect(jsonPath("$.firstname", is(employee.getFirstname())))
+				.andExpect(jsonPath("$.lastname", is(employee.getLastname())))
+				.andExpect(jsonPath("$.middlename", is(employee.getMiddlename())))
+				.andExpect(jsonPath("$.gender", is(employee.getGender())))
 //				.andExpect(jsonPath("$.birthdate", is(date)));
-				.andExpect(jsonPath("$.position_id", anyOf(is(position.getId()), is(new Long(position.getId()).intValue()))))
-				.andExpect(jsonPath("$.grade_id", anyOf(is(grade.getId()), is(new Long(grade.getId()).intValue()))))
-				.andExpect(jsonPath("$.salary",  anyOf(is(salary), is(salary.intValue()))))
-				.andExpect(jsonPath("$.department_id",  anyOf(is(department.getId()), is(new Long(department.getId()).intValue()))));
+				.andExpect(jsonPath("$.position_id", anyOf(is(employee.getPosition().getId()), is(employee.getPosition().getId().intValue()))))
+				.andExpect(jsonPath("$.grade_id", anyOf(is(employee.getGrade().getId()), is(employee.getGrade().getId().intValue()))))
+				.andExpect(jsonPath("$.salary",  anyOf(is(employee.getSalary()), is(employee.getSalary().intValue()))))
+				.andExpect(jsonPath("$.department_id",  anyOf(is(employee.getDepartment().getId()), is(employee.getDepartment().getId().intValue()))));
 
-
-		verify(employeeRepository, times(1)).findById(id);
+		verify(employeeRepository, times(1)).findById(employee.getId());
 		verifyNoMoreInteractions(employeeRepository);
 		resultActions.andDo(print());
 	}
-
-
-
 }
 
