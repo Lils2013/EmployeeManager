@@ -45,7 +45,7 @@ public class EmployeeControllerTest {
 
 	@Test
 	public void test_get_by_id_success() throws Exception {
-		Long id = Long.MAX_VALUE;
+		Long id = 400L;
 		String firstName = "John";
 		String lastName = "Cena";
 		String middleName = "Undertaker";
@@ -82,7 +82,7 @@ public class EmployeeControllerTest {
 		resultActions = mockMvc.perform(get("/employees/{id}", id))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(jsonPath("$.id", is(400L)))
+				.andExpect(jsonPath("$.id", is(400)))
 				.andExpect(jsonPath("$.firstname", is(firstName)))
 				.andExpect(jsonPath("$.lastname", is(lastName)))
 				.andExpect(jsonPath("$.middlename", is(middleName)))
