@@ -30,6 +30,7 @@
             <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
         </property>
 
+
     </bean>
 
 
