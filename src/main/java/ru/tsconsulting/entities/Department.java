@@ -26,6 +26,7 @@ public class Department {
     private Boolean isDismissed = false;
 
     @JsonIgnore
+    @JoinColumn(name = "PARENT_ID")
     @ManyToOne(fetch=FetchType.EAGER)
     private Department parent;
 

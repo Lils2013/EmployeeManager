@@ -49,7 +49,10 @@ public class EmployeesController {
 
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
     public Employee transfer(@PathVariable Long employeeId,
-                             @RequestParam(value="newDepartmentId") long newDepartmentId) {
+                             @RequestParam(value="newDepartmentId") Long newDepartmentId) {
+        if (employeeRepository.findByDepartment_IdAndIsFiredIsFalse(employeeId) == null) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
         if (departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId) == null) {
             throw new DepartmentNotFoundException(newDepartmentId);
         }
@@ -100,7 +103,6 @@ public class EmployeesController {
                 employee.setDepartment(department);
             }
         }
-        entityManager.persist(employee);
         Employee result = employeeRepository.save(employee);
         entityManager.getTransaction().commit();
         return result;
@@ -130,9 +132,9 @@ public class EmployeesController {
 
     @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
     public Employee editEmployee(@PathVariable Long employeeId,
-                                 @RequestParam(value = "newPositionId") long newPositionId,
-                                 @RequestParam(value = "newGrade") long newGrade,
-                                 @RequestParam(value = "newSalary") long newSalary) {
+                                 @RequestParam(value = "newPositionId") Long newPositionId,
+                                 @RequestParam(value = "newGrade") Long newGrade,
+                                 @RequestParam(value = "newSalary") Long newSalary) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         if (employee==null)throw new EmployeeNotFoundException(employeeId);
         Position position = positionRepository.findById(newPositionId);
