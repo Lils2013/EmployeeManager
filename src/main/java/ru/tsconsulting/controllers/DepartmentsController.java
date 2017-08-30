@@ -11,6 +11,7 @@ import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -48,7 +49,7 @@ public class DepartmentsController {
     }
 
     @RequestMapping(path = "/{depId}/employees", method = RequestMethod.GET)
-    public List<Employee> employeeByDep(@PathVariable Long depId) {
+    public List<Employee> employeeByDep(@PathVariable Long depId, HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(depId) != null) {
             return employeeRepository.findByDepartment_IdAndIsFiredIsFalse(depId);
         } else {
