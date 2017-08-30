@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.repositories.PositionRepository;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/positions")
 public class PositionController {
@@ -20,7 +22,7 @@ public class PositionController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Position createPosition(@RequestBody Position position){
+    public Position createPosition(@RequestBody Position position, HttpServletRequest request){
         return positionRepository.save(position);
     }
 }

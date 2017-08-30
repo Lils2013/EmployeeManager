@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.tsconsulting.entities.Grade;
 import ru.tsconsulting.repositories.GradeRepository;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/grades")
 public class GradeController {
@@ -20,7 +22,7 @@ public class GradeController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Grade createGrade(@RequestBody Grade grade){
+    public Grade createGrade(@RequestBody Grade grade,HttpServletRequest request){
         return gradeRepository.save(grade);
     }
 
