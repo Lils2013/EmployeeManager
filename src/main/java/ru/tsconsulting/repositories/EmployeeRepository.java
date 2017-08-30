@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.Employee;
 
@@ -14,14 +15,19 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Cacheable("employeesOfDepartment")
-    List<Employee> findByDepartment_Id(Long id);
+    List<Employee> findByDepartment_IdAndIsFiredIsFalse(Long id);
 
     @Cacheable("employee")
     Employee findById (Long id);
 
+    @Cacheable("notFiredEmployee")
+    Employee findByIdAndIsFiredIsFalse (Long id);
+
     @Override
-    @CacheEvict(value="employeesOfDepartment",  key="#result.department.id")
-    @CachePut(value="employee", key="#result.id")
-    Employee save (Employee employee);
+    @Caching(put={@CachePut(value="employee", key="#result.id"),
+            @CachePut(value="notFiredEmployee", key="#result.id", condition="#result.isFired() == false")},
+    evict={@CacheEvict(value="employeesOfDepartment", allEntries = true),
+            @CacheEvict(value="notFiredEmployee",  key="#result.id", condition="#result.isFired() == true")})
+    Employee save (@Param("employee") Employee employee);
 
 }

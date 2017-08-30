@@ -20,7 +20,10 @@ public class CachingConfig {
         cacheManager.setCaches(Arrays.asList(
                 new ConcurrentMapCache("employee"),
                 new ConcurrentMapCache("department"),
-                new ConcurrentMapCache("employeesOfDepartment")));
+                new ConcurrentMapCache("employeesOfDepartment"),
+                new ConcurrentMapCache("notFiredEmployee"),
+                new ConcurrentMapCache("subDepartments"),
+                new ConcurrentMapCache("notDismissedDepartment")));
         return cacheManager;
     }
 
