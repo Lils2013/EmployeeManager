@@ -45,7 +45,7 @@ public class EmployeeControllerTest {
 
 	@Test
 	public void test_get_by_id_success() throws Exception {
-		Long id = Long.MAX_VALUE;
+		Long id = 100L;
 		String firstName = "John";
 		String lastName = "Cena";
 		String middleName = "Undertaker";
@@ -60,9 +60,6 @@ public class EmployeeControllerTest {
 		Long salary = 100000L;
 		Department department = new Department();
 		department.setId(5L);
-
-
-
 
 		Employee employee = new Employee();
 		employee.setId(id);
@@ -82,16 +79,16 @@ public class EmployeeControllerTest {
 		resultActions = mockMvc.perform(get("/employees/{id}", id))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(jsonPath("$.id", is(400L)))
+				.andExpect(jsonPath("$.id", anyOf((is(id)), is(id.intValue()))))
 				.andExpect(jsonPath("$.firstname", is(firstName)))
 				.andExpect(jsonPath("$.lastname", is(lastName)))
 				.andExpect(jsonPath("$.middlename", is(middleName)))
-				.andExpect(jsonPath("$.gender", is(gender)));
+				.andExpect(jsonPath("$.gender", is(gender)))
 //				.andExpect(jsonPath("$.birthdate", is(date)));
-//				.andExpect(jsonPath("$.position_id", is(position.getId())))
-//				.andExpect(jsonPath("$.grade_id", is(grade.getId())))
-//				.andExpect(jsonPath("$.salary", is(salary)))
-//				.andExpect(jsonPath("$.department_id", is(department.getId())));
+				.andExpect(jsonPath("$.position_id", anyOf(is(position.getId()), is(new Long(position.getId()).intValue()))))
+				.andExpect(jsonPath("$.grade_id", anyOf(is(grade.getId()), is(new Long(grade.getId()).intValue()))))
+				.andExpect(jsonPath("$.salary",  anyOf(is(salary), is(salary.intValue()))))
+				.andExpect(jsonPath("$.department_id",  anyOf(is(department.getId()), is(new Long(department.getId()).intValue()))));
 
 
 		verify(employeeRepository, times(1)).findById(id);
