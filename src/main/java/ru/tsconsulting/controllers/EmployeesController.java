@@ -22,6 +22,7 @@ import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -49,10 +50,8 @@ public class EmployeesController {
 
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
     public Employee transfer(@PathVariable Long employeeId,
-                             @RequestParam(value="newDepartmentId") Long newDepartmentId) {
-        if (employeeRepository.findByDepartment_IdAndIsFiredIsFalse(employeeId) == null) {
-            throw new EmployeeNotFoundException(employeeId);
-        }
+                             @RequestParam(value="newDepartmentId") Long newDepartmentId,
+                             HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId) == null) {
             throw new DepartmentNotFoundException(newDepartmentId);
         }
@@ -63,7 +62,8 @@ public class EmployeesController {
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId,
+                                            HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         if (employee != null) {
             employee.setFired(true);
@@ -75,7 +75,8 @@ public class EmployeesController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Employee createEmployee(@RequestBody EmployeeDetails employeeDetails) {
+    public Employee createEmployee(@RequestBody EmployeeDetails employeeDetails,
+                                   HttpServletRequest request) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         Employee employee = new Employee(employeeDetails);
@@ -109,7 +110,8 @@ public class EmployeesController {
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
-    public Employee getEmployee(@PathVariable Long employeeId) {
+    public Employee getEmployee(@PathVariable Long employeeId,
+                                HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {
             throw new EmployeeNotFoundException(employeeId);
@@ -118,7 +120,8 @@ public class EmployeesController {
     }
 
     @RequestMapping(path="/{employeeId}/history",method = RequestMethod.GET)
-    public List<Employee> getHistory(@PathVariable Long employeeId) {
+    public List<Employee> getHistory(@PathVariable Long employeeId,
+                                     HttpServletRequest request) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         AuditReader reader = AuditReaderFactory.get(entityManager);
@@ -134,7 +137,8 @@ public class EmployeesController {
     public Employee editEmployee(@PathVariable Long employeeId,
                                  @RequestParam(value = "newPositionId") Long newPositionId,
                                  @RequestParam(value = "newGrade") Long newGrade,
-                                 @RequestParam(value = "newSalary") Long newSalary) {
+                                 @RequestParam(value = "newSalary") Long newSalary,
+                                             HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         if (employee==null)throw new EmployeeNotFoundException(employeeId);
         Position position = positionRepository.findById(newPositionId);

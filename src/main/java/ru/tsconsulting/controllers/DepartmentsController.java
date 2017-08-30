@@ -36,7 +36,8 @@ public class DepartmentsController {
 
     @RequestMapping(path = "/{depId}/changeHierarchy", method = RequestMethod.POST)
     public Department changeHierarchy(@PathVariable Long depId,
-                                      @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId) {
+                                      @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
+                                      HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(depId) == null) {
             throw new DepartmentNotFoundException(depId);
         }
@@ -58,7 +59,8 @@ public class DepartmentsController {
     }
 
     @RequestMapping(path = "/{depId}/subs", method = RequestMethod.GET)
-    public List<Department> findSubDeps(@PathVariable Long depId) {
+    public List<Department> findSubDeps(@PathVariable Long depId,
+                                        HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(depId) != null) {
             return departmentRepository.findByParent_IdAndIsDismissedIsFalse(depId);
         } else {
@@ -67,7 +69,8 @@ public class DepartmentsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Department createDepartment(@RequestBody Department department) {
+    public Department createDepartment(@RequestBody Department department,
+                                       HttpServletRequest request) {
         return departmentRepository.save(department);
     }
 
@@ -77,7 +80,8 @@ public class DepartmentsController {
     }
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.GET)
-    public Department getDepartment(@PathVariable Long depId) {
+    public Department getDepartment(@PathVariable Long depId,
+                                    HttpServletRequest request) {
         Department department = departmentRepository.findById(depId);
         if (department == null) {
             throw new DepartmentNotFoundException(depId);
@@ -86,7 +90,8 @@ public class DepartmentsController {
     }
 
     @RequestMapping(path = "/{depId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteDepartment(@PathVariable Long depId) {
+    public ResponseEntity<?> deleteDepartment(@PathVariable Long depId,
+                                              HttpServletRequest request) {
         Department current = departmentRepository.findByIdAndIsDismissedIsFalse(depId);
         if (current != null) {
             if (employeeRepository.findByDepartment_IdAndIsFiredIsFalse(depId).isEmpty()) {
