@@ -23,11 +23,8 @@ import ru.tsconsulting.repositories.PositionRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 
 @RestController
-
 @RequestMapping("/employees")
 public class EmployeesController {
 
@@ -50,22 +47,21 @@ public class EmployeesController {
         this.departmentRepository = departmentRepository;
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
     public Employee transfer(@PathVariable Long employeeId,
                              @RequestParam(value="newDepartmentId") long newDepartmentId) {
-        if (departmentRepository.findById(newDepartmentId) == null) {
+        if (departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId) == null) {
             throw new DepartmentNotFoundException(newDepartmentId);
         }
-        Employee employee = employeeRepository.findById(employeeId);
-        employee.setDepartment(departmentRepository.findById(newDepartmentId));
+        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
+        employee.setDepartment(departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId));
         Employee result = employeeRepository.save(employee);
         return result;
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
-        Employee employee = employeeRepository.findById(employeeId);
+        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         if (employee != null) {
             employee.setFired(true);
             employeeRepository.save(employee);
@@ -97,20 +93,21 @@ public class EmployeesController {
         if (employeeDetails.getDepartment() == null) {
             throw new DepartmentNotSpecifiedException();
         } else {
-            Department department = departmentRepository.findById(employeeDetails.getDepartment());
+            Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
             if (department == null) {
                 throw new DepartmentNotFoundException(employeeDetails.getDepartment());
             } else {
                 employee.setDepartment(department);
             }
         }
+        entityManager.persist(employee);
         Employee result = employeeRepository.save(employee);
         entityManager.getTransaction().commit();
         return result;
     }
 
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
-    public Employee selectEmployee(@PathVariable Long employeeId, HttpServletRequest request) {
+    public Employee getEmployee(@PathVariable Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {
             throw new EmployeeNotFoundException(employeeId);
@@ -119,7 +116,7 @@ public class EmployeesController {
     }
 
     @RequestMapping(path="/{employeeId}/history",method = RequestMethod.GET)
-    public List<Employee> getHistory(@PathVariable Long employeeId, HttpServletRequest request) {
+    public List<Employee> getHistory(@PathVariable Long employeeId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         AuditReader reader = AuditReaderFactory.get(entityManager);
@@ -136,7 +133,7 @@ public class EmployeesController {
                                  @RequestParam(value = "newPositionId") long newPositionId,
                                  @RequestParam(value = "newGrade") long newGrade,
                                  @RequestParam(value = "newSalary") long newSalary) {
-        Employee employee = employeeRepository.findById(employeeId);
+        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         if (employee==null)throw new EmployeeNotFoundException(employeeId);
         Position position = positionRepository.findById(newPositionId);
         if (position==null)throw new PositionNotFoundException(employeeId);
@@ -159,14 +156,5 @@ public class EmployeesController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError departmentNotSpecified(DepartmentNotSpecifiedException e) {
         return new RestError(3, "Department was not specified");
-    }
-
-    private void simulateSlowService() {
-        try {
-            long time = 10000L;
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
     }
 }
