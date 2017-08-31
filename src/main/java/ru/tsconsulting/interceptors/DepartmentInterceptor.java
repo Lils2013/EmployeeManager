@@ -1,16 +1,13 @@
 package ru.tsconsulting.interceptors;
 
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.DepartmentHistory;
-import ru.tsconsulting.entities.Employee;
-import ru.tsconsulting.entities.EmployeeHistory;
 import ru.tsconsulting.repositories.DepartmentHistoryRepository;
 import ru.tsconsulting.repositories.DepartmentRepository;
-import ru.tsconsulting.repositories.EmployeeRepository;
-import ru.tsconsulting.repositories.EmployeeHistoryRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -34,26 +31,28 @@ public class DepartmentInterceptor {
         System.err.println("IP-address: "+request.getRemoteAddr()+", Time: "+date);
     }
 
-    private DepartmentHistory createRecord( Long departmentId, HttpServletRequest request, Long operationId) {
+    private DepartmentHistory createRecord( Long departmentId, HttpServletRequest request, Long operationId, Boolean status) {
     	DepartmentHistory record = new DepartmentHistory();
         record.setDateTime(LocalDateTime.now());
     	record.setDepartmentId(departmentId);
         record.setIpAddress(request.getRemoteAddr());
     	record.setOperationId(operationId);
+    	record.setIsSuccessful(status);
     	return  record;
     }
 
-    @Before("execution(* ru.tsconsulting.controllers.DepartmentsController.getDepartment(..))&&args(departmentId,..,request)")
-    void beforeGetDepartment(Long departmentId, HttpServletRequest request)
+    @AfterReturning("execution(* ru.tsconsulting.controllers.DepartmentsController.getDepartment(..))&&args(departmentId,..,request)")
+    void afterReturningGetDepartment(Long departmentId, HttpServletRequest request)
     {
-       departmentHistoryRepository.save(createRecord(departmentId,request,666l));
+       departmentHistoryRepository.save(createRecord(departmentId,request,666l, true));
     }
-
-	@Before("execution(* ru.tsconsulting.controllers.DepartmentsController.changeHierarchy(..))&&args(departmentId,..,request)")
-	void beforeChangeHierarchy(Long departmentId, HttpServletRequest request)
+	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.getDepartment(..))&&args(departmentId,..,request)")
+	void afterThrowingGetDepartment(Long departmentId, HttpServletRequest request)
 	{
-		departmentHistoryRepository.save(createRecord(departmentId, request, 666l));
-	} 
+		departmentHistoryRepository.save(createRecord(departmentId,request,666l, true));
+	}
+
+
 
 
 

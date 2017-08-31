@@ -22,12 +22,22 @@ public class EmployeeHistory {
 
     private String ipAddress;
 
+    private Boolean isSuccessful;
+
+    public Boolean getIsSuccessful() {
+        return isSuccessful;
+    }
+
+    public void setIsSuccessful(Boolean isSuccessful) {
+        this.isSuccessful = isSuccessful;
+    }
+
     public String getIpAddress() {
         return ipAddress;
     }
 
-    public void setIpAddress(String ipAdress) {
-        this.ipAddress = ipAdress;
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     public Long getId() {
