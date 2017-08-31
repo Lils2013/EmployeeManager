@@ -4,12 +4,9 @@ import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import ru.tsconsulting.details.EmployeeDetails;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
-import static javax.persistence.TemporalType.DATE;
 
 @Entity
 @Audited

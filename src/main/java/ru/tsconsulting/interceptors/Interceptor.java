@@ -5,10 +5,9 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
-import ru.tsconsulting.entities.History;
-import ru.tsconsulting.repositories.DepartmentRepository;
+import ru.tsconsulting.entities.EmployeeHistory;
 import ru.tsconsulting.repositories.EmployeeRepository;
-import ru.tsconsulting.repositories.HistoryRepository;
+import ru.tsconsulting.repositories.EmployeeHistoryRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -18,11 +17,11 @@ import java.time.LocalDateTime;
 @Component
 public class Interceptor {
 
-    private final HistoryRepository historyRepository;
+    private final EmployeeHistoryRepository employeeHistoryRepository;
     private final EmployeeRepository employeeRepository;
 
-    public Interceptor(HistoryRepository historyRepository, EmployeeRepository employeeRepository) {
-        this.historyRepository = historyRepository;
+    public Interceptor(EmployeeHistoryRepository employeeHistoryRepository, EmployeeRepository employeeRepository) {
+        this.employeeHistoryRepository = employeeHistoryRepository;
         this.employeeRepository = employeeRepository;
     }
 
@@ -36,11 +35,10 @@ public class Interceptor {
     {
         Employee employee = employeeRepository.findById(employeeId);
         Department department = employee.getDepartment();
-        History record = new History();
+        EmployeeHistory record = new EmployeeHistory();
         record.setDateTime(LocalDateTime.now());
-        record.setEmployee(employee);
-        record.setDepartment(department);
         record.setIpAdress(request.getRemoteAddr());
-        historyRepository.save(record);
+        employeeHistoryRepository.save(record);
     }
+
 }
