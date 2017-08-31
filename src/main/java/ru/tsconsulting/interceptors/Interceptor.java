@@ -34,6 +34,7 @@ public class Interceptor {
     void beforeGetEmployee(Long employeeId, HttpServletRequest request)
     {
         EmployeeHistory record = new EmployeeHistory();
+        record.setEmployeeId(employeeId);
         record.setDateTime(LocalDateTime.now());
         record.setIpAddress(request.getRemoteAddr());
         employeeHistoryRepository.save(record);
