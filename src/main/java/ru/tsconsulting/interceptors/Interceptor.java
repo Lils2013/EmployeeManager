@@ -25,19 +25,10 @@ public class Interceptor {
         this.employeeRepository = employeeRepository;
     }
 
-    @Before("execution(* ru.tsconsulting.controllers.*.*(..))&&args(..,request)")
-    void getIp(HttpServletRequest request){
-        LocalDateTime date = LocalDateTime.now();
-        System.err.println("IP-adress: "+request.getRemoteAddr()+", Time: "+date);
-    }
-    @Before("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
-    void beforeGetEmployee(Long employeeId, HttpServletRequest request)
-    {
-        EmployeeHistory record = new EmployeeHistory();
-        record.setEmployeeId(employeeId);
-        record.setDateTime(LocalDateTime.now());
-        record.setIpAddress(request.getRemoteAddr());
-        employeeHistoryRepository.save(record);
-    }
+//    @Before("execution(* ru.tsconsulting.controllers.*.*(..))&&args(..,request)")
+//    void getIp(HttpServletRequest request){
+//        LocalDateTime date = LocalDateTime.now();
+//        System.err.println("IP-adress: "+request.getRemoteAddr()+", Time: "+date);
+//    }
 
 }

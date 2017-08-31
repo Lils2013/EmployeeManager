@@ -1,5 +1,7 @@
 package ru.tsconsulting.interceptors;
 
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
@@ -21,13 +23,22 @@ public class EmployeeInterceptor {
         this.employeeHistoryRepository = employeeHistoryRepository;
     }
 
-    @Before("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
-    void beforeGetEmployee(Long employeeId, HttpServletRequest request)
+    @Around("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
+    Object beforeGetEmployee(ProceedingJoinPoint proceedingJoinPoint, Long employeeId, HttpServletRequest request)
     {
         EmployeeHistory record = new EmployeeHistory();
         record.setDateTime(LocalDateTime.now());
         record.setIpAddress(request.getRemoteAddr());
         record.setEmployeeId(employeeId);
-        employeeHistoryRepository.save(record);
+        Object output = null;
+        try {
+            output = proceedingJoinPoint.proceed();
+            System.out.println("SUCCESS");
+        } catch (Throwable e) {
+            System.out.println("FAIL");
+        } finally {
+            employeeHistoryRepository.save(record);
+        }
+        return output;
     }
 }
