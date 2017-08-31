@@ -1,5 +1,6 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class EmployeeHistory {
     @GeneratedValue(generator="incrementGenerator2")
     private Long id;
 
+    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")
     private LocalDateTime dateTime;
 
     private Long operationId;
