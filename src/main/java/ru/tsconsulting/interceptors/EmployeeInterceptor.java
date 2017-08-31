@@ -20,26 +20,27 @@ public class EmployeeInterceptor {
         this.employeeHistoryRepository = employeeHistoryRepository;
     }
 
-    private EmployeeHistory createRecord( Long employeeId, HttpServletRequest request, Long operationId)
+    private EmployeeHistory createRecord( Long employeeId, HttpServletRequest request, Long operationId,  Boolean status)
     {
         EmployeeHistory record = new EmployeeHistory();
         record.setDateTime(LocalDateTime.now());
         record.setIpAddress(request.getRemoteAddr());
         record.setEmployeeId(employeeId);
         record.setOperationId(operationId);
+        record.setIsSuccessful(status);
         return record;
     }
 
     @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
     void getEmployeeThrow(Long employeeId, HttpServletRequest request)
     {
-        EmployeeHistory record = createRecord(employeeId, request, 0l);
+        EmployeeHistory record = createRecord(employeeId, request, 11l, false);
         employeeHistoryRepository.save(record);
     }
     @AfterReturning("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
     void getEmployeeReturn(Long employeeId, HttpServletRequest request)
     {
-        EmployeeHistory record = createRecord(employeeId, request, 1l);
+        EmployeeHistory record = createRecord(employeeId, request, 11l, true);
         employeeHistoryRepository.save(record);
     }
 }

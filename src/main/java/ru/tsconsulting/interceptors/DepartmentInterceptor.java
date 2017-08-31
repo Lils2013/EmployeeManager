@@ -3,7 +3,6 @@ package ru.tsconsulting.interceptors;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.DepartmentHistory;
 import ru.tsconsulting.repositories.DepartmentHistoryRepository;
@@ -23,12 +22,6 @@ public class DepartmentInterceptor {
     public DepartmentInterceptor(DepartmentHistoryRepository departmentHistoryRepository, DepartmentRepository departmentRepository) {
         this.departmentHistoryRepository = departmentHistoryRepository;
         this.departmentRepository = departmentRepository;
-    }
-
-    @Before("execution(* ru.tsconsulting.controllers.*.*(..))&&args(..,request)")
-    void getIp(HttpServletRequest request){
-        LocalDateTime date = LocalDateTime.now();
-        System.err.println("IP-address: "+request.getRemoteAddr()+", Time: "+date);
     }
 
     private DepartmentHistory createRecord( Long departmentId, HttpServletRequest request, Long operationId, Boolean status) {
@@ -51,9 +44,5 @@ public class DepartmentInterceptor {
 	{
 		departmentHistoryRepository.save(createRecord(departmentId,request,666l, true));
 	}
-
-
-
-
 
 }
