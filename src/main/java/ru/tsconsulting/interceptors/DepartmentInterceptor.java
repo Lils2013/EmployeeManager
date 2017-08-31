@@ -53,7 +53,7 @@ public class DepartmentInterceptor {
 	void beforeChangeHierarchy(Long departmentId, HttpServletRequest request)
 	{
 		departmentHistoryRepository.save(createRecord(LocalDateTime.now(), departmentId, request.getRemoteAddr(), 3L));
-	}
+	} 
 
 
 
