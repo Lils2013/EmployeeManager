@@ -13,7 +13,7 @@ import java.util.Set;
 @Audited
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "GRADE_HIB_TEST", schema = "TEST_B", catalog = "")
+@Table(name = "GRADE", schema = "TEST_B", catalog = "")
 public class Grade {
 
     @Id

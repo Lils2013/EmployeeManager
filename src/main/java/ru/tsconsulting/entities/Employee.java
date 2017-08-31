@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "EMPLOYEE_HIB_TEST", schema = "TEST_B")
+@Table(name = "EMPLOYEE", schema = "TEST_B")
 public class Employee {
 
     public Employee() {}

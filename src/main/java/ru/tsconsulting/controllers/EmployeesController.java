@@ -127,6 +127,9 @@ public class EmployeesController {
                                      HttpServletRequest request) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
+        if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
         AuditReader reader = AuditReaderFactory.get(entityManager);
         AuditQuery query = reader.createQuery().forRevisionsOfEntity(Employee.class,
                 true, false);
