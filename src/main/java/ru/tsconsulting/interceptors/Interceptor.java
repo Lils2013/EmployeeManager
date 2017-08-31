@@ -31,7 +31,7 @@ public class Interceptor {
         LocalDateTime date = LocalDateTime.now();
         System.err.println("IP-adress: "+request.getRemoteAddr()+", Time: "+date);
     }
-    @Before("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,..,request)")
+    @Before("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(employeeId,request))")
     void beforeGetEmployee(Long employeeId, HttpServletRequest request)
     {
         Employee employee = employeeRepository.findById(employeeId);
