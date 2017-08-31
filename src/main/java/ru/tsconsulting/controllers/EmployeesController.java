@@ -49,9 +49,9 @@ public class EmployeesController {
     }
 
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
-    public Employee transfer(@PathVariable Long employeeId,
-                             @RequestParam(value="newDepartmentId") Long newDepartmentId,
-                             HttpServletRequest request) {
+    public Employee transferEmployee(@PathVariable Long employeeId,
+                                     @RequestParam(value="newDepartmentId") Long newDepartmentId,
+                                     HttpServletRequest request) {
         if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId);
         }
