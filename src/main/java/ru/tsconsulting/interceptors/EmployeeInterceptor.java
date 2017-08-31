@@ -106,4 +106,19 @@ public class EmployeeInterceptor {
         employeeHistoryRepository.save(record);
     }
 
+    //EDIT EMPLOYEE
+
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.editEmployee(..))&&args(employeeId,..,request)")
+    void afterThrowingEditEmployee(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 9l, false);
+        employeeHistoryRepository.save(record);
+    }
+    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.editEmployee(..))&&args(employeeId,..,request)")
+    void afterReturningEditEmployee(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 9l, true);
+        employeeHistoryRepository.save(record);
+    }
+
 }
