@@ -31,6 +31,7 @@ public class Employee {
     private String lastname;
     private String middlename;
     private String gender;
+    @Column(name = "IS_FIRED")
     private Boolean isFired = false;
 
     @JsonFormat(pattern="yyyy-MM-dd")

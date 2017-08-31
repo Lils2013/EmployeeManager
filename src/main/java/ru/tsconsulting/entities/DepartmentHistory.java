@@ -17,12 +17,13 @@ public class DepartmentHistory {
     @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")
     private LocalDateTime dateTime;
 
+    @Column(name = "OPERATION_ID")
     private Long operationId;
-
+    @Column(name = "DEPARTMENT_ID")
     private Long departmentId;
-
+    @Column(name = "IP_ADDRESS")
     private String ipAddress;
-
+    @Column(name = "IS_SUCCESSFUL")
     private Boolean isSuccessful;
 
     public Boolean getIsSuccessful() {

@@ -2,6 +2,8 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.GenericGenerator;
+
+import javax.naming.Name;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -18,12 +20,13 @@ public class EmployeeHistory {
     @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")
     private LocalDateTime dateTime;
 
+    @Column(name = "OPERATION_ID")
     private Long operationId;
-
+    @Column(name = "EMPLOYEE_ID")
     private Long employeeId;
-
+    @Column(name = "IP_ADDRESS")
     private String ipAddress;
-
+    @Column(name = "IS_SUCCESSFUL")
     private Boolean isSuccessful;
 
     public Boolean getIsSuccessful() {

@@ -22,7 +22,9 @@ public class Department {
     @GeneratedValue(generator="incrementGenerator2")
     private Long id;
     private String name;
+    @Column(name = "CHIEF_ID")
     private String chiefId;
+    @Column(name = "IS_DISMISSED")
     private Boolean isDismissed = false;
 
     @JsonIgnore
