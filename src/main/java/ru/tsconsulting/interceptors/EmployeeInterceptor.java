@@ -21,7 +21,7 @@ public class EmployeeInterceptor {
         this.employeeHistoryRepository = employeeHistoryRepository;
     }
 
-    @Before("execution(* ru.tsconsulting.controllers.*.*(..))&&args(employeeId,request)")
+    @Before("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
     void beforeGetEmployee(Long employeeId, HttpServletRequest request)
     {
         EmployeeHistory record = new EmployeeHistory();
