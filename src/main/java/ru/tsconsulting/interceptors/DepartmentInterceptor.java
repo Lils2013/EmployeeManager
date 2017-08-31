@@ -34,11 +34,11 @@ public class DepartmentInterceptor {
         System.err.println("IP-address: "+request.getRemoteAddr()+", Time: "+date);
     }
 
-    private DepartmentHistory createRecord(LocalDateTime time, Long departmentId, String ipAddress, Long operationId) {
+    private DepartmentHistory createRecord( Long departmentId, HttpServletRequest request, Long operationId) {
     	DepartmentHistory record = new DepartmentHistory();
-    	record.setDateTime(time);
+        record.setDateTime(LocalDateTime.now());
     	record.setDepartmentId(departmentId);
-    	record.setIpAddress(ipAddress);
+        record.setIpAddress(request.getRemoteAddr());
     	record.setOperationId(operationId);
     	return  record;
     }
@@ -46,13 +46,13 @@ public class DepartmentInterceptor {
     @Before("execution(* ru.tsconsulting.controllers.DepartmentsController.getDepartment(..))&&args(departmentId,..,request)")
     void beforeGetDepartment(Long departmentId, HttpServletRequest request)
     {
-       departmentHistoryRepository.save(createRecord(LocalDateTime.now(), departmentId, request.getRemoteAddr(), 2L));
+       departmentHistoryRepository.save(createRecord(departmentId,request,666l));
     }
 
 	@Before("execution(* ru.tsconsulting.controllers.DepartmentsController.changeHierarchy(..))&&args(departmentId,..,request)")
 	void beforeChangeHierarchy(Long departmentId, HttpServletRequest request)
 	{
-		departmentHistoryRepository.save(createRecord(LocalDateTime.now(), departmentId, request.getRemoteAddr(), 3L));
+		departmentHistoryRepository.save(createRecord(departmentId, request, 666l));
 	} 
 
 

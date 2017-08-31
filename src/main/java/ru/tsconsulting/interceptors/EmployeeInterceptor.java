@@ -1,7 +1,6 @@
 package ru.tsconsulting.interceptors;
 
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
@@ -21,13 +20,26 @@ public class EmployeeInterceptor {
         this.employeeHistoryRepository = employeeHistoryRepository;
     }
 
-    @Before("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
-    void beforeGetEmployee(Long employeeId, HttpServletRequest request)
+    private EmployeeHistory createRecord( Long employeeId, HttpServletRequest request, Long operationId)
     {
         EmployeeHistory record = new EmployeeHistory();
         record.setDateTime(LocalDateTime.now());
         record.setIpAddress(request.getRemoteAddr());
         record.setEmployeeId(employeeId);
+        record.setOperationId(operationId);
+        return record;
+    }
+
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
+    void getEmployeeThrow(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 0l);
+        employeeHistoryRepository.save(record);
+    }
+    @AfterReturning("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
+    void getEmployeeReturn(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 1l);
         employeeHistoryRepository.save(record);
     }
 }
