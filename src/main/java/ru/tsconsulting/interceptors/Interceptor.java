@@ -33,11 +33,9 @@ public class Interceptor {
     @Before("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
     void beforeGetEmployee(Long employeeId, HttpServletRequest request)
     {
-        Employee employee = employeeRepository.findById(employeeId);
-        Department department = employee.getDepartment();
         EmployeeHistory record = new EmployeeHistory();
         record.setDateTime(LocalDateTime.now());
-        record.setIpAdress(request.getRemoteAddr());
+        record.setIpAddress(request.getRemoteAddr());
         employeeHistoryRepository.save(record);
     }
 
