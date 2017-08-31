@@ -19,7 +19,7 @@ public class DepartmentHistory {
 
     private Long departmentId;
 
-    private String ipAdress;
+    private String ipAddress;
 
     public Long getId() {
         return id;
@@ -53,11 +53,11 @@ public class DepartmentHistory {
         this.departmentId = departmentId;
     }
 
-    public String getIpAdress() {
-        return ipAdress;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public void setIpAdress(String ipAdress) {
-        this.ipAdress = ipAdress;
+    public void setIpAddress(String ipAdress) {
+        this.ipAddress = ipAdress;
     }
 }

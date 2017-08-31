@@ -20,14 +20,14 @@ public class EmployeeHistory {
 
     private Long employeeId;
 
-    private String ipAdress;
+    private String ipAddress;
 
-    public String getIpAdress() {
-        return ipAdress;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public void setIpAdress(String ipAdress) {
-        this.ipAdress = ipAdress;
+    public void setIpAddress(String ipAdress) {
+        this.ipAddress = ipAdress;
     }
 
     public Long getId() {
@@ -52,5 +52,13 @@ public class EmployeeHistory {
 
     public void setOperationId(Long operationId) {
         this.operationId = operationId;
+    }
+
+    public Long getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 }
