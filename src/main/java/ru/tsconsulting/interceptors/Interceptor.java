@@ -25,10 +25,4 @@ public class Interceptor {
         this.employeeRepository = employeeRepository;
     }
 
-//    @Before("execution(* ru.tsconsulting.controllers.*.*(..))&&args(..,request)")
-//    void getIp(HttpServletRequest request){
-//        LocalDateTime date = LocalDateTime.now();
-//        System.err.println("IP-adress: "+request.getRemoteAddr()+", Time: "+date);
-//    }
-
 }

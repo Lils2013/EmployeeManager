@@ -21,6 +21,16 @@ public class DepartmentHistory {
 
     private String ipAddress;
 
+    private Boolean isSuccessful;
+
+    public Boolean getIsSuccessful() {
+        return isSuccessful;
+    }
+
+    public void setIsSuccessful(Boolean isSuccessful) {
+        this.isSuccessful = isSuccessful;
+    }
+
     public Long getId() {
         return id;
     }
