@@ -2,7 +2,7 @@ package ru.tsconsulting.interceptors;
 
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
-import ru.tsconsulting.entities.Department;
+import ru.tsconsulting.details.EmployeeDetails;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.entities.EmployeeHistory;
 import ru.tsconsulting.repositories.EmployeeHistoryRepository;
@@ -31,23 +31,79 @@ public class EmployeeInterceptor {
         return record;
     }
 
+    //GET EMPLOYEE
+
     @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
-    void getEmployeeThrow(Long employeeId, HttpServletRequest request)
+    void afterThrowingGetEmployee(Long employeeId, HttpServletRequest request)
     {
         EmployeeHistory record = createRecord(employeeId, request, 11l, false);
         employeeHistoryRepository.save(record);
     }
     @AfterReturning("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
-    void getEmployeeReturn(Long employeeId, HttpServletRequest request)
+    void afterReturningGetEmployee(Long employeeId, HttpServletRequest request)
     {
         EmployeeHistory record = createRecord(employeeId, request, 11l, true);
         employeeHistoryRepository.save(record);
     }
 
-//    @AfterReturning("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
-//    void employeeCreate(Long employeeId, HttpServletRequest request)
-//    {
-//        EmployeeHistory record = createRecord(employeeId, request, 11l, true);
-//        employeeHistoryRepository.save(record);
-//    }
+    //GET EMPLOYEE HISTORY
+
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.getHistory(..))&&args(employeeId,request)")
+    void afterThrowingGetHistory(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 3l, false);
+        employeeHistoryRepository.save(record);
+    }
+    @AfterReturning("execution(* ru.tsconsulting.controllers.EmployeesController.getHistory(..))&&args(employeeId,request)")
+    void afterReturningGetHistory(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 3l, true);
+        employeeHistoryRepository.save(record);
+    }
+
+    //CREATE EMPLOYEE
+
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employeeDetails,request)")
+    void afterThrowingCreateEmployee(EmployeeDetails employeeDetails, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(0l, request, 7l, false);
+        employeeHistoryRepository.save(record);
+    }
+    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employeeDetails,request)", returning = "result")
+    void afterReturningCreateEmployee(EmployeeDetails employeeDetails, HttpServletRequest request,Object result)
+    {
+        EmployeeHistory record = createRecord(((Employee)result).getId(), request, 7l, true);
+        employeeHistoryRepository.save(record);
+    }
+
+    //DELETE EMPLOYEE
+
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.deleteEmployee(..))&&args(employeeId,request)")
+    void afterThrowingDeleteEmployee(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 10l, false);
+        employeeHistoryRepository.save(record);
+    }
+    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.deleteEmployee(..))&&args(employeeId,request)", returning = "result")
+    void afterReturningDeleteEmployee(Long employeeId, HttpServletRequest request,Object result)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 10l, true);
+        employeeHistoryRepository.save(record);
+    }
+
+    //TRANSFER EMPLOYEE
+
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.transferEmployee(..))&&args(employeeId,..,request)")
+    void afterThrowingTransferEmployee(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 8l, false);
+        employeeHistoryRepository.save(record);
+    }
+    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.transferEmployee(..))&&args(employeeId,..,request)")
+    void afterReturningTransferEmployee(Long employeeId, HttpServletRequest request)
+    {
+        EmployeeHistory record = createRecord(employeeId, request, 8l, true);
+        employeeHistoryRepository.save(record);
+    }
+
 }
