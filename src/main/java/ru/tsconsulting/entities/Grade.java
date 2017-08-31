@@ -23,7 +23,8 @@ public class Grade {
 
     @JsonIgnore
     @NotAudited
-    @OneToMany(mappedBy = "grade",fetch=FetchType.EAGER)
+  //  @OneToMany(mappedBy = "grade",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "grade")
     private Set<Employee> employees;
 
     private String grade;

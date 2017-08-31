@@ -22,7 +22,8 @@ public class Position {
 
     @JsonIgnore
     @NotAudited
-    @OneToMany(mappedBy = "position",fetch=FetchType.EAGER)
+   // @OneToMany(mappedBy = "position",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "position")
     private Set<Employee> employees;
 
     private String name;

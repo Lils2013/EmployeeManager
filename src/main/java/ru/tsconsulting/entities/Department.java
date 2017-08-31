@@ -27,17 +27,20 @@ public class Department {
 
     @JsonIgnore
     @JoinColumn(name = "PARENT_ID")
-    @ManyToOne(fetch=FetchType.EAGER)
+ //   @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne
     private Department parent;
 
     @JsonIgnore
     @NotAudited
-    @OneToMany(mappedBy="parent",fetch=FetchType.EAGER)
+  //  @OneToMany(mappedBy="parent",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="parent")
     private Set<Department> childDepartments = new HashSet<>();
 
     @JsonIgnore
     @NotAudited
-    @OneToMany(mappedBy = "department",fetch=FetchType.EAGER)
+ //   @OneToMany(mappedBy = "department",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "department")
     private Set<Employee> employees = new HashSet<>();
 
     @JsonGetter("parent_id")

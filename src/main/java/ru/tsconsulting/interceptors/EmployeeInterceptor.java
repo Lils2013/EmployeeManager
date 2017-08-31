@@ -43,4 +43,11 @@ public class EmployeeInterceptor {
         EmployeeHistory record = createRecord(employeeId, request, 11l, true);
         employeeHistoryRepository.save(record);
     }
+
+//    @AfterReturning("execution(* ru.tsconsulting.controllers.EmployeesController.getEmployee(..))&&args(employeeId,request)")
+//    void employeeCreate(Long employeeId, HttpServletRequest request)
+//    {
+//        EmployeeHistory record = createRecord(employeeId, request, 11l, true);
+//        employeeHistoryRepository.save(record);
+//    }
 }

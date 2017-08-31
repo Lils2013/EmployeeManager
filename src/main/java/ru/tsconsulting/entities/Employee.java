@@ -38,15 +38,18 @@ public class Employee {
     private LocalDate birthdate;
 
     @JsonIgnore
-    @ManyToOne(fetch=FetchType.EAGER)
+  //  @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne
     private Position position;
 
     @JsonIgnore
-    @ManyToOne(fetch=FetchType.EAGER)
+   // @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne
     private Department department;
 
     @JsonIgnore
-    @ManyToOne(fetch=FetchType.EAGER)
+   // @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne
     private Grade grade;
     private Long salary;
 

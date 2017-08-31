@@ -52,6 +52,9 @@ public class EmployeesController {
     public Employee transfer(@PathVariable Long employeeId,
                              @RequestParam(value="newDepartmentId") Long newDepartmentId,
                              HttpServletRequest request) {
+        if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
         if (departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId) == null) {
             throw new DepartmentNotFoundException(newDepartmentId);
         }
