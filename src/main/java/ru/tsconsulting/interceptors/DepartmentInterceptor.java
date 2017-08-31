@@ -51,9 +51,4 @@ public class DepartmentInterceptor {
 	{
 		departmentHistoryRepository.save(createRecord(departmentId,request,666l, true));
 	}
-
-
-
-
-
 }
