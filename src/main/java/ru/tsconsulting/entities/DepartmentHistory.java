@@ -1,15 +1,13 @@
 package ru.tsconsulting.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "HISTORY", schema = "TEST_B")
-public class History {
+@Table(name = "DEPARTMENT_HISTORY", schema = "TEST_B")
+public class DepartmentHistory {
 
-    public History(){}
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator2")
@@ -19,23 +17,9 @@ public class History {
 
     private Long operationId;
 
-    @JsonIgnore
-    @ManyToOne(fetch=FetchType.EAGER)
-    private Department department;
-
-    @JsonIgnore
-    @ManyToOne(fetch=FetchType.EAGER)
-    private Employee employee;
+    private Long departmentId;
 
     private String ipAdress;
-
-    public String getIpAdress() {
-        return ipAdress;
-    }
-
-    public void setIpAdress(String ipAdress) {
-        this.ipAdress = ipAdress;
-    }
 
     public Long getId() {
         return id;
@@ -61,19 +45,19 @@ public class History {
         this.operationId = operationId;
     }
 
-    public Department getDepartment() {
-        return department;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public String getIpAdress() {
+        return ipAdress;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setIpAdress(String ipAdress) {
+        this.ipAdress = ipAdress;
     }
 }
