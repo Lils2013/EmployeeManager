@@ -15,7 +15,7 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Cacheable("employeesOfDepartment")
-    List<Employee> findByDepartment_IdAndIsFiredIsFalse(Long id);
+    List<Employee> findByDepartmentIdAndIsFiredIsFalse(Long id);
 
     @Cacheable("employee")
     Employee findById (Long id);

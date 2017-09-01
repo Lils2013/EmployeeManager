@@ -55,7 +55,7 @@ public class Employee {
     private Long salary;
 
     @JsonGetter("department_id")
-    public Long getDepartmentId() {
+    public Long jsonGetDepartmentId() {
         if (department == null) {
             return null;
         }
