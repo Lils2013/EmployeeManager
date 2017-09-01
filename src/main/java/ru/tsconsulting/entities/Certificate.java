@@ -1,31 +1,51 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.util.Arrays;
 
-/**
- * Created by avtsoy on 22.08.2017.
- */
-@Entity
-@Table(name = "CERTIFICATE", schema = "TEST_B", catalog = "")
-public class Certificate {
-    private long id;
-    private String name;
-    private long serialNumber;
-    private byte[] scan;
 
-    @Id
-    @Column(name = "ID")
-    public long getId() {
+@Entity
+@Audited
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "CERTIFICATE", schema = "TEST_B")
+public class Certificate {
+
+
+
+    public Certificate(){};
+
+	@Id
+	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
+	@GeneratedValue(generator="incrementGenerator1")
+	private Long id;
+	private String name;
+	private Long serialNumber;
+	private byte[] scan;
+
+	@ManyToOne
+    private CertificateOrganisation certificateOrganisation;
+
+	@JsonGetter("certificateorganisation_id")
+	public Long getCertificateOrganisationId() {
+		if (certificateOrganisation == null) {
+			return null;
+		}
+		return certificateOrganisation.getId();
+	}
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "NAME")
     public String getName() {
         return name;
     }
@@ -34,18 +54,20 @@ public class Certificate {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "SERIAL_NUMBER")
-    public long getSerialNumber() {
+	public void setCertificateOrganisation(CertificateOrganisation certificateOrganisation) {
+		this.certificateOrganisation = certificateOrganisation;
+	}
+
+
+    public Long getSerialNumber() {
         return serialNumber;
     }
 
-    public void setSerialNumber(long serialNumber) {
+    public void setSerialNumber(Long serialNumber) {
         this.serialNumber = serialNumber;
     }
 
-    @Basic
-    @Column(name = "SCAN")
+
     public byte[] getScan() {
         return scan;
     }
@@ -53,6 +75,10 @@ public class Certificate {
     public void setScan(byte[] scan) {
         this.scan = scan;
     }
+
+
+
+
 
     @Override
     public boolean equals(Object o) {

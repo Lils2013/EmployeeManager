@@ -1,28 +1,27 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 
-/**
- * Created by avtsoy on 22.08.2017.
- */
+
 @Entity
-@Table(name = "CERTORGANISATION", schema = "TEST_B", catalog = "")
-public class CertOrganisation {
-    private long id;
+@Audited
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "CERTIFICATEORGANISATION", schema = "TEST_B", catalog = "")
+public class CertificateOrganisation {
+    @Id
+    @GenericGenerator(name="incrementGenerator2" , strategy="increment")
+    @GeneratedValue(generator="incrementGenerator2")
+    private Long id;
     private String name;
 
-    @Id
-    @Column(name = "ID")
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
-    @Basic
-    @Column(name = "NAME")
+
+
     public String getName() {
         return name;
     }
@@ -31,12 +30,21 @@ public class CertOrganisation {
         this.name = name;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CertOrganisation that = (CertOrganisation) o;
+        CertificateOrganisation that = (CertificateOrganisation) o;
 
         if (id != that.id) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
