@@ -1,11 +1,14 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
+import ru.tsconsulting.details.CertificateDetails;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 
@@ -14,11 +17,6 @@ import java.util.Arrays;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "CERTIFICATE", schema = "TEST_B")
 public class Certificate {
-
-
-
-    public Certificate(){};
-
 	@Id
 	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
 	@GeneratedValue(generator="incrementGenerator1")
@@ -26,9 +24,33 @@ public class Certificate {
 	private String name;
 	private Long serialNumber;
 	private byte[] scan;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateAquired;
+
+	public LocalDate getDateAquired() {
+		return dateAquired;
+	}
+
+	public void setDateAquired(LocalDate dateAquired) {
+		this.dateAquired = dateAquired;
+	}
 
 	@ManyToOne
-    private CertificateOrganisation certificateOrganisation;
+	private CertificateOrganisation certificateOrganisation;
+
+
+    public Certificate(){
+
+    }
+
+    public Certificate(CertificateDetails certificateDetails) {
+    	setName(certificateDetails.getName());
+    	setSerialNumber(certificateDetails.getSerialNumber());
+    	setScan(certificateDetails.getScan());
+    	setDateAquired(certificateDetails.getDateAcquired());
+    }
+
+
 
 	@JsonGetter("certificateorganisation_id")
 	public Long getCertificateOrganisationId() {
