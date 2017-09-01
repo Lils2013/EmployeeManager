@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import ru.tsconsulting.details.DepartmentDetails;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +19,10 @@ import java.util.Set;
 public class Department {
 
     public Department() {}
+    public Department(DepartmentDetails departmentDetails) {
+        setChiefId(departmentDetails.getChiefId());
+        setName(departmentDetails.getName());
+    }
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator2")

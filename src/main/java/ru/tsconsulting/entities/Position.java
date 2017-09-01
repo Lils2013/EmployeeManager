@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import ru.tsconsulting.details.PositionDetails;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -42,5 +43,12 @@ public class Position {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Position() {
+    }
+
+    public Position(PositionDetails positionDetails) {
+        setName(positionDetails.getName());
     }
 }

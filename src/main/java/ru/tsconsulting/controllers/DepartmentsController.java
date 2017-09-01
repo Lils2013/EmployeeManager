@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.tsconsulting.details.DepartmentDetails;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.*;
@@ -69,8 +70,18 @@ public class DepartmentsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Department createDepartment(@RequestBody Department department,
+    public Department createDepartment(@RequestBody DepartmentDetails departmentDetails,
                                        HttpServletRequest request) {
+        Department department = new Department(departmentDetails);
+        Long parentId = departmentDetails.getParent();
+        if (parentId != null) {
+            Department parentDepartment = departmentRepository.findByIdAndIsDismissedIsFalse(parentId);
+            if (parentDepartment == null) {
+                throw new DepartmentNotFoundException(parentId);
+            } else {
+                department.setParent(parentDepartment);
+            }
+        }
         return departmentRepository.save(department);
     }
 

@@ -80,8 +80,6 @@ public class EmployeesController {
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@RequestBody EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         Employee employee = new Employee(employeeDetails);
         if (employeeDetails.getGrade() != null) {
             if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
@@ -108,7 +106,6 @@ public class EmployeesController {
             }
         }
         Employee result = employeeRepository.save(employee);
-        entityManager.getTransaction().commit();
         return result;
     }
 

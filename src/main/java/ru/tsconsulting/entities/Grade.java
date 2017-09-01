@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import ru.tsconsulting.details.GradeDetails;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -43,5 +44,13 @@ public class Grade {
 
     public void setGrade(String grade) {
         this.grade = grade;
+    }
+
+    public Grade() {
+    }
+
+    public Grade(GradeDetails gradeDetails) {
+
+        setGrade(gradeDetails.getGrade());
     }
 }

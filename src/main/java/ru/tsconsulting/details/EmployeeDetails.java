@@ -95,4 +95,36 @@ public class EmployeeDetails {
     public void setGrade(Long grade) {
         this.grade = grade;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EmployeeDetails that = (EmployeeDetails) o;
+
+        if (firstname != null ? !firstname.equals(that.firstname) : that.firstname != null) return false;
+        if (lastname != null ? !lastname.equals(that.lastname) : that.lastname != null) return false;
+        if (middlename != null ? !middlename.equals(that.middlename) : that.middlename != null) return false;
+        if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
+        if (birthdate != null ? !birthdate.equals(that.birthdate) : that.birthdate != null) return false;
+        if (position != null ? !position.equals(that.position) : that.position != null) return false;
+        if (department != null ? !department.equals(that.department) : that.department != null) return false;
+        if (grade != null ? !grade.equals(that.grade) : that.grade != null) return false;
+        return salary != null ? salary.equals(that.salary) : that.salary == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = firstname != null ? firstname.hashCode() : 0;
+        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (middlename != null ? middlename.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + (birthdate != null ? birthdate.hashCode() : 0);
+        result = 31 * result + (position != null ? position.hashCode() : 0);
+        result = 31 * result + (department != null ? department.hashCode() : 0);
+        result = 31 * result + (grade != null ? grade.hashCode() : 0);
+        result = 31 * result + (salary != null ? salary.hashCode() : 0);
+        return result;
+    }
 }
