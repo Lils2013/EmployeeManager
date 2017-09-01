@@ -12,7 +12,7 @@ import java.util.List;
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     @Cacheable("subDepartments")
-    List<Department> findByParent_IdAndIsDismissedIsFalse(Long id);
+    List<Department> findByParentIdAndIsDismissedIsFalse(Long id);
 
     @Cacheable("department")
     Department findById(Long id);

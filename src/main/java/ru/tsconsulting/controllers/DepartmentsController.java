@@ -56,7 +56,7 @@ public class DepartmentsController {
     @RequestMapping(path = "/{depId}/employees", method = RequestMethod.GET)
     public List<Employee> employeeByDep(@PathVariable Long depId, HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(depId) != null) {
-            return employeeRepository.findByDepartment_IdAndIsFiredIsFalse(depId);
+            return employeeRepository.findByDepartmentIdAndIsFiredIsFalse(depId);
         } else {
             throw new DepartmentNotFoundException(depId);
         }
@@ -67,7 +67,7 @@ public class DepartmentsController {
     public List<Department> findSubDeps(@PathVariable Long depId,
                                         HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(depId) != null) {
-            return departmentRepository.findByParent_IdAndIsDismissedIsFalse(depId);
+            return departmentRepository.findByParentIdAndIsDismissedIsFalse(depId);
         } else {
             throw new DepartmentNotFoundException(depId);
         }
@@ -106,8 +106,8 @@ public class DepartmentsController {
                                               HttpServletRequest request) {
         Department current = departmentRepository.findByIdAndIsDismissedIsFalse(depId);
         if (current != null) {
-            if (employeeRepository.findByDepartment_IdAndIsFiredIsFalse(depId).isEmpty()) {
-                if (departmentRepository.findByParent_IdAndIsDismissedIsFalse(depId).isEmpty()) {
+            if (employeeRepository.findByDepartmentIdAndIsFiredIsFalse(depId).isEmpty()) {
+                if (departmentRepository.findByParentIdAndIsDismissedIsFalse(depId).isEmpty()) {
                     current.setDismissed(true);
                     departmentRepository.save(current);
                     return new ResponseEntity<>(HttpStatus.OK);
