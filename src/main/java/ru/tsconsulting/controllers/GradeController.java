@@ -1,5 +1,6 @@
 package ru.tsconsulting.controllers;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class GradeController {
         this.gradeRepository = gradeRepository;
     }
 
+    @ApiOperation(value = "Create new grade")
     @RequestMapping(method = RequestMethod.POST)
     public Grade createGrade(@RequestBody GradeDetails gradeDetails){
         return gradeRepository.save(new Grade(gradeDetails));

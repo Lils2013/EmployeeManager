@@ -1,5 +1,8 @@
 package ru.tsconsulting.controllers;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
@@ -48,6 +51,12 @@ public class EmployeesController {
         this.departmentRepository = departmentRepository;
     }
 
+	@ApiOperation(value = "Transfer employee from one department to another")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful transfer of employee"),
+			@ApiResponse(code = 404, message = "Employee with given id does not exist or one of the departments does not exist"),
+			@ApiResponse(code = 500, message = "Internal server error")}
+	)
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
     public Employee transferEmployee(@PathVariable Long employeeId,
                                      @RequestParam(value="newDepartmentId") Long newDepartmentId,
@@ -64,6 +73,12 @@ public class EmployeesController {
         return result;
     }
 
+	@ApiOperation(value = "Delete employee by id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful deletion of employee"),
+			@ApiResponse(code = 404, message = "Employee with given id does not exist"),
+			@ApiResponse(code = 500, message = "Internal server error")}
+	)
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId,
                                             HttpServletRequest request) {
@@ -77,6 +92,11 @@ public class EmployeesController {
         }
     }
 
+	@ApiOperation(value = "Create employee by id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful creation of employee"),
+			@ApiResponse(code = 500, message = "Internal server error")}
+	)
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@RequestBody EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
@@ -96,7 +116,7 @@ public class EmployeesController {
             }
         }
         if (employeeDetails.getDepartment() == null) {
-            throw new DepartmentNotSpecifiedException();
+            throw new DepartmentNotSpecifiedException(employeeDetails.getDepartment());
         } else {
             Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
             if (department == null) {
@@ -109,6 +129,12 @@ public class EmployeesController {
         return result;
     }
 
+	@ApiOperation(value = "Return employee by id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful retrieval of employee"),
+			@ApiResponse(code = 404, message = "Employee with given id does not exist"),
+			@ApiResponse(code = 500, message = "Internal server error")}
+	)
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
     public Employee getEmployee(@PathVariable Long employeeId,
                                 HttpServletRequest request) {
@@ -119,6 +145,12 @@ public class EmployeesController {
         return employee;
     }
 
+	@ApiOperation(value = "Return history of employee by id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful retrieval of the history of employee"),
+			@ApiResponse(code = 404, message = "History for given employee does not exist"),
+			@ApiResponse(code = 500, message = "Internal server error")}
+	)
     @RequestMapping(path="/{employeeId}/history",method = RequestMethod.GET)
     public List<Employee> getHistory(@PathVariable Long employeeId,
                                      HttpServletRequest request) {
@@ -136,6 +168,12 @@ public class EmployeesController {
         return list;
     }
 
+	@ApiOperation(value = "Edit employee by id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful edition of employee"),
+			@ApiResponse(code = 404, message = "Employee with given id does not exist"),
+			@ApiResponse(code = 500, message = "Internal server error")}
+	)
     @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
     public Employee editEmployee(@PathVariable Long employeeId,
                                  @RequestParam(value = "newPositionId", required=false) Long newPositionId,
@@ -173,6 +211,6 @@ public class EmployeesController {
     @ExceptionHandler(DepartmentNotSpecifiedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError departmentNotSpecified(DepartmentNotSpecifiedException e) {
-        return new RestError(3, "Department was not specified");
+        return new RestError(3, e.getMessage());
     }
 }

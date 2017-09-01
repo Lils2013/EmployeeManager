@@ -1,5 +1,6 @@
 package ru.tsconsulting.controllers;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class DepartmentsController {
         this.employeeRepository = employeeRepository;
     }
 
+	@ApiOperation(value = "Change parent department")
     @RequestMapping(path = "/{depId}/changeHierarchy", method = RequestMethod.POST)
     public Department changeHierarchy(@PathVariable Long depId,
                                       @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
@@ -50,6 +52,7 @@ public class DepartmentsController {
         return departmentRepository.save(original);
     }
 
+	@ApiOperation(value = "Return all employees of department by id")
     @RequestMapping(path = "/{depId}/employees", method = RequestMethod.GET)
     public List<Employee> employeeByDep(@PathVariable Long depId, HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(depId) != null) {
@@ -59,6 +62,7 @@ public class DepartmentsController {
         }
     }
 
+	@ApiOperation(value = "Return all sub departments of given department by id")
     @RequestMapping(path = "/{depId}/subs", method = RequestMethod.GET)
     public List<Department> findSubDeps(@PathVariable Long depId,
                                         HttpServletRequest request) {
@@ -69,6 +73,7 @@ public class DepartmentsController {
         }
     }
 
+	@ApiOperation(value = "Create new department")
     @RequestMapping(method = RequestMethod.POST)
     public Department createDepartment(@RequestBody DepartmentDetails departmentDetails,
                                        HttpServletRequest request) {
@@ -95,6 +100,7 @@ public class DepartmentsController {
         return department;
     }
 
+	@ApiOperation(value = "Delete department by id")
     @RequestMapping(path = "/{depId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteDepartment(@PathVariable Long depId,
                                               HttpServletRequest request) {
