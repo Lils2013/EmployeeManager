@@ -98,7 +98,7 @@ public class EmployeesController {
             }
         }
         if (employeeDetails.getDepartment() == null) {
-            throw new DepartmentNotSpecifiedException();
+            throw new DepartmentNotSpecifiedException(employeeDetails.getDepartment());
         } else {
             Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
             if (department == null) {
@@ -176,6 +176,6 @@ public class EmployeesController {
     @ExceptionHandler(DepartmentNotSpecifiedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError departmentNotSpecified(DepartmentNotSpecifiedException e) {
-        return new RestError(3, "Department was not specified");
+        return new RestError(3, e.getMessage());
     }
 }
