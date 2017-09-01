@@ -74,11 +74,6 @@ public class DepartmentsController {
         return departmentRepository.save(department);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Department> findAllDeps() {
-        return departmentRepository.findAll();
-    }
-
     @RequestMapping(path = "/{depId}", method = RequestMethod.GET)
     public Department getDepartment(@PathVariable Long depId,
                                     HttpServletRequest request) {

@@ -45,7 +45,8 @@
 
     <jpa:repositories base-package="ru.tsconsulting.repositories"/>
 
-    <context:component-scan base-package="ru.tsconsulting"/>
+    <!--<context:component-scan base-package="ru.tsconsulting"/>-->
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
 </beans>

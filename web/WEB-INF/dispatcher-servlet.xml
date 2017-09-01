@@ -18,4 +18,11 @@
     <context:component-scan base-package="ru.tsconsulting"/>
 
     <aop:aspectj-autoproxy/>
+
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
+
+    <!--<bean name="/applicationSwaggerConfig" class="ru.tsconsulting.configuration.SwaggerConfig"/>-->
+
+
 </beans>

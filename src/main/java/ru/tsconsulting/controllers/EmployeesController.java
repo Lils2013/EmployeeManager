@@ -141,20 +141,28 @@ public class EmployeesController {
 
     @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
     public Employee editEmployee(@PathVariable Long employeeId,
-                                 @RequestParam(value = "newPositionId") Long newPositionId,
-                                 @RequestParam(value = "newGrade") Long newGrade,
-                                 @RequestParam(value = "newSalary") Long newSalary,
+                                 @RequestParam(value = "newPositionId", required=false) Long newPositionId,
+                                 @RequestParam(value = "newGrade", required=false) Long newGrade,
+                                 @RequestParam(value = "newSalary", required=false) Long newSalary,
                                              HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         if (employee==null)throw new EmployeeNotFoundException(employeeId);
-        Position position = positionRepository.findById(newPositionId);
-        if (position==null)throw new PositionNotFoundException(employeeId);
-        Grade grade = gradeRepository.findById(newGrade);
-        if (grade==null)throw new GradeNotFoundException(employeeId);
-        employee.setPosition(position);
-        employee.setGrade(grade);
-        employee.setSalary(newSalary);
-        employeeRepository.save(employee);
+        if (newPositionId != null) {
+            Position position = positionRepository.findById(newPositionId);
+            if (position==null)throw new PositionNotFoundException(employeeId);
+            employee.setPosition(position);
+        }
+        if (newGrade != null) {
+            Grade grade = gradeRepository.findById(newGrade);
+            if (grade==null)throw new GradeNotFoundException(employeeId);
+            employee.setGrade(grade);
+        }
+        if (newSalary != null) {
+            employee.setSalary(newSalary);
+        }
+        if (!(newPositionId == null && newGrade == null && newSalary == null)) {
+            employeeRepository.save(employee);
+        }
         return employee;
     }
 
