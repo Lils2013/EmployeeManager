@@ -48,4 +48,13 @@
 
 * **Sample Call:**
 
-  
+  ```
+  $.ajax({
+      url: "/departments/1/subs",
+      dataType: "json",
+      type : "GET",
+      success : function(r) {
+        console.log(r);
+      }
+    });
+    ```

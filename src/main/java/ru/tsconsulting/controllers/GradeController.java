@@ -22,7 +22,7 @@ public class GradeController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Grade createGrade(@RequestBody Grade grade,HttpServletRequest request){
+    public Grade createGrade(@RequestBody Grade grade){
         return gradeRepository.save(grade);
     }
 
