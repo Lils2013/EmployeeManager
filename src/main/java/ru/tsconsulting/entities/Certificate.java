@@ -35,7 +35,7 @@ public class Certificate {
     }
 
     @Basic
-    @Column(name = "Serial number")
+    @Column(name = "SERIAL_NUMBER")
     public long getSerialNumber() {
         return serialNumber;
     }

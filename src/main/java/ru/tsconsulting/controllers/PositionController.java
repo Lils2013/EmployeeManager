@@ -22,7 +22,7 @@ public class PositionController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Position createPosition(@RequestBody Position position, HttpServletRequest request){
+    public Position createPosition(@RequestBody Position position){
         return positionRepository.save(position);
     }
 }

@@ -146,23 +146,24 @@ public class EmployeesController {
                                  @RequestParam(value = "newSalary", required=false) Long newSalary,
                                              HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
-        if (employee==null)throw new EmployeeNotFoundException(employeeId);
-        if (newPositionId != null) {
-            Position position = positionRepository.findById(newPositionId);
-            if (position==null)throw new PositionNotFoundException(employeeId);
-            employee.setPosition(position);
+        if (employee==null)
+        {
+            throw new EmployeeNotFoundException(employeeId);
         }
-        if (newGrade != null) {
-            Grade grade = gradeRepository.findById(newGrade);
-            if (grade==null)throw new GradeNotFoundException(employeeId);
-            employee.setGrade(grade);
+        Position position = positionRepository.findById(newPositionId);
+        if (position==null)
+        {
+            throw new PositionNotFoundException(employeeId);
         }
-        if (newSalary != null) {
-            employee.setSalary(newSalary);
+        Grade grade = gradeRepository.findById(newGrade);
+        if (grade==null)
+        {
+            throw new GradeNotFoundException(employeeId);
         }
-        if (!(newPositionId == null && newGrade == null && newSalary == null)) {
-            employeeRepository.save(employee);
-        }
+        employee.setPosition(position);
+        employee.setGrade(grade);
+        employee.setSalary(newSalary);
+        employeeRepository.save(employee);
         return employee;
     }
 
