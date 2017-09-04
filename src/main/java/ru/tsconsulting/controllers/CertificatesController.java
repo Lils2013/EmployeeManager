@@ -6,8 +6,12 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.entities.*;
-import ru.tsconsulting.errorHandling.*;
+import ru.tsconsulting.entities.Certificate;
+import ru.tsconsulting.entities.CertificateOrganisation;
+import ru.tsconsulting.errorHandling.CertificateOrganisationNotFoundException;
+import ru.tsconsulting.errorHandling.EntityNotFoundException;
+import ru.tsconsulting.errorHandling.Errors;
+import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.CertificateListRepository;
 import ru.tsconsulting.repositories.CertificateOrganisationRepository;
 import ru.tsconsulting.repositories.CertificateRepository;
@@ -44,8 +48,6 @@ public class CertificatesController {
 			else {
 				throw new CertificateOrganisationNotFoundException(certificateDetails.getCertificateOrganisationId());
 			}
-
-
 		}
 
 		Certificate result = certificateRepository.save(certificate);
@@ -66,23 +68,23 @@ public class CertificatesController {
 	                             @RequestParam(value = "newCertificateOrganisationId", required=false) Long newCertificateOrganisationId,
 	                             HttpServletRequest request) {
 		Certificate certificate = certificateRepository.findById(certificateId);
-		if (certificate==null)
-		{
+		if (certificate==null) {
 			//throw new CertificateNotFoundException(certificateId);
 		}
+
 		CertificateOrganisation certificateOrganisation = certificateOrganisationRepository.findById(newCertificateOrganisationId);
+
 		if (certificateOrganisation==null)
 		{
 			throw new CertificateOrganisationNotFoundException(newCertificateOrganisationId);
 		}
 
-
 		certificate.setName(newName);
 		certificate.setSerialNumber(newSerialNumber);
 		certificate.setScan(newScan);
 		certificate.setCertificateOrganisation(certificateOrganisation);
-
 		certificateRepository.save(certificate);
+
 		return certificate;
 	}
 

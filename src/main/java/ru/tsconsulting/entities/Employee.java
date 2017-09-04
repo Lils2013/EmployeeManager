@@ -13,16 +13,6 @@ import java.time.LocalDate;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "EMPLOYEE", schema = "TEST_B")
 public class Employee {
-
-    public Employee() {}
-    public Employee(EmployeeDetails employeeDetails) {
-        setFirstname(employeeDetails.getFirstname());
-        setLastname(employeeDetails.getLastname());
-        setMiddlename(employeeDetails.getMiddlename());
-        setGender(employeeDetails.getGender());
-        setBirthdate(employeeDetails.getBirthdate());
-        setSalary(employeeDetails.getSalary());
-    }
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
@@ -33,26 +23,32 @@ public class Employee {
     private String gender;
     @Column(name = "IS_FIRED")
     private Boolean isFired = false;
-
     @JsonFormat(pattern="yyyy-MM-dd")
     @Column(columnDefinition = "DATE")
     private LocalDate birthdate;
-
     @JsonIgnore
   //  @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Position position;
-
     @JsonIgnore
    // @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Department department;
-
     @JsonIgnore
    // @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Grade grade;
     private Long salary;
+
+	public Employee() {}
+	public Employee(EmployeeDetails employeeDetails) {
+		setFirstname(employeeDetails.getFirstname());
+		setLastname(employeeDetails.getLastname());
+		setMiddlename(employeeDetails.getMiddlename());
+		setGender(employeeDetails.getGender());
+		setBirthdate(employeeDetails.getBirthdate());
+		setSalary(employeeDetails.getSalary());
+	}
 
     @JsonGetter("department_id")
     public Long jsonGetDepartmentId() {

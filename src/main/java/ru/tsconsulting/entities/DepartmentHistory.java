@@ -8,15 +8,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "DEPARTMENT_HISTORY", schema = "TEST_B")
 public class DepartmentHistory {
-
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator2")
     private Long id;
-
     @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")
     private LocalDateTime dateTime;
-
     @Column(name = "OPERATION_ID")
     private Long operationId;
     @Column(name = "DEPARTMENT_ID")

@@ -16,13 +16,11 @@ import javax.persistence.Table;
 @RevisionEntity(EmployeeListener.class)
 @Table(name = "EMPLOYEE_REVINFO", schema = "TEST_B")
 public class EmployeeRev {
-
     @Id
     @GenericGenerator(name="incrementGenerator3" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator3")
     @RevisionNumber
     private int id;
-
     @RevisionTimestamp
     private long timestamp;
 

@@ -8,16 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import ru.tsconsulting.entities.Certificate;
 import ru.tsconsulting.entities.CertificateList;
-import ru.tsconsulting.errorHandling.CertificateOrganisationNotFoundException;
 import ru.tsconsulting.repositories.CertificateListRepository;
-import ru.tsconsulting.repositories.CertificateOrganisationRepository;
 import ru.tsconsulting.repositories.CertificateRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/certificateList")
@@ -27,7 +23,6 @@ public class CertificateListController {
 	private CertificateListRepository certificateListRepository;
 
 	@Autowired
-
 	public CertificateListController(CertificateRepository certificateRepository, EmployeeRepository employeeRepository,
 	                                 CertificateListRepository certificateListRepository) {
 		this.certificateRepository = certificateRepository;
@@ -52,7 +47,6 @@ public class CertificateListController {
 			else {
 //				throw new CertificateNotFoundException(certificateListDetails.getCertificateId());
 			}
-
 		}
 		else {
 			throw new IllegalArgumentException("Incorrect id format(null)");

@@ -16,12 +16,6 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "DEPARTMENT", schema = "TEST_B")
 public class Department {
-
-    public Department() {}
-    public Department(DepartmentDetails departmentDetails) {
-        setChiefId(departmentDetails.getChiefId());
-        setName(departmentDetails.getName());
-    }
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator2")
@@ -31,7 +25,6 @@ public class Department {
     private String chiefId;
     @Column(name = "IS_DISMISSED")
     private Boolean isDismissed = false;
-
     @JsonIgnore
     @JoinColumn(name = "PARENT_ID")
  //   @ManyToOne(fetch=FetchType.EAGER)
@@ -49,6 +42,12 @@ public class Department {
  //   @OneToMany(mappedBy = "department",fetch=FetchType.EAGER)
     @OneToMany(mappedBy = "department")
     private Set<Employee> employees = new HashSet<>();
+
+	public Department() {}
+	public Department(DepartmentDetails departmentDetails) {
+		setChiefId(departmentDetails.getChiefId());
+		setName(departmentDetails.getName());
+	}
 
     @JsonGetter("parent_id")
     public Long getDepartmentId() {
@@ -124,7 +123,6 @@ public class Department {
     }
 
 	public static class DepartmentDetails {
-
 	    private String name;
 	    private String chiefId;
 	    private Long parent;

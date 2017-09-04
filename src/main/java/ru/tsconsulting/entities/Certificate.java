@@ -21,12 +21,8 @@ public class Certificate {
 	private String name;
 	private Long serialNumber;
 	private byte[] scan;
-
-
-
 	@ManyToOne
 	private CertificateOrganisation certificateOrganisation;
-
 
     public Certificate(){
 
@@ -37,8 +33,6 @@ public class Certificate {
     	setSerialNumber(certificateDetails.getSerialNumber());
     	setScan(certificateDetails.getScan());
     }
-
-
 
 	@JsonGetter("certificateorganisation_id")
 	public Long getCertificateOrganisationId() {
@@ -68,7 +62,6 @@ public class Certificate {
 		this.certificateOrganisation = certificateOrganisation;
 	}
 
-
     public Long getSerialNumber() {
         return serialNumber;
     }
@@ -77,7 +70,6 @@ public class Certificate {
         this.serialNumber = serialNumber;
     }
 
-
     public byte[] getScan() {
         return scan;
     }
@@ -85,7 +77,6 @@ public class Certificate {
     public void setScan(byte[] scan) {
         this.scan = scan;
     }
-
 
 	@Override
 	public boolean equals(Object o) {
@@ -112,7 +103,6 @@ public class Certificate {
 	}
 
 	public static class CertificateDetails {
-
 		private String name;
 		private Long serialNumber;
 		private byte[] scan;

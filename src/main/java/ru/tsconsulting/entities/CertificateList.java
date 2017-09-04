@@ -14,18 +14,16 @@ import java.time.LocalDate;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "CERTIFICATE_LIST", schema = "TEST_B")
 public class CertificateList {
-
 	@Id
 	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
 	@GeneratedValue(generator="incrementGenerator1")
     private long id;
-
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate dateAcquired;
-
     @ManyToOne
     private  Certificate certificate;
-
+	@ManyToOne
+	private Employee employee;
 
 	public CertificateList() {
 	}
@@ -34,8 +32,70 @@ public class CertificateList {
 		this.dateAcquired = certificateListDetails.getDateAcquired();
 	}
 
-	@ManyToOne
-    private Employee employee;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+	@JsonGetter("certificate_id")
+	public Long getCertificateId() {
+		if (certificate == null) {
+			return null;
+		}
+		return certificate.getId();
+	}
+
+	@JsonGetter("employee_id")
+	public Long getEmployeeId() {
+		if (certificate == null) {
+			return null;
+		}
+		return certificate.getId();
+	}
+
+	public LocalDate getDateAcquired() {
+		return dateAcquired;
+	}
+
+	public void setDateAcquired(LocalDate dateAcquired) {
+		this.dateAcquired = dateAcquired;
+	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CertificateList that = (CertificateList) o;
+
+        if (id != that.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public Certificate getCertificate() {
+		return certificate;
+	}
+
+	public void setCertificate(Certificate certificate) {
+		this.certificate = certificate;
+	}
 
 	public static class CertificateListDetails {
 		private LocalDate dateAcquired;
@@ -88,75 +148,4 @@ public class CertificateList {
 			return result;
 		}
 	}
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-	@JsonGetter("certificate_id")
-	public Long getCertificateId() {
-		if (certificate == null) {
-			return null;
-		}
-		return certificate.getId();
-	}
-
-
-
-	@JsonGetter("employee_id")
-	public Long getEmployeeId() {
-		if (certificate == null) {
-			return null;
-		}
-		return certificate.getId();
-	}
-
-	public LocalDate getDateAcquired() {
-		return dateAcquired;
-	}
-
-	public void setDateAcquired(LocalDate dateAcquired) {
-		this.dateAcquired = dateAcquired;
-	}
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CertificateList that = (CertificateList) o;
-
-        if (id != that.id) return false;
-
-        return true;
-    }
-
-
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-	public Employee getEmployee() {
-		return employee;
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
-	public Certificate getCertificate() {
-		return certificate;
-	}
-
-	public void setCertificate(Certificate certificate) {
-		this.certificate = certificate;
-	}
-
-
 }

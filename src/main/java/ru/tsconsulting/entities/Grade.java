@@ -15,12 +15,10 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "GRADE", schema = "TEST_B", catalog = "")
 public class Grade {
-
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
     private Long id;
-
     @JsonIgnore
     @NotAudited
   //  @OneToMany(mappedBy = "grade",fetch=FetchType.EAGER)
@@ -28,6 +26,13 @@ public class Grade {
     private Set<Employee> employees;
 
     private String grade;
+
+	public Grade() {
+	}
+
+	public Grade(GradeDetails gradeDetails) {
+		setGrade(gradeDetails.getGrade());
+	}
 
     public Long getId() {
         return id;
@@ -45,13 +50,7 @@ public class Grade {
         this.grade = grade;
     }
 
-    public Grade() {
-    }
 
-    public Grade(GradeDetails gradeDetails) {
-
-        setGrade(gradeDetails.getGrade());
-    }
 
 	public static class GradeDetails {
 

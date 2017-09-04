@@ -14,19 +14,23 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "POSITION", schema = "TEST_B")
 public class Position {
-
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
     private Long id;
-
     @JsonIgnore
     @NotAudited
    // @OneToMany(mappedBy = "position",fetch=FetchType.EAGER)
     @OneToMany(mappedBy = "position")
     private Set<Employee> employees;
-
     private String name;
+
+	public Position() {
+	}
+
+	public Position(PositionDetails positionDetails) {
+		setName(positionDetails.getName());
+	}
 
     public Long getId() {
         return id;
@@ -44,15 +48,7 @@ public class Position {
         this.name = name;
     }
 
-    public Position() {
-    }
-
-    public Position(PositionDetails positionDetails) {
-        setName(positionDetails.getName());
-    }
-
 	public static class PositionDetails {
-
 	    private String name;
 
 	    public PositionDetails() {

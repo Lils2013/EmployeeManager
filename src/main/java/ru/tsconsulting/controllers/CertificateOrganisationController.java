@@ -11,20 +11,17 @@ import ru.tsconsulting.repositories.CertificateListRepository;
 import ru.tsconsulting.repositories.CertificateOrganisationRepository;
 import ru.tsconsulting.repositories.CertificateRepository;
 
-
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/certificateOrganisations")
 public class CertificateOrganisationController {
-
 	private final CertificateOrganisationRepository certificateOrganisationRepository;
 
 	@Autowired
 	public CertificateOrganisationController(CertificateRepository certificateRepository, CertificateOrganisationRepository certificateOrganisationRepository, CertificateListRepository certificateListRepository) {
 		this.certificateOrganisationRepository = certificateOrganisationRepository;
 	}
-
 
 	@RequestMapping(method = RequestMethod.POST)
 	public CertificateOrganisation createCertificateOrganisation(@RequestBody CertificateOrganisation.CertificateOrganisationDetails certificateOrganisationDetails,
@@ -38,13 +35,12 @@ public class CertificateOrganisationController {
 			else {
 				// throw new CertificateOrganisationNameIsNotSpecifiedException(certificateOrganisationDetails.getName());
 			}
-
-
 		}
 
 		CertificateOrganisation result = certificateOrganisationRepository.save(certificateOrganisation);
 		return result;
 	}
+
 	@ExceptionHandler(EntityNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public RestError entityNotFound(EntityNotFoundException e) {

@@ -3,16 +3,13 @@ package ru.tsconsulting.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.DepartmentHistory;
 import ru.tsconsulting.entities.EmployeeHistory;
-import ru.tsconsulting.errorHandling.DepartmentHasSubdepartmentsException;
 import ru.tsconsulting.errorHandling.Errors;
 import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.DepartmentHistoryRepository;
 import ru.tsconsulting.repositories.EmployeeHistoryRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
