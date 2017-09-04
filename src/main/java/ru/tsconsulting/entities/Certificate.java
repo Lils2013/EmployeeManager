@@ -96,14 +96,20 @@ public class Certificate {
 
 		Certificate that = (Certificate) o;
 
+		if (id != null ? !id.equals(that.id) : that.id != null) return false;
 		if (name != null ? !name.equals(that.name) : that.name != null) return false;
-		return serialNumber != null ? serialNumber.equals(that.serialNumber) : that.serialNumber == null;
+		if (serialNumber != null ? !serialNumber.equals(that.serialNumber) : that.serialNumber != null) return false;
+		if (!Arrays.equals(scan, that.scan)) return false;
+		return certificateOrganisation != null ? certificateOrganisation.equals(that.certificateOrganisation) : that.certificateOrganisation == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = name != null ? name.hashCode() : 0;
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (name != null ? name.hashCode() : 0);
 		result = 31 * result + (serialNumber != null ? serialNumber.hashCode() : 0);
+		result = 31 * result + Arrays.hashCode(scan);
+		result = 31 * result + (certificateOrganisation != null ? certificateOrganisation.hashCode() : 0);
 		return result;
 	}
 }
