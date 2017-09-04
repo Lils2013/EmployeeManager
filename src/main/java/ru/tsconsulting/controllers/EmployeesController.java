@@ -150,14 +150,14 @@ public class EmployeesController {
         return employee;
     }
 
-	@ApiOperation(value = "Return history of employee by id")
+	@ApiOperation(value = "Return audit information of employee by id")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful retrieval of the history of employee"),
-			@ApiResponse(code = 404, message = "History for given employee does not exist"),
+			@ApiResponse(code = 200, message = "Successful retrieval of the audit information of employee"),
+			@ApiResponse(code = 404, message = "Audit information for given employee does not exist"),
 			@ApiResponse(code = 500, message = "Internal server error")}
 	)
-    @RequestMapping(path="/{employeeId}/history",method = RequestMethod.GET)
-    public List<Employee> getHistory(@PathVariable Long employeeId,
+    @RequestMapping(path="/{employeeId}/audit",method = RequestMethod.GET)
+    public List<Employee> getAudit(@PathVariable Long employeeId,
                                      HttpServletRequest request) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
