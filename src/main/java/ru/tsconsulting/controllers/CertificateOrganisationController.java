@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.CertificateOrganisation;
 import ru.tsconsulting.errorHandling.EntityNotFoundException;
+import ru.tsconsulting.errorHandling.Errors;
 import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.CertificateListRepository;
 import ru.tsconsulting.repositories.CertificateOrganisationRepository;
@@ -47,6 +48,6 @@ public class CertificateOrganisationController {
 	@ExceptionHandler(EntityNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public RestError entityNotFound(EntityNotFoundException e) {
-		return new RestError(1, e.getMessage());
+		return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
 	}
 }

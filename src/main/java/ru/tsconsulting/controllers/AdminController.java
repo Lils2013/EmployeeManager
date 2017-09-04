@@ -7,6 +7,7 @@ import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.DepartmentHistory;
 import ru.tsconsulting.entities.EmployeeHistory;
 import ru.tsconsulting.errorHandling.DepartmentHasSubdepartmentsException;
+import ru.tsconsulting.errorHandling.Errors;
 import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.DepartmentHistoryRepository;
 import ru.tsconsulting.repositories.EmployeeHistoryRepository;
@@ -68,6 +69,6 @@ public class AdminController {
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError failedToParse(DateTimeParseException e) {
-        return new RestError(5, "DateTime could not be parsed");
+        return new RestError(Errors.PARSE_FAIL, "DateTime could not be parsed");
     }
 }

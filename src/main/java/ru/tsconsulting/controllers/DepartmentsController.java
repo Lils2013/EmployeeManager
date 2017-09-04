@@ -124,20 +124,20 @@ public class DepartmentsController {
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public RestError entityNotFound(EntityNotFoundException e) {
-        return new RestError(1, e.getMessage());
+        return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentIsNotEmptyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError departmentIsNotEmpty(DepartmentIsNotEmptyException e) {
         long departmentId = e.getDepartmentId();
-        return new RestError(2, "Department [" + departmentId + "] is not empty.");
+        return new RestError(Errors.DEPARTMENT_NOT_EMPTY, "Department [" + departmentId + "] is not empty.");
     }
 
     @ExceptionHandler(DepartmentHasSubdepartmentsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError departmentHasSubdepartments(DepartmentHasSubdepartmentsException e) {
+    public RestError departmentHasSubDepartments(DepartmentHasSubdepartmentsException e) {
         long departmentId = e.getDepartmentId();
-        return new RestError(4, "Department [" + departmentId + "] has subdepartments.");
+        return new RestError(Errors.DEPARTMENT_HAS_SUB_DEPARTMENTS, "Department [" + departmentId + "] has subdepartments.");
     }
 }

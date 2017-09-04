@@ -89,6 +89,6 @@ public class CertificatesController {
 	@ExceptionHandler(EntityNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public RestError entityNotFound(EntityNotFoundException e) {
-		return new RestError(1, e.getMessage());
+		return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
 	}
 }

@@ -1,0 +1,5 @@
+package ru.tsconsulting.errorHandling;
+
+public enum Errors {
+	DEPARTMENT_NOT_EMPTY, DEPARTMENT_NOT_SPECIFIED, DEPARTMENT_HAS_SUB_DEPARTMENTS, ENTITY_NOT_FOUND, PARSE_FAIL
+}

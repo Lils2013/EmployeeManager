@@ -202,12 +202,12 @@ public class EmployeesController {
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public RestError entityNotFound(EntityNotFoundException e) {
-        return new RestError(1, e.getMessage());
+        return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentNotSpecifiedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError departmentNotSpecified(DepartmentNotSpecifiedException e) {
-        return new RestError(3, e.getMessage());
+        return new RestError(Errors.DEPARTMENT_NOT_SPECIFIED, e.getMessage());
     }
 }
