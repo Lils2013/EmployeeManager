@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,32 +18,29 @@ import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeesController {
-    private final EntityManagerFactory entityManagerFactory;
     private final EmployeeRepository employeeRepository;
     private final PositionRepository positionRepository;
     private final GradeRepository gradeRepository;
     private final DepartmentRepository departmentRepository;
+    private final AuditReader auditReader;
 
     @Autowired
-    public EmployeesController(EntityManagerFactory entityManagerFactory,
-                               EmployeeRepository employeeRepository,
+    public EmployeesController(EmployeeRepository employeeRepository,
                                PositionRepository positionRepository,
                                GradeRepository gradeRepository,
-                               DepartmentRepository departmentRepository) {
-        this.entityManagerFactory = entityManagerFactory;
+                               DepartmentRepository departmentRepository,
+                               AuditReader auditReader) {
         this.employeeRepository = employeeRepository;
         this.positionRepository = positionRepository;
         this.gradeRepository = gradeRepository;
         this.departmentRepository = departmentRepository;
+        this.auditReader = auditReader;
     }
 
 	@ApiOperation(value = "Transfer employee from one department to another")
@@ -159,20 +155,13 @@ public class EmployeesController {
     @RequestMapping(path="/{employeeId}/audit",method = RequestMethod.GET)
     public List<Employee> getAudit(@PathVariable Long employeeId,
                                      HttpServletRequest request) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-
         if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId);
         }
-
-        AuditReader reader = AuditReaderFactory.get(entityManager);
-        AuditQuery query = reader.createQuery().forRevisionsOfEntity(Employee.class,
+        AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(Employee.class,
                 true, false);
         query.add(AuditEntity.id().eq(employeeId));
         List<Employee> list = query.getResultList();
-        entityManager.getTransaction().commit();
-
         return list;
     }
 
