@@ -36,8 +36,8 @@ public class CertificatesController {
 
 
 	@RequestMapping(method = RequestMethod.POST)
-	public Certificate createEmployee(@RequestBody CertificateDetails certificateDetails,
-	                               HttpServletRequest request) {
+	public Certificate createCertificate(@RequestBody CertificateDetails certificateDetails,
+	                                     HttpServletRequest request) {
 		Certificate certificate = new Certificate(certificateDetails);
 		if (certificateDetails.getCertificateOrganisationId() != null) {
 			if (certificateOrganisationRepository.findById(certificateDetails.getCertificateOrganisationId()) == null) {
