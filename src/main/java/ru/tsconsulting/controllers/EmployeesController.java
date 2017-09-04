@@ -9,9 +9,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.details.EmployeeDetails;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
@@ -97,7 +95,7 @@ public class EmployeesController {
 			@ApiResponse(code = 500, message = "Internal server error")}
 	)
     @RequestMapping(method = RequestMethod.POST)
-    public Employee createEmployee(@RequestBody EmployeeDetails employeeDetails,
+    public Employee createEmployee(@RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
         Employee employee = new Employee(employeeDetails);
         if (employeeDetails.getGrade() != null) {

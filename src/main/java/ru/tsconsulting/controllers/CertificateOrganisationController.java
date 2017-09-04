@@ -3,11 +3,7 @@ package ru.tsconsulting.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.details.CertificateDetails;
-import ru.tsconsulting.details.CertificateOrganisationDetails;
-import ru.tsconsulting.entities.Certificate;
 import ru.tsconsulting.entities.CertificateOrganisation;
-import ru.tsconsulting.errorHandling.CertificateOrganisationNotFoundException;
 import ru.tsconsulting.errorHandling.EntityNotFoundException;
 import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.CertificateListRepository;
@@ -30,7 +26,7 @@ public class CertificateOrganisationController {
 
 
 	@RequestMapping(method = RequestMethod.POST)
-	public CertificateOrganisation createCertificateOrganisation(@RequestBody CertificateOrganisationDetails certificateOrganisationDetails,
+	public CertificateOrganisation createCertificateOrganisation(@RequestBody CertificateOrganisation.CertificateOrganisationDetails certificateOrganisationDetails,
 	                                     HttpServletRequest request) {
 		CertificateOrganisation certificateOrganisation = new CertificateOrganisation(certificateOrganisationDetails);
 

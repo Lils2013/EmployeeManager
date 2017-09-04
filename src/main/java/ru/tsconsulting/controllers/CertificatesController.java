@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.details.CertificateDetails;
 import ru.tsconsulting.entities.*;
 import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.repositories.CertificateListRepository;
@@ -14,7 +13,6 @@ import ru.tsconsulting.repositories.CertificateOrganisationRepository;
 import ru.tsconsulting.repositories.CertificateRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/certificates")
@@ -35,7 +33,7 @@ public class CertificatesController {
 			@ApiResponse(code = 500, message = "Internal server error")}
 	)
 	@RequestMapping(method = RequestMethod.POST)
-	public Certificate createCertificate(@RequestBody CertificateDetails certificateDetails,
+	public Certificate createCertificate(@RequestBody Certificate.CertificateDetails certificateDetails,
 	                                     HttpServletRequest request) {
 		Certificate certificate = new Certificate(certificateDetails);
 

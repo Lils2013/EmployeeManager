@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.details.DepartmentDetails;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.*;
@@ -75,7 +74,7 @@ public class DepartmentsController {
 
 	@ApiOperation(value = "Create new department")
     @RequestMapping(method = RequestMethod.POST)
-    public Department createDepartment(@RequestBody DepartmentDetails departmentDetails,
+    public Department createDepartment(@RequestBody Department.DepartmentDetails departmentDetails,
                                        HttpServletRequest request) {
         Department department = new Department(departmentDetails);
         Long parentId = departmentDetails.getParent();

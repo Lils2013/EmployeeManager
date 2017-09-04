@@ -2,7 +2,6 @@ package ru.tsconsulting.interceptors;
 
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
-import ru.tsconsulting.details.EmployeeDetails;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.entities.EmployeeHistory;
 import ru.tsconsulting.repositories.EmployeeHistoryRepository;
@@ -64,13 +63,13 @@ public class EmployeeInterceptor {
     //CREATE EMPLOYEE
 
     @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employeeDetails,request)")
-    void afterThrowingCreateEmployee(EmployeeDetails employeeDetails, HttpServletRequest request)
+    void afterThrowingCreateEmployee(Employee.EmployeeDetails employeeDetails, HttpServletRequest request)
     {
         EmployeeHistory record = createRecord(0l, request, 7l, false);
         employeeHistoryRepository.save(record);
     }
     @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employeeDetails,request)", returning = "result")
-    void afterReturningCreateEmployee(EmployeeDetails employeeDetails, HttpServletRequest request,Object result)
+    void afterReturningCreateEmployee(Employee.EmployeeDetails employeeDetails, HttpServletRequest request, Object result)
     {
         EmployeeHistory record = createRecord(((Employee)result).getId(), request, 7l, true);
         employeeHistoryRepository.save(record);

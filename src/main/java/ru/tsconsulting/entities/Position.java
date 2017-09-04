@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import ru.tsconsulting.details.PositionDetails;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -51,4 +50,35 @@ public class Position {
     public Position(PositionDetails positionDetails) {
         setName(positionDetails.getName());
     }
+
+	public static class PositionDetails {
+
+	    private String name;
+
+	    public PositionDetails() {
+	    }
+
+	    public String getName() {
+	        return name;
+	    }
+
+	    public void setName(String name) {
+	        this.name = name;
+	    }
+
+	    @Override
+	    public boolean equals(Object o) {
+	        if (this == o) return true;
+	        if (o == null || getClass() != o.getClass()) return false;
+
+	        PositionDetails that = (PositionDetails) o;
+
+	        return name != null ? name.equals(that.name) : that.name == null;
+	    }
+
+	    @Override
+	    public int hashCode() {
+	        return name != null ? name.hashCode() : 0;
+	    }
+	}
 }
