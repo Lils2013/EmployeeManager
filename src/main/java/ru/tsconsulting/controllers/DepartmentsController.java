@@ -101,7 +101,7 @@ public class DepartmentsController {
 
 	@ApiOperation(value = "Delete department by id")
     @RequestMapping(path = "/{departmentId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteDepartment(@PathVariable Long departmentId,
+    public void deleteDepartment(@PathVariable Long departmentId,
                                               HttpServletRequest request) {
         Department current = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
 
@@ -110,7 +110,6 @@ public class DepartmentsController {
                 if (departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId).isEmpty()) {
                     current.setDismissed(true);
                     departmentRepository.save(current);
-                    return new ResponseEntity<>(HttpStatus.OK);
                 } else {
                     throw new DepartmentHasSubdepartmentsException(departmentId);
                 }
