@@ -1,6 +1,5 @@
 package ru.tsconsulting.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,16 +23,8 @@ public class Certificate {
 	private String name;
 	private Long serialNumber;
 	private byte[] scan;
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private LocalDate dateAquired;
 
-	public LocalDate getDateAquired() {
-		return dateAquired;
-	}
 
-	public void setDateAquired(LocalDate dateAquired) {
-		this.dateAquired = dateAquired;
-	}
 
 	@ManyToOne
 	private CertificateOrganisation certificateOrganisation;
@@ -47,7 +38,6 @@ public class Certificate {
     	setName(certificateDetails.getName());
     	setSerialNumber(certificateDetails.getSerialNumber());
     	setScan(certificateDetails.getScan());
-    	setDateAquired(certificateDetails.getDateAcquired());
     }
 
 
@@ -99,30 +89,21 @@ public class Certificate {
     }
 
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
+		Certificate that = (Certificate) o;
 
+		if (name != null ? !name.equals(that.name) : that.name != null) return false;
+		return serialNumber != null ? serialNumber.equals(that.serialNumber) : that.serialNumber == null;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Certificate that = (Certificate) o;
-
-        if (id != that.id) return false;
-        if (serialNumber != that.serialNumber) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (!Arrays.equals(scan, that.scan)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (int) (serialNumber ^ (serialNumber >>> 32));
-        result = 31 * result + Arrays.hashCode(scan);
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + (serialNumber != null ? serialNumber.hashCode() : 0);
+		return result;
+	}
 }

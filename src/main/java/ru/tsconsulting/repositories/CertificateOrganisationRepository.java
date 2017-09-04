@@ -6,4 +6,5 @@ import ru.tsconsulting.entities.CertificateOrganisation;
 
 public interface CertificateOrganisationRepository extends JpaRepository<CertificateOrganisation, Long> {
 	CertificateOrganisation findById(Long id);
+	CertificateOrganisation findByName(String name);
 }

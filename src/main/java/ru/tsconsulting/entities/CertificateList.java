@@ -1,21 +1,27 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "CERTIFICATE_LIST", schema = "TEST_B")
 public class CertificateList {
+
 	@Id
 	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
 	@GeneratedValue(generator="incrementGenerator1")
     private long id;
+
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateAcquired;
 
     @ManyToOne
     private  Certificate certificate;
@@ -53,6 +59,14 @@ public class CertificateList {
 		return certificate.getId();
 	}
 
+	public LocalDate getDateAcquired() {
+		return dateAcquired;
+	}
+
+	public void setDateAcquired(LocalDate dateAcquired) {
+		this.dateAcquired = dateAcquired;
+	}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,6 +78,8 @@ public class CertificateList {
 
         return true;
     }
+
+
 
     @Override
     public int hashCode() {

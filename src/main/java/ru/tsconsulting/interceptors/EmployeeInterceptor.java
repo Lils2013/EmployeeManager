@@ -78,13 +78,13 @@ public class EmployeeInterceptor {
 
     //DELETE EMPLOYEE
 
-    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.deleteEmployee(..))&&args(employeeId,request)")
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.fireEmployee(..))&&args(employeeId,request)")
     void afterThrowingDeleteEmployee(Long employeeId, HttpServletRequest request)
     {
         EmployeeHistory record = createRecord(employeeId, request, 10l, false);
         employeeHistoryRepository.save(record);
     }
-    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.deleteEmployee(..))&&args(employeeId,request)", returning = "result")
+    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.fireEmployee(..))&&args(employeeId,request)", returning = "result")
     void afterReturningDeleteEmployee(Long employeeId, HttpServletRequest request,Object result)
     {
         EmployeeHistory record = createRecord(employeeId, request, 10l, true);

@@ -1,14 +1,10 @@
 package ru.tsconsulting.details;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.time.LocalDate;
-
-public class OrganisationDetails {
+public class CertificateOrganisationDetails {
 
 	private String name;
 
-	public OrganisationDetails() {
+	public CertificateOrganisationDetails() {
 	}
 
 	public String getName() {
@@ -24,7 +20,7 @@ public class OrganisationDetails {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		OrganisationDetails that = (OrganisationDetails) o;
+		CertificateOrganisationDetails that = (CertificateOrganisationDetails) o;
 
 		return name != null ? name.equals(that.name) : that.name == null;
 	}

@@ -11,8 +11,6 @@ public class CertificateDetails {
 	private Long serialNumber;
 	private byte[] scan;
 	private Long certificateOrganisationId;
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private LocalDate dateAcquired;
 
 	public CertificateDetails(){
 
@@ -50,14 +48,6 @@ public class CertificateDetails {
 		this.certificateOrganisationId = certificateOrganisationId;
 	}
 
-	public LocalDate getDateAcquired() {
-		return dateAcquired;
-	}
-
-	public void setDateAcquired(LocalDate dateAcquired) {
-		this.dateAcquired = dateAcquired;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -68,9 +58,7 @@ public class CertificateDetails {
 		if (name != null ? !name.equals(that.name) : that.name != null) return false;
 		if (serialNumber != null ? !serialNumber.equals(that.serialNumber) : that.serialNumber != null) return false;
 		if (!Arrays.equals(scan, that.scan)) return false;
-		if (certificateOrganisationId != null ? !certificateOrganisationId.equals(that.certificateOrganisationId) : that.certificateOrganisationId != null)
-			return false;
-		return dateAcquired != null ? dateAcquired.equals(that.dateAcquired) : that.dateAcquired == null;
+		return certificateOrganisationId != null ? certificateOrganisationId.equals(that.certificateOrganisationId) : that.certificateOrganisationId == null;
 	}
 
 	@Override
@@ -79,7 +67,6 @@ public class CertificateDetails {
 		result = 31 * result + (serialNumber != null ? serialNumber.hashCode() : 0);
 		result = 31 * result + Arrays.hashCode(scan);
 		result = 31 * result + (certificateOrganisationId != null ? certificateOrganisationId.hashCode() : 0);
-		result = 31 * result + (dateAcquired != null ? dateAcquired.hashCode() : 0);
 		return result;
 	}
 }

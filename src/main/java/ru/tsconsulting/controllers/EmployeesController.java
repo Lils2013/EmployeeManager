@@ -73,20 +73,19 @@ public class EmployeesController {
         return result;
     }
 
-	@ApiOperation(value = "Delete employee by id")
+	@ApiOperation(value = "Fire employee by id")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful deletion of employee"),
+			@ApiResponse(code = 200, message = "Successful firing of employee"),
 			@ApiResponse(code = 404, message = "Employee with given id does not exist"),
 			@ApiResponse(code = 500, message = "Internal server error")}
 	)
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId,
-                                            HttpServletRequest request) {
+    public void fireEmployee(@PathVariable Long employeeId,
+	                         HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         if (employee != null) {
             employee.setFired(true);
             employeeRepository.save(employee);
-            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             throw new EmployeeNotFoundException(employeeId);
         }

@@ -3,6 +3,7 @@ package ru.tsconsulting.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
+import ru.tsconsulting.details.CertificateOrganisationDetails;
 
 import javax.persistence.*;
 
@@ -18,11 +19,14 @@ public class CertificateOrganisation {
     private Long id;
     private String name;
 
+	public CertificateOrganisation() {
+	}
 
+	public CertificateOrganisation(CertificateOrganisationDetails certificateOrganisationDetails) {
+		this.setName(certificateOrganisationDetails.getName());
+	}
 
-
-
-    public String getName() {
+	public String getName() {
         return name;
     }
 
