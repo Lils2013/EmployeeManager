@@ -27,11 +27,67 @@ public class CertificateList {
     private  Certificate certificate;
 
 
+	public CertificateList() {
+	}
 
+	public CertificateList(CertificateListDetails certificateListDetails) {
+		this.dateAcquired = certificateListDetails.getDateAcquired();
+	}
 
 	@ManyToOne
     private Employee employee;
 
+	public static class CertificateListDetails {
+		private LocalDate dateAcquired;
+		private Long certificateId;
+		private Long employeeId;
+
+		public LocalDate getDateAcquired() {
+			return dateAcquired;
+		}
+
+		public void setDateAcquired(LocalDate dateAcquired) {
+			this.dateAcquired = dateAcquired;
+		}
+
+		public Long getCertificateId() {
+			return certificateId;
+		}
+
+		public void setCertificateId(Long certificateId) {
+			this.certificateId = certificateId;
+		}
+
+		public Long getEmployeeId() {
+			return employeeId;
+		}
+
+		public void setEmployeeId(Long employeeId) {
+			this.employeeId = employeeId;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			CertificateListDetails that = (CertificateListDetails) o;
+
+			if (dateAcquired != null ? !dateAcquired.equals(that.dateAcquired) : that.dateAcquired != null)
+				return false;
+			if (certificateId != null ? !certificateId.equals(that.certificateId) : that.certificateId != null)
+				return false;
+			return employeeId != null ? employeeId.equals(that.employeeId) : that.employeeId == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = dateAcquired != null ? dateAcquired.hashCode() : 0;
+			result = 31 * result + (certificateId != null ? certificateId.hashCode() : 0);
+			result = 31 * result + (employeeId != null ? employeeId.hashCode() : 0);
+			return result;
+		}
+	}
 
     public long getId() {
         return id;

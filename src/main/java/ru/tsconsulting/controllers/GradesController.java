@@ -13,12 +13,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/grades")
-public class GradeController {
+public class GradesController {
 
     private final GradeRepository gradeRepository;
 
     @Autowired
-    public GradeController(GradeRepository gradeRepository) {
+    public GradesController(GradeRepository gradeRepository) {
         this.gradeRepository = gradeRepository;
     }
 

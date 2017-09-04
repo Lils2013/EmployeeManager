@@ -13,12 +13,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/positions")
-public class PositionController {
+public class PositionsController {
 
     private final PositionRepository positionRepository;
 
     @Autowired
-    public PositionController(PositionRepository positionRepository) {
+    public PositionsController(PositionRepository positionRepository) {
         this.positionRepository = positionRepository;
     }
 
