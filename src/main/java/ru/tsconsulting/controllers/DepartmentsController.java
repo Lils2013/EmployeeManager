@@ -15,6 +15,7 @@ import ru.tsconsulting.repositories.EmployeeRepository;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/departments")
@@ -41,14 +42,21 @@ public class DepartmentsController {
     public Department changeHierarchy(@PathVariable Long depId,
                                       @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
                                       HttpServletRequest request) {
-        if (departmentRepository.findByIdAndIsDismissedIsFalse(depId) == null) {
-            throw new DepartmentNotFoundException(depId);
-        }
-        if (departmentRepository.findByIdAndIsDismissedIsFalse(newHeadDepartmentId) == null) {
-            throw new DepartmentNotFoundException(newHeadDepartmentId);
+        if (Objects.equals(depId, newHeadDepartmentId)) {
+            throw new InvalidDepartmentHierarchyException();
         }
         Department original = departmentRepository.findByIdAndIsDismissedIsFalse(depId);
-        original.setParent(departmentRepository.findByIdAndIsDismissedIsFalse(newHeadDepartmentId));
+        Department newHead = departmentRepository.findByIdAndIsDismissedIsFalse(newHeadDepartmentId);
+        if (original == null) {
+            throw new DepartmentNotFoundException(depId);
+        }
+        if (newHead == null) {
+            throw new DepartmentNotFoundException(newHeadDepartmentId);
+        }
+        if (isParent(newHead,original)) {
+            throw new InvalidDepartmentHierarchyException();
+        }
+        original.setParent(newHead);
         return departmentRepository.save(original);
     }
 
@@ -140,5 +148,25 @@ public class DepartmentsController {
     public RestError departmentHasSubdepartments(DepartmentHasSubdepartmentsException e) {
         long departmentId = e.getDepartmentId();
         return new RestError(4, "Department [" + departmentId + "] has subdepartments.");
+    }
+
+    @ExceptionHandler(InvalidDepartmentHierarchyException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public RestError invalidHierarchy(InvalidDepartmentHierarchyException e) {
+        return new RestError(5, "Invalid hierarchy of departments.");
+    }
+
+    private boolean isParent(Department potentialChild, Department potentialParent) {
+        if (potentialChild == potentialParent) {
+            return false;
+        }
+        Department current = potentialChild;
+        while(current.getParent() != null) {
+            current = current.getParent();
+            if (current.getId().equals(potentialParent.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
