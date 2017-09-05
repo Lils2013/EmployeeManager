@@ -32,16 +32,16 @@ public class DepartmentsController {
 
 	@ApiOperation(value = "Change parent department")
     @RequestMapping(path = "/{departmentId}/changeHierarchy", method = RequestMethod.POST)
-    public Department changeHierarchy(@PathVariable Long depId,
+    public Department changeHierarchy(@PathVariable Long departmentId,
                                       @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
                                       HttpServletRequest request) {
-        if (Objects.equals(depId, newHeadDepartmentId)) {
+        if (Objects.equals(departmentId, newHeadDepartmentId)) {
             throw new InvalidDepartmentHierarchyException();
         }
-        Department original = departmentRepository.findByIdAndIsDismissedIsFalse(depId);
+        Department original = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
         Department newHead = departmentRepository.findByIdAndIsDismissedIsFalse(newHeadDepartmentId);
         if (original == null) {
-            throw new DepartmentNotFoundException(depId);
+            throw new DepartmentNotFoundException(departmentId);
         }
         if (newHead == null) {
             throw new DepartmentNotFoundException(newHeadDepartmentId);

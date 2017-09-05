@@ -155,7 +155,7 @@ public class EmployeesController {
     @RequestMapping(path="/{employeeId}/audit",method = RequestMethod.GET)
     public List<Employee> getAudit(@PathVariable Long employeeId,
                                      HttpServletRequest request) {
-        if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
+        if (employeeRepository.findById(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId);
         }
         AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(Employee.class,
