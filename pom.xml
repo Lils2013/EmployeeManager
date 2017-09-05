@@ -257,7 +257,7 @@
                     <url>jdbc:oracle:thin:@//89.108.84.144:1521/BPM8</url>
                     <user>test_b</user>
                     <password>test_b</password>
-                    mvn flyway:init -Dflyway.initialVersion=1 -Dflyway.initialDescription="Base version"                </configuration>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>com.oracle</groupId>
