@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "CERTIFICATEORGANISATION", schema = "TEST_B", catalog = "")
+@Table(name = "CERTIFICATEORGANISATION")
 public class CertificateOrganisation {
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")

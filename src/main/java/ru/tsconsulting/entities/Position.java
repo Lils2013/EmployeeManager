@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "POSITION", schema = "TEST_B")
+@Table(name = "POSITION")
 public class Position {
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
