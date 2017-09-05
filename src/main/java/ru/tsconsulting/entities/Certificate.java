@@ -21,6 +21,7 @@ public class Certificate {
 	private String name;
 	private Long serialNumber;
 	private byte[] scan;
+	private Long testValue;
 	@ManyToOne
 	private CertificateOrganisation certificateOrganisation;
 

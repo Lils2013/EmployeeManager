@@ -218,6 +218,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.googlecode.flyway</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.7.0</version>
@@ -241,6 +247,24 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.googlecode.flyway</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <url>jdbc:oracle:thin:@//89.108.84.144:1521/BPM8</url>
+                    <user>test_b</user>
+                    <password>test_b</password>
+                    mvn flyway:init -Dflyway.initialVersion=1 -Dflyway.initialDescription="Base version"                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.oracle</groupId>
+                        <artifactId>ojdbc8</artifactId>
+                        <version>12.2.0.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
