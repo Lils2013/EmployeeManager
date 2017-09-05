@@ -18,11 +18,14 @@ public class CertificateOrganisation {
     private Long id;
     private String name;
 
+	public CertificateOrganisation() {
+	}
 
+	public CertificateOrganisation(CertificateOrganisationDetails certificateOrganisationDetails) {
+		this.setName(certificateOrganisationDetails.getName());
+	}
 
-
-
-    public String getName() {
+	public String getName() {
         return name;
     }
 
@@ -58,4 +61,35 @@ public class CertificateOrganisation {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
+
+	public static class CertificateOrganisationDetails {
+
+		private String name;
+
+		public CertificateOrganisationDetails() {
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			CertificateOrganisationDetails that = (CertificateOrganisationDetails) o;
+
+			return name != null ? name.equals(that.name) : that.name == null;
+		}
+
+		@Override
+		public int hashCode() {
+			return name != null ? name.hashCode() : 0;
+		}
+	}
 }

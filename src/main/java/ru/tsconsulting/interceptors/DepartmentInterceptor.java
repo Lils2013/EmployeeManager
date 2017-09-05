@@ -63,12 +63,12 @@ public class DepartmentInterceptor {
 
 
 	//EmployeeByDep
-	@AfterReturning("execution(* ru.tsconsulting.controllers.DepartmentsController.employeeByDep(..))&&args(departmentId,..,request)")
+	@AfterReturning("execution(* ru.tsconsulting.controllers.DepartmentsController.employeeByDepartment(..))&&args(departmentId,..,request)")
 	void afterReturningEmployeeByDep(Long departmentId, HttpServletRequest request)
 	{
 		departmentHistoryRepository.save(createRecord(departmentId,request,2L, true));
 	}
-	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.employeeByDep(..))&&args(departmentId,..,request)")
+	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.employeeByDepartment(..))&&args(departmentId,..,request)")
 	void afterThrowingEmployeeByDep(Long departmentId, HttpServletRequest request)
 	{
 		departmentHistoryRepository.save(createRecord(departmentId,request,2L, false));

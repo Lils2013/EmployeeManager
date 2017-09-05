@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-import ru.tsconsulting.details.PositionDetails;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -15,19 +14,23 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "POSITION", schema = "TEST_B")
 public class Position {
-
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")
     @GeneratedValue(generator="incrementGenerator1")
     private Long id;
-
     @JsonIgnore
     @NotAudited
    // @OneToMany(mappedBy = "position",fetch=FetchType.EAGER)
     @OneToMany(mappedBy = "position")
     private Set<Employee> employees;
-
     private String name;
+
+	public Position() {
+	}
+
+	public Position(PositionDetails positionDetails) {
+		setName(positionDetails.getName());
+	}
 
     public Long getId() {
         return id;
@@ -45,10 +48,33 @@ public class Position {
         this.name = name;
     }
 
-    public Position() {
-    }
+	public static class PositionDetails {
+	    private String name;
 
-    public Position(PositionDetails positionDetails) {
-        setName(positionDetails.getName());
-    }
+	    public PositionDetails() {
+	    }
+
+	    public String getName() {
+	        return name;
+	    }
+
+	    public void setName(String name) {
+	        this.name = name;
+	    }
+
+	    @Override
+	    public boolean equals(Object o) {
+	        if (this == o) return true;
+	        if (o == null || getClass() != o.getClass()) return false;
+
+	        PositionDetails that = (PositionDetails) o;
+
+	        return name != null ? name.equals(that.name) : that.name == null;
+	    }
+
+	    @Override
+	    public int hashCode() {
+	        return name != null ? name.hashCode() : 0;
+	    }
+	}
 }

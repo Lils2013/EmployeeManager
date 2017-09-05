@@ -1,11 +1,13 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Audited
@@ -16,16 +18,19 @@ public class CertificateList {
 	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
 	@GeneratedValue(generator="incrementGenerator1")
     private long id;
-
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateAcquired;
     @ManyToOne
     private  Certificate certificate;
-
-
-
-
 	@ManyToOne
-    private Employee employee;
+	private Employee employee;
 
+	public CertificateList() {
+	}
+
+	public CertificateList(CertificateListDetails certificateListDetails) {
+		this.dateAcquired = certificateListDetails.getDateAcquired();
+	}
 
     public long getId() {
         return id;
@@ -43,14 +48,20 @@ public class CertificateList {
 		return certificate.getId();
 	}
 
-
-
 	@JsonGetter("employee_id")
 	public Long getEmployeeId() {
 		if (certificate == null) {
 			return null;
 		}
 		return certificate.getId();
+	}
+
+	public LocalDate getDateAcquired() {
+		return dateAcquired;
+	}
+
+	public void setDateAcquired(LocalDate dateAcquired) {
+		this.dateAcquired = dateAcquired;
 	}
 
     @Override
@@ -86,5 +97,55 @@ public class CertificateList {
 		this.certificate = certificate;
 	}
 
+	public static class CertificateListDetails {
+		private LocalDate dateAcquired;
+		private Long certificateId;
+		private Long employeeId;
 
+		public LocalDate getDateAcquired() {
+			return dateAcquired;
+		}
+
+		public void setDateAcquired(LocalDate dateAcquired) {
+			this.dateAcquired = dateAcquired;
+		}
+
+		public Long getCertificateId() {
+			return certificateId;
+		}
+
+		public void setCertificateId(Long certificateId) {
+			this.certificateId = certificateId;
+		}
+
+		public Long getEmployeeId() {
+			return employeeId;
+		}
+
+		public void setEmployeeId(Long employeeId) {
+			this.employeeId = employeeId;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			CertificateListDetails that = (CertificateListDetails) o;
+
+			if (dateAcquired != null ? !dateAcquired.equals(that.dateAcquired) : that.dateAcquired != null)
+				return false;
+			if (certificateId != null ? !certificateId.equals(that.certificateId) : that.certificateId != null)
+				return false;
+			return employeeId != null ? employeeId.equals(that.employeeId) : that.employeeId == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = dateAcquired != null ? dateAcquired.hashCode() : 0;
+			result = 31 * result + (certificateId != null ? certificateId.hashCode() : 0);
+			result = 31 * result + (employeeId != null ? employeeId.hashCode() : 0);
+			return result;
+		}
+	}
 }

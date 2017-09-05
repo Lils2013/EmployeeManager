@@ -1,0 +1,244 @@
+create table DEPARTMENT
+(
+	ID NUMBER(19) not null
+		primary key,
+	CHIEF_ID VARCHAR2(255 char),
+	IS_DISMISSED NUMBER(1),
+	NAME VARCHAR2(255 char),
+	PARENT_ID NUMBER(19)
+		constraint FKLEM48I9TXPCDMRUB7R80PBOH7
+			references DEPARTMENT
+)
+/
+
+create table DEPARTMENT_AUD
+(
+	ID NUMBER(19) not null,
+	REV NUMBER(10) not null,
+	REVTYPE NUMBER(3),
+	CHIEF_ID VARCHAR2(255 char),
+	IS_DISMISSED NUMBER(1),
+	NAME VARCHAR2(255 char),
+	PARENT_ID NUMBER(19),
+	primary key (ID, REV)
+)
+/
+
+create table DEPARTMENT_HISTORY
+(
+	ID NUMBER(19) not null
+		primary key,
+	DATETIME TIMESTAMP(6),
+	DEPARTMENT_ID NUMBER(19),
+	IP_ADDRESS VARCHAR2(255 char),
+	IS_SUCCESSFUL NUMBER(1),
+	OPERATION_ID NUMBER(19)
+)
+/
+
+create table EMPLOYEE
+(
+	ID NUMBER(19) not null
+		primary key,
+	BIRTHDATE DATE,
+	FIRSTNAME VARCHAR2(255 char),
+	GENDER VARCHAR2(255 char),
+	IS_FIRED NUMBER(1),
+	LASTNAME VARCHAR2(255 char),
+	MIDDLENAME VARCHAR2(255 char),
+	SALARY NUMBER(19),
+	DEPARTMENT_ID NUMBER(19)
+		constraint FKGH5HO7V59OJRDRCB00NQQ4SGB
+			references DEPARTMENT,
+	GRADE_ID NUMBER(19),
+	POSITION_ID NUMBER(19)
+)
+/
+
+create table EMPLOYEE_AUD
+(
+	ID NUMBER(19) not null,
+	REV NUMBER(10) not null,
+	REVTYPE NUMBER(3),
+	BIRTHDATE DATE,
+	FIRSTNAME VARCHAR2(255 char),
+	GENDER VARCHAR2(255 char),
+	IS_FIRED NUMBER(1),
+	LASTNAME VARCHAR2(255 char),
+	MIDDLENAME VARCHAR2(255 char),
+	SALARY NUMBER(19),
+	DEPARTMENT_ID NUMBER(19),
+	GRADE_ID NUMBER(19),
+	POSITION_ID NUMBER(19),
+	primary key (ID, REV)
+)
+/
+
+create table EMPLOYEE_HISTORY
+(
+	ID NUMBER(19) not null
+		primary key,
+	DATETIME TIMESTAMP(6),
+	EMPLOYEE_ID NUMBER(19),
+	IP_ADDRESS VARCHAR2(255 char),
+	IS_SUCCESSFUL NUMBER(1),
+	OPERATION_ID NUMBER(19)
+)
+/
+
+create table EMPLOYEE_REVINFO
+(
+	ID NUMBER(10) not null
+		primary key,
+	TIMESTAMP NUMBER(19) not null
+)
+/
+
+alter table DEPARTMENT_AUD
+	add constraint FK8U81065AYPE202LIVVHCOESN7
+		foreign key (REV) references EMPLOYEE_REVINFO
+/
+
+alter table EMPLOYEE_AUD
+	add constraint FKI0D2L8YOA7HVSGV2TU1PVU536
+		foreign key (REV) references EMPLOYEE_REVINFO
+/
+
+create table GRADE
+(
+	ID NUMBER(19) not null
+		primary key,
+	GRADE VARCHAR2(255 char)
+)
+/
+
+alter table EMPLOYEE
+	add constraint FKARRVRDDMK6KTLJ6XDLU1B1084
+		foreign key (GRADE_ID) references GRADE
+/
+
+create table GRADE_AUD
+(
+	ID NUMBER(19) not null,
+	REV NUMBER(10) not null
+		constraint FK3G2HQUAV03IL9A2SGFKGJULAO
+			references EMPLOYEE_REVINFO,
+	REVTYPE NUMBER(3),
+	GRADE VARCHAR2(255 char),
+	primary key (ID, REV)
+)
+/
+
+create table POSITION
+(
+	ID NUMBER(19) not null
+		primary key,
+	NAME VARCHAR2(255 char)
+)
+/
+
+alter table EMPLOYEE
+	add constraint FKM0BV7Q0HE4I3PCJSWA28DN2NI
+		foreign key (POSITION_ID) references POSITION
+/
+
+create table POSITION_AUD
+(
+	ID NUMBER(19) not null,
+	REV NUMBER(10) not null
+		constraint FK1TN9SPAKMQG3TQ723Q47HQYNJ
+			references EMPLOYEE_REVINFO,
+	REVTYPE NUMBER(3),
+	NAME VARCHAR2(255 char),
+	primary key (ID, REV)
+)
+/
+
+create table CERTIFICATE
+(
+	ID NUMBER(19) not null
+		primary key,
+	NAME VARCHAR2(255 char),
+	SCAN RAW(255),
+	SERIALNUMBER NUMBER(19),
+	CERTIFICATEORGANISATION_ID NUMBER(19),
+	SERIAL_NUMBER NUMBER(19)
+)
+/
+
+create table CERTIFICATEORGANISATION
+(
+	ID NUMBER(19) not null
+		primary key,
+	NAME VARCHAR2(255 char)
+)
+/
+
+alter table CERTIFICATE
+	add constraint FK1GMGF2RHWFCXB5NE7D82II6OH
+		foreign key (CERTIFICATEORGANISATION_ID) references CERTIFICATEORGANISATION
+/
+
+create table CERTIFICATEORGANISATION_AUD
+(
+	ID NUMBER(19) not null,
+	REV NUMBER(10) not null
+		constraint FKHTR0E4E7WDAJ5PSESA2MQPD6R
+			references EMPLOYEE_REVINFO,
+	REVTYPE NUMBER(3),
+	NAME VARCHAR2(255 char),
+	primary key (ID, REV)
+)
+/
+
+create table CERTIFICATE_AUD
+(
+	ID NUMBER(19) not null,
+	REV NUMBER(10) not null
+		constraint FKEQ370H49MGD6JD6CWQQI6IMT6
+			references EMPLOYEE_REVINFO,
+	REVTYPE NUMBER(3),
+	NAME VARCHAR2(255 char),
+	SCAN RAW(255),
+	SERIALNUMBER NUMBER(19),
+	CERTIFICATEORGANISATION_ID NUMBER(19),
+	primary key (ID, REV)
+)
+/
+
+create table CERTIFICATE_LIST
+(
+	ID NUMBER(19) not null
+		primary key,
+	DATEACQUIRED DATE,
+	CERTIFICATE_ID NUMBER(19)
+		constraint FKS2OM46BHE55N8C2IXTQ88P7H8
+			references CERTIFICATE,
+	EMPLOYEE_ID NUMBER(19)
+		constraint FKMEVSO79KL61WEE9OT3X1NHCCR
+			references EMPLOYEE
+)
+/
+
+create table CERTIFICATE_LIST_AUD
+(
+	ID NUMBER(19) not null,
+	REV NUMBER(10) not null
+		constraint FKAAD35EYQLBM30QX9TFTWRK50L
+			references EMPLOYEE_REVINFO,
+	REVTYPE NUMBER(3),
+	DATEACQUIRED DATE,
+	CERTIFICATE_ID NUMBER(19),
+	EMPLOYEE_ID NUMBER(19),
+	primary key (ID, REV)
+)
+/
+
+create table CERTORGANISATION
+(
+	ID NUMBER(19) not null
+		primary key,
+	NAME VARCHAR2(255 char)
+)
+/
+

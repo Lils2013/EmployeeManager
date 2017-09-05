@@ -6,27 +6,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import ru.tsconsulting.details.PositionDetails;
 import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.repositories.PositionRepository;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping("/positions")
-public class PositionController {
+public class PositionsController {
 
     private final PositionRepository positionRepository;
 
     @Autowired
-    public PositionController(PositionRepository positionRepository) {
+    public PositionsController(PositionRepository positionRepository) {
         this.positionRepository = positionRepository;
     }
 
 	@ApiOperation(value = "Create new position")
     @RequestMapping(method = RequestMethod.POST)
-    public Position createPosition(@RequestBody PositionDetails positionDetails){
+    public Position createPosition(@RequestBody Position.PositionDetails positionDetails){
         return positionRepository.save(new Position(positionDetails));
     }
 
