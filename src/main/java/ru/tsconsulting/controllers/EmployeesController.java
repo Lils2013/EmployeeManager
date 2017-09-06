@@ -19,6 +19,8 @@ import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 import javax.servlet.http.HttpServletRequest;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -67,6 +69,59 @@ public class EmployeesController {
 
         return result;
     }
+
+
+    @ApiOperation(value = "Return employee by first name and last name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of employee"),
+            @ApiResponse(code = 404, message = "Employee with given first name or last name  does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path = "/find", method = RequestMethod.GET)
+    public List<Employee> findEmployeeByFirstAndLastName(@RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName,
+                                HttpServletRequest request) {
+        List<Employee> employees =  new ArrayList<>();
+
+
+        if(firstName != null && lastName != null) {
+            employees = employeeRepository.findByFirstnameAndLastnameAndIsFiredFalse(firstName, lastName);
+        }
+        else if(firstName != null) {
+            employees = employeeRepository.findByFirstname(firstName);
+        }
+        else if(lastName != null) {
+            employees = employeeRepository.findByLastname(lastName);
+        }
+        else {
+//            throw new EmployeeNotFoundException(firstName + lastName);
+        }
+
+
+        if (employees == null) {
+//            throw new EmployeeNotFoundException();
+        }
+
+        return employees;
+    }
+
+//    @RequestMapping(path = "/find/{firstName}", method = RequestMethod.GET)
+//    public List<Employee> findEmployeeByFirstName(@PathVariable String firstName,
+//                                                        HttpServletRequest request) {
+//        List<Employee> employees =  new ArrayList<>();
+//
+//
+//        if(firstName != null) {
+//            employees = employeeRepository.findbyfi(firstName, lastName);
+//            System.out.println(employees);
+//        }
+//
+//
+//        if (employees == null) {
+////            throw new EmployeeNotFoundException();
+//        }
+//
+//        return employees;
+//    }
 
 	@ApiOperation(value = "Fire employee by id")
 	@ApiResponses(value = {

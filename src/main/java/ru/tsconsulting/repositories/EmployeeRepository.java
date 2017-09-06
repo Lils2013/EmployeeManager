@@ -23,6 +23,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Cacheable("notFiredEmployee")
     Employee findByIdAndIsFiredIsFalse (Long id);
 
+    List<Employee> findByFirstnameAndLastnameAndIsFiredFalse (String firstName, String lastName);
+
+    List<Employee> findByFirstname (String firstName);
+
+    List<Employee> findByLastname (String lastName);
+
+
     @Override
     @Caching(put={@CachePut(value="employee", key="#result.id"),
             @CachePut(value="notFiredEmployee", key="#result.id", condition="#result.isFired() == false")},
