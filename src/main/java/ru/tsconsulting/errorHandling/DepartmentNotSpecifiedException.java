@@ -6,17 +6,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Department not specified.")
 public class DepartmentNotSpecifiedException extends RuntimeException {
 
-    public DepartmentNotSpecifiedException(long departmentId) {
-        this.departmentId = departmentId;
+    public DepartmentNotSpecifiedException(String departmentDetail) {
+        this.departmentDetail = departmentDetail;
     }
-
-    private long departmentId;
-
-    public long getDepartmentId() {
-        return departmentId;
+    private String departmentDetail;
+    public String getDepartmentDetail() {
+        return departmentDetail;
     }
-
     public String getMessage() {
-        return "Department [" + getDepartmentId() + "] not specified.";
+        return "Department [" + getDepartmentDetail() + "] not specified.";
     }
 }

@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "DEPARTMENT_HISTORY", schema = "TEST_B")
+@Table(name = "DEPARTMENT_HISTORY")
 public class DepartmentHistory {
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")

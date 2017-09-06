@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Entity
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "CERTIFICATE", schema = "TEST_B")
+@Table(name = "CERTIFICATE")
 public class Certificate {
 	@Id
 	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
@@ -21,6 +21,7 @@ public class Certificate {
 	private String name;
 	private Long serialNumber;
 	private byte[] scan;
+	private Long testValue;
 	@ManyToOne
 	private CertificateOrganisation certificateOrganisation;
 

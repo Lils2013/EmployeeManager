@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "DEPARTMENT", schema = "TEST_B")
+@Table(name = "DEPARTMENT")
 public class Department {
     @Id
     @GenericGenerator(name="incrementGenerator2" , strategy="increment")

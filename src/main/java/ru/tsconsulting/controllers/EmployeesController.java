@@ -19,6 +19,8 @@ import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 import javax.servlet.http.HttpServletRequest;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -54,11 +56,11 @@ public class EmployeesController {
                                      @RequestParam(value="newDepartmentId") Long newDepartmentId,
                                      HttpServletRequest request) {
         if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
-            throw new EmployeeNotFoundException(employeeId);
+            throw new EmployeeNotFoundException(employeeId.toString());
         }
 
         if (departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId) == null) {
-            throw new DepartmentNotFoundException(newDepartmentId);
+            throw new DepartmentNotFoundException(newDepartmentId.toString());
         }
 
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
@@ -67,6 +69,37 @@ public class EmployeesController {
 
         return result;
     }
+
+
+    @ApiOperation(value = "Return employee by first name and last name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of employee"),
+            @ApiResponse(code = 404, message = "Employee with given first name or last name  does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path = "/find", method = RequestMethod.GET)
+    public List<Employee> findEmployeeByFirstAndLastName(@RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName,
+                                HttpServletRequest request) {
+        List<Employee> employees =  new ArrayList<>();
+
+
+        if(firstName != null && lastName != null) {
+            employees = employeeRepository.findByFirstnameAndLastnameAndIsFiredFalse(firstName, lastName);
+        }
+        else if(firstName != null) {
+            employees = employeeRepository.findByFirstname(firstName);
+        }
+        else if(lastName != null) {
+            employees = employeeRepository.findByLastname(lastName);
+        }
+        else {
+            throw new InvalidParametersException();
+        }
+
+        return employees;
+    }
+
+
 
 	@ApiOperation(value = "Fire employee by id")
 	@ApiResponses(value = {
@@ -82,7 +115,7 @@ public class EmployeesController {
             employee.setFired(true);
             employeeRepository.save(employee);
         } else {
-            throw new EmployeeNotFoundException(employeeId);
+            throw new EmployeeNotFoundException(employeeId.toString());
         }
     }
 
@@ -98,7 +131,7 @@ public class EmployeesController {
 
         if (employeeDetails.getGrade() != null) {
             if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
-                throw new GradeNotFoundException(employeeDetails.getGrade());
+                throw new GradeNotFoundException(employeeDetails.getGrade().toString());
             } else {
                 employee.setGrade(gradeRepository.findById(employeeDetails.getGrade()));
             }
@@ -106,18 +139,18 @@ public class EmployeesController {
 
         if (employeeDetails.getPosition() != null) {
             if (positionRepository.findById(employeeDetails.getPosition()) == null) {
-                throw new GradeNotFoundException(employeeDetails.getPosition());
+                throw new GradeNotFoundException(employeeDetails.getPosition().toString());
             } else {
                 employee.setPosition(positionRepository.findById(employeeDetails.getPosition()));
             }
         }
 
         if (employeeDetails.getDepartment() == null) {
-            throw new DepartmentNotSpecifiedException(employeeDetails.getDepartment());
+            throw new DepartmentNotSpecifiedException(employeeDetails.getDepartment().toString());
         } else {
             Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
             if (department == null) {
-                throw new DepartmentNotFoundException(employeeDetails.getDepartment());
+                throw new DepartmentNotFoundException(employeeDetails.getDepartment().toString());
             } else {
                 employee.setDepartment(department);
             }
@@ -140,7 +173,7 @@ public class EmployeesController {
         Employee employee = employeeRepository.findById(employeeId);
 
         if (employee == null) {
-            throw new EmployeeNotFoundException(employeeId);
+            throw new EmployeeNotFoundException(employeeId.toString());
         }
 
         return employee;
@@ -156,7 +189,7 @@ public class EmployeesController {
     public List<Employee> getAudit(@PathVariable Long employeeId,
                                      HttpServletRequest request) {
         if (employeeRepository.findById(employeeId) == null) {
-            throw new EmployeeNotFoundException(employeeId);
+            throw new EmployeeNotFoundException(employeeId.toString());
         }
         AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(Employee.class,
                 true, false);
@@ -181,21 +214,21 @@ public class EmployeesController {
 
         if (employee==null)
         {
-            throw new EmployeeNotFoundException(employeeId);
+            throw new EmployeeNotFoundException(employeeId.toString());
         }
 
         Position position = positionRepository.findById(newPositionId);
 
         if (position==null)
         {
-            throw new PositionNotFoundException(employeeId);
+            throw new PositionNotFoundException(employeeId.toString());
         }
 
         Grade grade = gradeRepository.findById(newGrade);
 
         if (grade==null)
         {
-            throw new GradeNotFoundException(employeeId);
+            throw new GradeNotFoundException(employeeId.toString());
         }
 
         employee.setPosition(position);

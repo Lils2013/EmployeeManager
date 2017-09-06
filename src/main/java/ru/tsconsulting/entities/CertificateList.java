@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Audited
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "CERTIFICATE_LIST", schema = "TEST_B")
+@Table(name = "CERTIFICATE_LIST")
 public class CertificateList {
 	@Id
 	@GenericGenerator(name="incrementGenerator1" , strategy="increment")

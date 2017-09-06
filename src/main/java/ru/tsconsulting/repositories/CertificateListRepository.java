@@ -8,7 +8,4 @@ import ru.tsconsulting.entities.Employee;
 
 public interface CertificateListRepository extends JpaRepository<CertificateList, Long>{
 	CertificateList findById(Long id);
-
-
-
 }

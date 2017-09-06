@@ -46,7 +46,7 @@ public class CertificatesController {
 				certificate.setCertificateOrganisation(certificateOrganisationRepository.findById(certificateDetails.getCertificateOrganisationId()));
 			}
 			else {
-				throw new CertificateOrganisationNotFoundException(certificateDetails.getCertificateOrganisationId());
+				throw new CertificateOrganisationNotFoundException(certificateDetails.getCertificateOrganisationId().toString());
 			}
 		}
 
@@ -76,7 +76,7 @@ public class CertificatesController {
 
 		if (certificateOrganisation==null)
 		{
-			throw new CertificateOrganisationNotFoundException(newCertificateOrganisationId);
+			throw new CertificateOrganisationNotFoundException(newCertificateOrganisationId.toString());
 		}
 
 		certificate.setName(newName);

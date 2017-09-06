@@ -13,7 +13,7 @@ import java.util.Set;
 @Audited
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "GRADE", schema = "TEST_B", catalog = "")
+@Table(name = "GRADE")
 public class Grade {
     @Id
     @GenericGenerator(name="incrementGenerator1" , strategy="increment")

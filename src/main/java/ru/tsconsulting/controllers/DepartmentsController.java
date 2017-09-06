@@ -41,10 +41,10 @@ public class DepartmentsController {
         Department original = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
         Department newHead = departmentRepository.findByIdAndIsDismissedIsFalse(newHeadDepartmentId);
         if (original == null) {
-            throw new DepartmentNotFoundException(departmentId);
+            throw new DepartmentNotFoundException(departmentId.toString());
         }
         if (newHead == null) {
-            throw new DepartmentNotFoundException(newHeadDepartmentId);
+            throw new DepartmentNotFoundException(newHeadDepartmentId.toString());
         }
         if (isParent(newHead,original)) {
             throw new InvalidDepartmentHierarchyException();
@@ -59,7 +59,7 @@ public class DepartmentsController {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
             return employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId);
         } else {
-            throw new DepartmentNotFoundException(departmentId);
+            throw new DepartmentNotFoundException(departmentId.toString());
         }
     }
 
@@ -70,7 +70,7 @@ public class DepartmentsController {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
             return departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId);
         } else {
-            throw new DepartmentNotFoundException(departmentId);
+            throw new DepartmentNotFoundException(departmentId.toString());
         }
     }
 
@@ -84,7 +84,7 @@ public class DepartmentsController {
         if (parentId != null) {
             Department parentDepartment = departmentRepository.findByIdAndIsDismissedIsFalse(parentId);
             if (parentDepartment == null) {
-                throw new DepartmentNotFoundException(parentId);
+                throw new DepartmentNotFoundException(parentId.toString());
             } else {
                 department.setParent(parentDepartment);
             }
@@ -98,9 +98,19 @@ public class DepartmentsController {
                                     HttpServletRequest request) {
         Department department = departmentRepository.findById(departmentId);
         if (department == null) {
-            throw new DepartmentNotFoundException(departmentId);
+            throw new DepartmentNotFoundException(departmentId.toString());
         }
-
+        return department;
+    }
+    @RequestMapping(method = RequestMethod.GET)
+    public Department getDepartmentByName(@RequestParam(value = "name", required = true)String departmentName,
+                                          HttpServletRequest request)
+    {
+        Department department = departmentRepository.findByName(departmentName);
+        if (department == null)
+        {
+            throw new DepartmentNotFoundException(departmentName);
+        }
         return department;
     }
 
@@ -116,13 +126,13 @@ public class DepartmentsController {
                     current.setDismissed(true);
                     departmentRepository.save(current);
                 } else {
-                    throw new DepartmentHasSubdepartmentsException(departmentId);
+                    throw new DepartmentHasSubdepartmentsException(departmentId.toString());
                 }
             } else {
-                throw new DepartmentIsNotEmptyException(departmentId);
+                throw new DepartmentIsNotEmptyException(departmentId.toString());
             }
         } else {
-            throw new DepartmentNotFoundException(departmentId);
+            throw new DepartmentNotFoundException(""+departmentId);
         }
     }
 
@@ -135,23 +145,19 @@ public class DepartmentsController {
     @ExceptionHandler(DepartmentIsNotEmptyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError departmentIsNotEmpty(DepartmentIsNotEmptyException e) {
-        long departmentId = e.getDepartmentId();
-
-        return new RestError(Errors.DEPARTMENT_NOT_EMPTY, "Department [" + departmentId + "] is not empty.");
+        return new RestError(Errors.DEPARTMENT_NOT_EMPTY, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentHasSubdepartmentsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError departmentHasSubDepartments(DepartmentHasSubdepartmentsException e) {
-        long departmentId = e.getDepartmentId();
-
-        return new RestError(Errors.DEPARTMENT_HAS_SUB_DEPARTMENTS, "Department [" + departmentId + "] has subdepartments.");
+        return new RestError(Errors.DEPARTMENT_HAS_SUB_DEPARTMENTS, e.getMessage());
     }
 
     @ExceptionHandler(InvalidDepartmentHierarchyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError invalidHierarchy(InvalidDepartmentHierarchyException e) {
-        return new RestError(Errors.INVALID_HIERARCHY, "Invalid hierarchy of departments.");
+        return new RestError(Errors.INVALID_HIERARCHY, e.getMessage());
     }
 
     private boolean isParent(Department potentialChild, Department potentialParent) {
