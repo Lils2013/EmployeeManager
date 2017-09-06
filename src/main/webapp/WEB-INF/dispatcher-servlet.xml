@@ -24,14 +24,11 @@
 
     <mvc:annotation-driven/>
 
-    <context:component-scan base-package="ru.tsconsulting"/>
 
     <aop:aspectj-autoproxy/>
 
     <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
-
-    <!--<bean name="/applicationSwaggerConfig" class="ru.tsconsulting.configuration.SwaggerConfig"/>-->
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="packagesToScan" value="ru.tsconsulting"/>
@@ -63,7 +60,8 @@
 
     <jpa:repositories base-package="ru.tsconsulting.repositories"/>
 
-    <context:component-scan base-package="ru.tsconsulting"/>
+    <context:component-scan base-package="ru.tsconsulting">
+    </context:component-scan>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
