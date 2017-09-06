@@ -93,35 +93,13 @@ public class EmployeesController {
             employees = employeeRepository.findByLastname(lastName);
         }
         else {
-//            throw new EmployeeNotFoundException(firstName + lastName);
-        }
-
-
-        if (employees == null) {
-//            throw new EmployeeNotFoundException();
+            throw new InvalidParametersException();
         }
 
         return employees;
     }
 
-//    @RequestMapping(path = "/find/{firstName}", method = RequestMethod.GET)
-//    public List<Employee> findEmployeeByFirstName(@PathVariable String firstName,
-//                                                        HttpServletRequest request) {
-//        List<Employee> employees =  new ArrayList<>();
-//
-//
-//        if(firstName != null) {
-//            employees = employeeRepository.findbyfi(firstName, lastName);
-//            System.out.println(employees);
-//        }
-//
-//
-//        if (employees == null) {
-////            throw new EmployeeNotFoundException();
-//        }
-//
-//        return employees;
-//    }
+
 
 	@ApiOperation(value = "Fire employee by id")
 	@ApiResponses(value = {
