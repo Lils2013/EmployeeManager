@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Certificate organisation not found.")
 public class CertificateOrganisationNotFoundException extends EntityNotFoundException {
-	public CertificateOrganisationNotFoundException(long entityId) {
-		super(entityId);
+	public CertificateOrganisationNotFoundException(String certificateDetail) {
+		super(certificateDetail);
 	}
 	@Override
 	public String getMessage() {
-		return "Certificate organisation [" + getEntityId() + "] not found.";
+		return "Certificate organisation [" + getEntityDetail() + "] not found.";
 	}
 }

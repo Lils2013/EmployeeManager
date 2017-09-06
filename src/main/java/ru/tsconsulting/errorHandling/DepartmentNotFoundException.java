@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Department not found.")
 public class DepartmentNotFoundException extends EntityNotFoundException {
 
-    public DepartmentNotFoundException(long entityId) {
-        super(entityId);
+    public DepartmentNotFoundException(String departmentDetail) {
+        super(departmentDetail);
     }
     @Override
     public String getMessage() {
-        return "Department [" + getEntityId() + "] not found.";
+        return "Department [" + getEntityDetail() + "] not found.";
     }
 }

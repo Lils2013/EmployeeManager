@@ -20,6 +20,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Cacheable("notDismissedDepartment")
     Department findByIdAndIsDismissedIsFalse(Long id);
 
+    Department findByName(String name);
+
     @Override
     @Caching(put={@CachePut(value="department", key="#result.id"),
             @CachePut(value="notDismissedDepartment", key="#result.id", condition="#result.isDismissed() == false")},

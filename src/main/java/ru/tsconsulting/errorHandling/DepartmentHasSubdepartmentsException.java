@@ -5,11 +5,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Department has subdepartments.")
 public class DepartmentHasSubdepartmentsException extends RuntimeException  {
-    private long departmentId;
-    public DepartmentHasSubdepartmentsException(long departmentId) {
-        this.departmentId = departmentId;
+    private String departmentDetail;
+    public DepartmentHasSubdepartmentsException(String departmentDetail) {
+        this.departmentDetail = departmentDetail;
     }
-    public long getDepartmentId() {
-        return departmentId;
+    public String getDepartmentDetail() {
+        return departmentDetail;
+    }
+    public String getMessage() {
+        return "Department [" + getDepartmentDetail() + "] has subdepartments.";
     }
 }
