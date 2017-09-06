@@ -5,11 +5,11 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import ru.tsconsulting.employee_ws.TransferRequest;
-import ru.tsconsulting.employee_ws.EmployeeForSOAP;
-import ru.tsconsulting.employee_ws.TransferResponse;
+import ru.tsconsulting.employee_ws.*;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
+import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
+import ru.tsconsulting.errorHandling.EmployeeNotFoundException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
@@ -30,13 +30,31 @@ public class EmployeeEndpoint {
     @ResponsePayload
     public TransferResponse transfer(@RequestPayload TransferRequest transferRequest) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(transferRequest.getEmployeeId());
+        if (employee == null) {
+            throw new EmployeeNotFoundException(((Long)transferRequest.getEmployeeId()).toString());
+        }
         Department newDepartment = departmentRepository.
                 findByIdAndIsDismissedIsFalse(transferRequest.getNewDepartmentId());
+        if (newDepartment == null) {
+            throw new DepartmentNotFoundException(((Long)transferRequest.getNewDepartmentId()).toString());
+        }
         employee.setDepartment(newDepartment);
         employeeRepository.save(employee);
         TransferResponse transferResponse = new TransferResponse();
         transferResponse.setEmployee(parseEmployee(employee));
         return transferResponse;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "firingRequest")
+    @ResponsePayload
+    public FiringResponse fire(@RequestPayload FiringRequest firingRequest) {
+        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(firingRequest.getEmployeeId());
+        if (employee == null) {
+            throw new EmployeeNotFoundException(((Long)firingRequest.getEmployeeId()).toString());
+        }
+        employee.setFired(true);
+        employeeRepository.save(employee);
+        return new FiringResponse();
     }
 
     private EmployeeForSOAP parseEmployee(Employee employee) {

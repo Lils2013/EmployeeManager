@@ -18,6 +18,18 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="firingRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="employeeId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="firingResponse">
+        <xs:complexType/>
+    </xs:element>
+
     <xs:complexType name="employeeForSOAP">
         <xs:sequence>
             <xs:element name="birthdate" type="xs:string"/>

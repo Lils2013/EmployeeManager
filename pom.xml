@@ -241,16 +241,16 @@
             <artifactId>spring-ws-core</artifactId>
             <version>2.4.0.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-            <version>1.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>jdom</groupId>-->
+            <!--<artifactId>jdom</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>jaxen</groupId>-->
+            <!--<artifactId>jaxen</artifactId>-->
+            <!--<version>1.1</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>wsdl4j</groupId>
             <artifactId>wsdl4j</artifactId>
@@ -307,7 +307,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <id>xjc</id>
@@ -317,9 +317,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <schemaDirectory>src/main/resources/</schemaDirectory>
+                    <schemaDirectory>src/main/webapp/WEB-INF/</schemaDirectory>
                     <clearOutputDir>false</clearOutputDir>
-                    <outputDirectory>src/main/java</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

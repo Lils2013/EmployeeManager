@@ -10,7 +10,6 @@ package ru.tsconsulting.employee_ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -24,9 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="employee" type="{http://tsconsulting.ru/employee-ws}employeeForSOAP"/>
- *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -35,37 +31,9 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "employee"
-})
-@XmlRootElement(name = "transferResponse")
-public class TransferResponse {
+@XmlType(name = "")
+@XmlRootElement(name = "firingResponse")
+public class FiringResponse {
 
-    @XmlElement(required = true)
-    protected EmployeeForSOAP employee;
-
-    /**
-     * Gets the value of the employee property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link EmployeeForSOAP }
-     *     
-     */
-    public EmployeeForSOAP getEmployee() {
-        return employee;
-    }
-
-    /**
-     * Sets the value of the employee property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link EmployeeForSOAP }
-     *     
-     */
-    public void setEmployee(EmployeeForSOAP value) {
-        this.employee = value;
-    }
 
 }
