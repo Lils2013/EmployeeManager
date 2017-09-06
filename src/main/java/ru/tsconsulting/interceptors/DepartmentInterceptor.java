@@ -3,7 +3,6 @@ package ru.tsconsulting.interceptors;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.DepartmentHistory;
@@ -76,13 +75,13 @@ public class DepartmentInterceptor {
 
 
 	//FindSubDeps
-	@AfterReturning("execution(* ru.tsconsulting.controllers.DepartmentsController.findSubDeps(..))&&args(departmentId,..,request)")
+	@AfterReturning("execution(* ru.tsconsulting.controllers.DepartmentsController.findSubDepartments(..))&&args(departmentId,..,request)")
 	void afterReturningFindSubDeps(Long departmentId, HttpServletRequest request)
 	{
 		departmentHistoryRepository.save(createRecord(departmentId,request,1L, true));
 	}
 
-	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.findSubDeps(..))&&args(departmentId,..,request)")
+	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.findSubDepartments(..))&&args(departmentId,..,request)")
 	void afterThrowingFindSubDeps(Long departmentId, HttpServletRequest request)
 	{
 		departmentHistoryRepository.save(createRecord(departmentId,request,1L, false));
@@ -90,16 +89,16 @@ public class DepartmentInterceptor {
 
 
 	//CreateDepartment
-	@AfterReturning("execution(* ru.tsconsulting.controllers.DepartmentsController.createDepartment(..))&&args(department,..,request)")
-	void afterReturningCreateDepartment(Department department, HttpServletRequest request)
+	@AfterReturning(value = "execution(* ru.tsconsulting.controllers.DepartmentsController.createDepartment(..))&&args(departmentDetails,..,request)",returning = "result")
+	void afterReturningCreateDepartment(Department.DepartmentDetails departmentDetails, HttpServletRequest request, Object result)
 	{
-		departmentHistoryRepository.save(createRecord(department.getId(),request,4L, true));
+		departmentHistoryRepository.save(createRecord(((Department)result).getId(),request,4L, true));
 	}
 
-	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.createDepartment(..))&&args(department,..,request)")
-	void afterThrowingCreateDepartment(Department department, HttpServletRequest request)
+	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.createDepartment(..))&&args(departmentDetails,..,request)")
+	void afterThrowingCreateDepartment(Department.DepartmentDetails departmentDetails, HttpServletRequest request)
 	{
-		departmentHistoryRepository.save(createRecord(department.getId(),request,4L, false));
+		departmentHistoryRepository.save(createRecord(0l,request,4L, false));
 	}
 
 
@@ -110,7 +109,7 @@ public class DepartmentInterceptor {
 		departmentHistoryRepository.save(createRecord(departmentId,request,6L, true));
 	}
 
-	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.createDepartment(..))&&args(departmentId,..,request)")
+	@AfterThrowing("execution(* ru.tsconsulting.controllers.DepartmentsController.deleteDepartment(..))&&args(departmentId,..,request)")
 	void afterThrowingCreateDepartment(Long departmentId, HttpServletRequest request)
 	{
 		departmentHistoryRepository.save(createRecord(departmentId,request,6L, false));
