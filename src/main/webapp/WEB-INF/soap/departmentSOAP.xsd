@@ -5,7 +5,7 @@
         <xs:complexType>
 
             <xs:sequence>
-                <xs:element name="id" type="xs:long"/>
+                <xs:element name="departmentId" type="xs:long"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
