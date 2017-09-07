@@ -1,5 +1,7 @@
 package ru.tsconsulting.controllers;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,38 +29,48 @@ public class AdminController {
         this.employeeHistoryRepository = employeeHistoryRepository;
     }
 
+    @ApiOperation(value = "Get access history for an employee",
+            notes = "History can be accessed even for non-existing employees")
     @RequestMapping(path = "/employee/{employeeId}", method = RequestMethod.GET)
-    public List<EmployeeHistory> getEmployeeAccessHistory(@PathVariable Long employeeId,
-                                                          @RequestParam(value="from", required=false) String from,
-                                                          @RequestParam(value="to", required=false) String to) {
+    public List<EmployeeHistory> getEmployeeAccessHistory(
+            @ApiParam(value = "id of an employee", required = true) @PathVariable Long employeeId,
+            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+                    "e.g. 2007-12-03T10:15:30") @RequestParam(value = "from", required = false) String from,
+            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+                    "e.g. 2007-12-03T10:15:30") @RequestParam(value = "to", required = false) String to) {
         if (from != null && to != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
             LocalDateTime toDate = LocalDateTime.parse(to);
-            return employeeHistoryRepository.findByEmployeeIdAndDateTimeBetween(employeeId,fromDate,toDate);
+            return employeeHistoryRepository.findByEmployeeIdAndDateTimeBetween(employeeId, fromDate, toDate);
         } else if (from != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
-            return employeeHistoryRepository.findByEmployeeIdAndDateTimeAfter(employeeId,fromDate);
-        } else if (to!=null) {
+            return employeeHistoryRepository.findByEmployeeIdAndDateTimeAfter(employeeId, fromDate);
+        } else if (to != null) {
             LocalDateTime toDate = LocalDateTime.parse(to);
-            return employeeHistoryRepository.findByEmployeeIdAndDateTimeBefore(employeeId,toDate);
+            return employeeHistoryRepository.findByEmployeeIdAndDateTimeBefore(employeeId, toDate);
         }
         return employeeHistoryRepository.findByEmployeeId(employeeId);
     }
 
+    @ApiOperation(value = "Get access history for a  department",
+            notes = "History can be accessed even for non-existing departmentss")
     @RequestMapping(path = "/department/{departmentId}", method = RequestMethod.GET)
-    public List<DepartmentHistory> getDepartmentAccessHistory(@PathVariable Long departmentId,
-                                                              @RequestParam(value="from", required=false) String from,
-                                                              @RequestParam(value="to", required=false) String to) {
+    public List<DepartmentHistory> getDepartmentAccessHistory(
+            @ApiParam(value = "id of a department", required = true) @PathVariable Long departmentId,
+            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+                    "e.g. 2007-12-03T10:15:30") @RequestParam(value = "from", required = false) String from,
+            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+                    "e.g. 2007-12-03T10:15:30") @RequestParam(value = "to", required = false) String to) {
         if (from != null && to != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
             LocalDateTime toDate = LocalDateTime.parse(to);
-            return departmentHistoryRepository.findByDepartmentIdAndDateTimeBetween(departmentId,fromDate,toDate);
+            return departmentHistoryRepository.findByDepartmentIdAndDateTimeBetween(departmentId, fromDate, toDate);
         } else if (from != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
-            return departmentHistoryRepository.findByDepartmentIdAndDateTimeAfter(departmentId,fromDate);
-        } else if (to!=null) {
+            return departmentHistoryRepository.findByDepartmentIdAndDateTimeAfter(departmentId, fromDate);
+        } else if (to != null) {
             LocalDateTime toDate = LocalDateTime.parse(to);
-            return departmentHistoryRepository.findByDepartmentIdAndDateTimeBefore(departmentId,toDate);
+            return departmentHistoryRepository.findByDepartmentIdAndDateTimeBefore(departmentId, toDate);
         }
         return departmentHistoryRepository.findByDepartmentId(departmentId);
     }
