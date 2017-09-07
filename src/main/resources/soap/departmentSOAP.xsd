@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="tsconsulting.ru/department-ws"
+           targetNamespace="tsconsulting.ru/department-ws" elementFormDefault="qualified">
+
+    <xs:element name="getRequest">
+        <xs:complexType>
+
+            <xs:sequence>
+                <xs:element name="departmentId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="department" type="tns:departmentSOAP"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="departmentSOAP">
+        <xs:sequence>
+            <xs:element name="chiefId" type="xs:string"/>
+            <xs:element name="isDismissed" type="xs:boolean"/>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

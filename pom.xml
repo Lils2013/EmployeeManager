@@ -317,8 +317,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <schemaDirectory>src/main/webapp/WEB-INF/</schemaDirectory>
+                    <schemaDirectory>src/main/resources/soap</schemaDirectory>
                     <clearOutputDir>false</clearOutputDir>
+
                 </configuration>
             </plugin>
         </plugins>

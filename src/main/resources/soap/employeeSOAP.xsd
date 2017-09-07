@@ -1,8 +1,9 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://tsconsulting.ru/employee-ws"
-           targetNamespace="http://tsconsulting.ru/employee-ws" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="tsconsulting.ru/employee-ws"
+           targetNamespace="tsconsulting.ru/employee-ws" elementFormDefault="qualified">
 
     <xs:element name="transferRequest">
         <xs:complexType>
+
             <xs:sequence>
                 <xs:element name="employeeId" type="xs:long"/>
                 <xs:element name="newDepartmentId" type="xs:long"/>
