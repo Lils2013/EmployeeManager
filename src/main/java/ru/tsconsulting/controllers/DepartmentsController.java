@@ -53,7 +53,7 @@ public class DepartmentsController {
         return departmentRepository.save(original);
     }
 
-	@ApiOperation(value = "Return all employees of department by id")
+	@ApiOperation(value = "Return all employees of department")
     @RequestMapping(path = "/{departmentId}/employees", method = RequestMethod.GET)
     public List<Employee> employeeByDepartment(@PathVariable Long departmentId, HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
@@ -63,7 +63,7 @@ public class DepartmentsController {
         }
     }
 
-	@ApiOperation(value = "Return all sub departments of given department by id")
+	@ApiOperation(value = "Return all direct sub departments of given department")
     @RequestMapping(path = "/{departmentId}/subs", method = RequestMethod.GET)
     public List<Department> findSubDepartments(@PathVariable Long departmentId,
                                         HttpServletRequest request) {
@@ -114,7 +114,7 @@ public class DepartmentsController {
         return department;
     }
 
-	@ApiOperation(value = "Delete department by id")
+	@ApiOperation(value = "Delete department")
     @RequestMapping(path = "/{departmentId}", method = RequestMethod.DELETE)
     public void deleteDepartment(@PathVariable Long departmentId,
                                               HttpServletRequest request) {

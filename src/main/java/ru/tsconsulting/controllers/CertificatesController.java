@@ -54,7 +54,7 @@ public class CertificatesController {
 		return result;
 	}
 
-	@ApiOperation(value = "Edit certificate by id")
+	@ApiOperation(value = "Edit certificate")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successful edition of certificate"),
 			@ApiResponse(code = 404, message = "Certificate with given id does not exist"),
