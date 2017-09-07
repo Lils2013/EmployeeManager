@@ -1,5 +1,5 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="tsconsulting.ru/employee-ws"
-           targetNamespace="tsconsulting.ru/employee-ws" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://tsconsulting.ru/employee-ws"
+           targetNamespace="http://tsconsulting.ru/employee-ws" elementFormDefault="qualified">
 
     <xs:element name="transferRequest">
         <xs:complexType>
@@ -14,7 +14,7 @@
     <xs:element name="transferResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="employee" type="tns:employeeForSOAP"/>
+                <xs:element name="employee" type="tns:employeeSOAP"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -31,7 +31,7 @@
         <xs:complexType/>
     </xs:element>
 
-    <xs:complexType name="employeeForSOAP">
+    <xs:complexType name="employeeSOAP">
         <xs:sequence>
             <xs:element name="birthdate" type="xs:string"/>
             <xs:element name="departmentId" type="xs:long"/>

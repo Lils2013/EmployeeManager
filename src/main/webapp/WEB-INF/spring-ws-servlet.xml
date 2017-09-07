@@ -11,10 +11,10 @@
 
     <import resource="dispatcher-servlet.xml" />
 
-    <sws:dynamic-wsdl id="employees"
+    <sws:dynamic-wsdl id="employeeSOAP"
                       portTypeName="EmployeesPort"
                       locationUri="/ws/"
                       targetNamespace="http://tsconsulting.ru/employee-ws">
-        <sws:xsd location="/WEB-INF/employees.xsd"/>
+        <sws:xsd location="WEB-INF/soap/employeeSOAP.xsd"/>
     </sws:dynamic-wsdl>
 </beans>
