@@ -6,6 +6,7 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.tsconsulting.department_ws.DepartmentSOAP;
+import ru.tsconsulting.department_ws.GetRequest;
 import ru.tsconsulting.department_ws.GetResponse;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.repositories.DepartmentRepository;
@@ -22,8 +23,8 @@ public class DepartmentEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getRequest")
     @ResponsePayload
-    public GetResponse getDepartment(@RequestPayload Long departmentId) {
-        Department department = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
+    public GetResponse getDepartment(@RequestPayload GetRequest getRequest) {
+        Department department = departmentRepository.findByIdAndIsDismissedIsFalse(getRequest.getDepartmentId());
         GetResponse getResponse = new GetResponse();
         getResponse.setDepartment(parseDepartment(department));
         return getResponse;
