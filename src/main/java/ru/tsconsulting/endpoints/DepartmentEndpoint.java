@@ -5,11 +5,12 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import ru.tsconsulting.department_ws.DepartmentSOAP;
-import ru.tsconsulting.department_ws.GetRequest;
-import ru.tsconsulting.department_ws.GetResponse;
+import ru.tsconsulting.department_ws.*;
 import ru.tsconsulting.entities.Department;
+import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
 import ru.tsconsulting.repositories.DepartmentRepository;
+
+import java.util.List;
 
 @Endpoint
 public class DepartmentEndpoint {
@@ -28,6 +29,22 @@ public class DepartmentEndpoint {
         GetResponse getResponse = new GetResponse();
         getResponse.setDepartment(parseDepartment(department));
         return getResponse;
+    }
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "subDepartmentsRequest")
+    @ResponsePayload
+    public SubDepartmentsResponse subDepartments(@RequestPayload SubDepartmentsRequest subDepartmentsRequest) {
+        Long departmentId = subDepartmentsRequest.getDepartmentId();
+        if (departmentRepository.findById(departmentId)==null)
+        {
+            throw new DepartmentNotFoundException(departmentId.toString());
+        }
+        SubDepartmentsResponse result = new SubDepartmentsResponse();
+        List<DepartmentSOAP> departmentSOAPList =  result.getDepartments();
+        for (Department iter:departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId))
+        {
+            departmentSOAPList.add(parseDepartment(iter));
+        }
+        return result;
     }
 
     private DepartmentSOAP parseDepartment(Department department) {

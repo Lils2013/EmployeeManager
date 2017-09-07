@@ -18,6 +18,22 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="subDepartmentsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="departmentId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="subDepartmentsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="departments" type="tns:departmentSOAP" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:complexType name="departmentSOAP">
         <xs:sequence>
             <xs:element name="chiefId" type="xs:string"/>

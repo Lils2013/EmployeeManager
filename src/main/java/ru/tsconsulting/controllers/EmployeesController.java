@@ -1,11 +1,10 @@
 package ru.tsconsulting.controllers;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -45,85 +44,12 @@ public class EmployeesController {
         this.auditReader = auditReader;
     }
 
-	@ApiOperation(value = "Transfer employee from one department to another")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful transfer of employee"),
-			@ApiResponse(code = 404, message = "Employee with given id does not exist or one of the departments does not exist"),
-			@ApiResponse(code = 500, message = "Internal server error")}
-	)
-    @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
-    public Employee transferEmployee(@PathVariable Long employeeId,
-                                     @RequestParam(value="newDepartmentId") Long newDepartmentId,
-                                     HttpServletRequest request) {
-        if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
-            throw new EmployeeNotFoundException(employeeId.toString());
-        }
 
-        if (departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId) == null) {
-            throw new DepartmentNotFoundException(newDepartmentId.toString());
-        }
-
-        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
-        employee.setDepartment(departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId));
-        Employee result = employeeRepository.save(employee);
-
-        return result;
-    }
-
-
-    @ApiOperation(value = "Return employee by first name and last name")
+    @ApiOperation(value = "Create employee by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful retrieval of employee"),
-            @ApiResponse(code = 404, message = "Employee with given first name or last name  does not exist"),
+            @ApiResponse(code = 200, message = "Successful creation of employee"),
             @ApiResponse(code = 500, message = "Internal server error")}
     )
-    @RequestMapping(path = "/find", method = RequestMethod.GET)
-    public List<Employee> findEmployeeByFirstAndLastName(@RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName,
-                                HttpServletRequest request) {
-        List<Employee> employees =  new ArrayList<>();
-
-
-        if(firstName != null && lastName != null) {
-            employees = employeeRepository.findByFirstnameAndLastnameAndIsFiredFalse(firstName, lastName);
-        }
-        else if(firstName != null) {
-            employees = employeeRepository.findByFirstname(firstName);
-        }
-        else if(lastName != null) {
-            employees = employeeRepository.findByLastname(lastName);
-        }
-        else {
-            throw new InvalidParametersException();
-        }
-
-        return employees;
-    }
-
-
-
-	@ApiOperation(value = "Fire employee by id")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful firing of employee"),
-			@ApiResponse(code = 404, message = "Employee with given id does not exist"),
-			@ApiResponse(code = 500, message = "Internal server error")}
-	)
-    @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
-    public void fireEmployee(@PathVariable Long employeeId,
-	                         HttpServletRequest request) {
-        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
-        if (employee != null) {
-            employee.setFired(true);
-            employeeRepository.save(employee);
-        } else {
-            throw new EmployeeNotFoundException(employeeId.toString());
-        }
-    }
-
-	@ApiOperation(value = "Create employee by id")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful creation of employee"),
-			@ApiResponse(code = 500, message = "Internal server error")}
-	)
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
@@ -155,18 +81,17 @@ public class EmployeesController {
                 employee.setDepartment(department);
             }
         }
-
         Employee result = employeeRepository.save(employee);
 
         return result;
     }
 
-	@ApiOperation(value = "Return employee by id")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful retrieval of employee"),
-			@ApiResponse(code = 404, message = "Employee with given id does not exist"),
-			@ApiResponse(code = 500, message = "Internal server error")}
-	)
+    @ApiOperation(value = "Return employee by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of employee"),
+            @ApiResponse(code = 404, message = "Employee with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
     public Employee getEmployee(@PathVariable Long employeeId,
                                 HttpServletRequest request) {
@@ -177,6 +102,146 @@ public class EmployeesController {
         }
 
         return employee;
+    }
+
+    @ApiOperation(value = "Edit employee by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful edition of employee"),
+            @ApiResponse(code = 404, message = "Employee with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
+    public Employee editEmployee(@PathVariable Long employeeId,
+                                 @RequestParam(value = "newPositionId", required=false)  Long newPositionId,
+                                 @RequestParam(value = "newGrade", required=false) Long newGrade,
+                                 @RequestParam(value = "newSalary", required=false) Long newSalary,
+                                 HttpServletRequest request) {
+        Employee employee = employeeRepository.findById(employeeId);
+
+        if (employee==null) {
+            throw new EmployeeNotFoundException(employeeId.toString());
+        }
+
+        Position position;
+
+        if(newPositionId != null) {
+            position = positionRepository.findById(newPositionId);
+            if (position==null) {
+                throw new PositionNotFoundException(newPositionId.toString());
+            }
+            else {
+                employee.setPosition(position);
+            }
+        }
+
+        Grade grade;
+
+        if(newGrade != null) {
+            grade = gradeRepository.findById(newGrade);
+            if (grade==null) {
+                throw new GradeNotFoundException(newGrade.toString());
+            }
+            else {
+                employee.setGrade(grade);
+            }
+        }
+
+        if(newSalary != null) {
+            employee.setSalary(newSalary);
+        }
+
+        employeeRepository.save(employee);
+
+        return employee;
+    }
+
+    @ApiOperation(value = "Fire employee by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful firing of employee"),
+            @ApiResponse(code = 404, message = "Employee with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
+    public void fireEmployee(@ApiParam(value = "Id of employee to be fired. Cannot be null")@PathVariable Long employeeId,
+                             HttpServletRequest request) {
+        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
+        if (employee != null) {
+            employee.setFired(true);
+            employeeRepository.save(employee);
+        } else {
+            throw new EmployeeIsAlreadyFiredException(employeeId.toString());
+        }
+    }
+
+    @ApiOperation(value = "Hire employee by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful hiring of employee"),
+            @ApiResponse(code = 404, message = "Employee with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path = "/{employeeId}", method = RequestMethod.PUT)
+    public void hireEmployee(@PathVariable Long employeeId,
+                             HttpServletRequest request) {
+        Employee employee = employeeRepository.findByIdAndIsFiredIsTrue(employeeId);
+        if (employee != null) {
+            employee.setFired(false);
+            employeeRepository.save(employee);
+        } else {
+            throw new EmployeeIsAlreadyHiredException(employeeId.toString());
+        }
+    }
+
+    @ApiOperation(value = "Return employee by first name and last name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of employee"),
+            @ApiResponse(code = 404, message = "Employee with given first name or last name  does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path = "/find", method = RequestMethod.GET)
+    public List<Employee> findEmployeeByFirstAndLastName(@RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName,
+                                                         HttpServletRequest request) {
+        List<Employee> employees =  new ArrayList<>();
+
+
+        if(firstName != null && lastName != null) {
+            employees = employeeRepository.findByFirstnameAndLastnameAndIsFiredFalse(firstName, lastName);
+        }
+        else if(firstName != null) {
+            employees = employeeRepository.findByFirstname(firstName);
+        }
+        else if(lastName != null) {
+            employees = employeeRepository.findByLastname(lastName);
+        }
+        else {
+            throw new InvalidParametersException();
+        }
+
+        return employees;
+    }
+
+	@ApiOperation(value = "Transfer employee from one department to another")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful transfer of employee"),
+			@ApiResponse(code = 404, message = "Employee with given id does not exist or one of the departments does not exist"),
+			@ApiResponse(code = 500, message = "Internal server error")}
+	)
+    @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
+    public Employee transferEmployee(@PathVariable Long employeeId,
+                                     @RequestParam(value="newDepartmentId") Long newDepartmentId,
+                                     HttpServletRequest request) {
+        if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
+            throw new EmployeeNotFoundException(employeeId.toString());
+        }
+
+        if (departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId) == null) {
+            throw new DepartmentNotFoundException(newDepartmentId.toString());
+        }
+
+        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
+        employee.setDepartment(departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId));
+        Employee result = employeeRepository.save(employee);
+
+        return result;
     }
 
 	@ApiOperation(value = "Return audit information of employee by id")
@@ -198,46 +263,7 @@ public class EmployeesController {
         return list;
     }
 
-	@ApiOperation(value = "Edit employee by id")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful edition of employee"),
-			@ApiResponse(code = 404, message = "Employee with given id does not exist"),
-			@ApiResponse(code = 500, message = "Internal server error")}
-	)
-    @RequestMapping(path="/{employeeId}/edit",method = RequestMethod.POST)
-    public Employee editEmployee(@PathVariable Long employeeId,
-                                 @RequestParam(value = "newPositionId", required=false) Long newPositionId,
-                                 @RequestParam(value = "newGrade", required=false) Long newGrade,
-                                 @RequestParam(value = "newSalary", required=false) Long newSalary,
-                                             HttpServletRequest request) {
-        Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
 
-        if (employee==null)
-        {
-            throw new EmployeeNotFoundException(employeeId.toString());
-        }
-
-        Position position = positionRepository.findById(newPositionId);
-
-        if (position==null)
-        {
-            throw new PositionNotFoundException(employeeId.toString());
-        }
-
-        Grade grade = gradeRepository.findById(newGrade);
-
-        if (grade==null)
-        {
-            throw new GradeNotFoundException(employeeId.toString());
-        }
-
-        employee.setPosition(position);
-        employee.setGrade(grade);
-        employee.setSalary(newSalary);
-        employeeRepository.save(employee);
-
-        return employee;
-    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
