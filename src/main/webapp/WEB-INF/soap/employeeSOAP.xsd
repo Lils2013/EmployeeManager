@@ -63,6 +63,30 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="createRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="birthdate" type="xs:string"/>
+                <xs:element name="departmentId" type="xs:long"/>
+                <xs:element name="firstname" type="xs:string"/>
+                <xs:element name="gender" type="xs:string"/>
+                <xs:element name="gradeId" type="xs:long"/>
+                <xs:element name="lastname" type="xs:string"/>
+                <xs:element name="middlename" type="xs:string"/>
+                <xs:element name="positionId" type="xs:long"/>
+                <xs:element name="salary" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="employee" type="tns:employeeSOAP" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:complexType name="employeeSOAP">
         <xs:sequence>
             <xs:element name="birthdate" type="xs:string"/>
@@ -75,6 +99,7 @@
             <xs:element name="lastname" type="xs:string"/>
             <xs:element name="middlename" type="xs:string"/>
             <xs:element name="positionId" type="xs:long"/>
+            <xs:element name="salary" type="xs:long"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

@@ -155,7 +155,6 @@ public class EmployeesController {
                 employee.setDepartment(department);
             }
         }
-
         Employee result = employeeRepository.save(employee);
 
         return result;
