@@ -1,5 +1,8 @@
 package ru.tsconsulting.endpoints;
 
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -12,8 +15,6 @@ import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
 import ru.tsconsulting.errorHandling.EmployeeNotFoundException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Endpoint
@@ -22,11 +23,15 @@ public class EmployeeEndpoint {
     private static final String NAMESPACE_URI = "http://tsconsulting.ru/employee-ws";
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final AuditReader auditReader;
 
     @Autowired
-    public EmployeeEndpoint(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository) {
+    public EmployeeEndpoint(EmployeeRepository employeeRepository,
+                            DepartmentRepository departmentRepository,
+                            AuditReader auditReader) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
+        this.auditReader = auditReader;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "transferRequest")
@@ -68,7 +73,24 @@ public class EmployeeEndpoint {
         List<EmployeeSOAP> employeeSOAPList =  result.getEmployees();
         for (Employee iter:employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId))
         {
-           employeeSOAPList.add(parseEmployee(iter));
+            employeeSOAPList.add(parseEmployee(iter));
+        }
+        return result;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "auditRequest")
+    @ResponsePayload
+    public AuditResponse getAudit(@RequestPayload AuditRequest auditRequest) {
+        Long employeeId = auditRequest.getEmployeeId();
+        AuditResponse result = new AuditResponse();
+        List<EmployeeSOAP> employeeSOAPList =  result.getEmployees();
+        AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(Employee.class,
+                true, false);
+        query.add(AuditEntity.id().eq(employeeId));
+        List<Employee> list = query.getResultList();
+        for (Employee iter: list)
+        {
+            employeeSOAPList.add(parseEmployee(iter));
         }
         return result;
     }
