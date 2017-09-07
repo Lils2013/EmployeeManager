@@ -134,7 +134,7 @@ public class EmployeeEndpoint {
         }
         Long departmentId = createRequest.getDepartmentId();
         if (departmentId == 0) {
-            throw new DepartmentNotSpecifiedException(departmentId.toString());
+            throw new DepartmentNotSpecifiedException();
         } else {
             Department department = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
             if (department == null) {

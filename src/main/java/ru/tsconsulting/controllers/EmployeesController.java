@@ -72,7 +72,7 @@ public class EmployeesController {
         }
 
         if (employeeDetails.getDepartment() == null) {
-            throw new DepartmentNotSpecifiedException(employeeDetails.getDepartment().toString());
+            throw new DepartmentNotSpecifiedException();
         } else {
             Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
             if (department == null) {
