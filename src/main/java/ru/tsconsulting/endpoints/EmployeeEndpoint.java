@@ -13,6 +13,9 @@ import ru.tsconsulting.errorHandling.EmployeeNotFoundException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Endpoint
 public class EmployeeEndpoint {
 
@@ -55,6 +58,20 @@ public class EmployeeEndpoint {
         employee.setFired(true);
         employeeRepository.save(employee);
         return new FiringResponse();
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "employeeByDepRequest")
+    @ResponsePayload
+    public EmployeeByDepResponse employeeByDep(@RequestPayload EmployeeByDepRequest employeeByDepRequest) {
+        Long departmentId = employeeByDepRequest.getDepartmentId();
+        EmployeeByDepResponse result = new EmployeeByDepResponse();
+        List<EmployeeSOAP> employeeSOAPList =  result.getEmployee();
+        for (Employee iter:employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId))
+        {
+           employeeSOAPList.add(parseEmployee(iter));
+        }
+
+        return result;
     }
 
     private EmployeeSOAP parseEmployee(Employee employee) {

@@ -31,6 +31,22 @@
         <xs:complexType/>
     </xs:element>
 
+    <xs:element name="employeeByDepRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="departmentId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="employeeByDepResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="employee" type="tns:employeeSOAP" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:complexType name="employeeSOAP">
         <xs:sequence>
             <xs:element name="birthdate" type="xs:string"/>
