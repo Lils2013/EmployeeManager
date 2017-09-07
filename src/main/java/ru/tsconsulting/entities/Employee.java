@@ -1,6 +1,8 @@
 package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
@@ -176,19 +178,25 @@ public class Employee {
                 '}';
     }
 
+    @ApiModel(value="EmployeeDetails", description="data for creating a new employee")
 	public static class EmployeeDetails {
 
 	    private String firstname;
 	    private String lastname;
 	    private String middlename;
+
+        @ApiModelProperty(value = "gender, M or F, although in current implementation it can be any string value", example="M")
 	    private String gender;
 
+        @ApiModelProperty(value = "birth date in yyyy-MM-dd format", example="2008-10-27")
 	    @JsonFormat(pattern="yyyy-MM-dd")
 	    private LocalDate birthdate;
 
+        @ApiModelProperty(value = "id of position", example="1")
 	    private Long position;
-
+        @ApiModelProperty(value = "id of department", example="1")
 	    private Long department;
+        @ApiModelProperty(value = "id of grade", example="1")
 	    private Long grade;
 	    private Long salary;
 

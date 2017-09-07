@@ -25,7 +25,7 @@ public class DepartmentEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getRequest")
     @ResponsePayload
     public GetResponse getDepartment(@RequestPayload GetRequest getRequest) {
-        Department department = departmentRepository.findByIdAndIsDismissedIsFalse(getRequest.getId());
+        Department department = departmentRepository.findByIdAndIsDismissedIsFalse(getRequest.getDepartmentId());
         GetResponse getResponse = new GetResponse();
         getResponse.setDepartment(parseDepartment(department));
         return getResponse;
