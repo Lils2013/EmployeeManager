@@ -42,7 +42,7 @@
     <xs:element name="employeeByDepResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="employee" type="tns:employeeSOAP" maxOccurs="unbounded"/>
+                <xs:element name="employees" type="tns:employeeSOAP" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

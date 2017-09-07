@@ -65,12 +65,11 @@ public class EmployeeEndpoint {
     public EmployeeByDepResponse employeeByDep(@RequestPayload EmployeeByDepRequest employeeByDepRequest) {
         Long departmentId = employeeByDepRequest.getDepartmentId();
         EmployeeByDepResponse result = new EmployeeByDepResponse();
-        List<EmployeeSOAP> employeeSOAPList =  result.getEmployee();
+        List<EmployeeSOAP> employeeSOAPList =  result.getEmployees();
         for (Employee iter:employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId))
         {
            employeeSOAPList.add(parseEmployee(iter));
         }
-
         return result;
     }
 
