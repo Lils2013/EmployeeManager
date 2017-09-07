@@ -57,17 +57,17 @@ public class EmployeeEndpoint {
         return new FiringResponse();
     }
 
-    private EmployeeForSOAP parseEmployee(Employee employee) {
-        EmployeeForSOAP employeeForSOAP = new EmployeeForSOAP();
-        employeeForSOAP.setFirstname(employee.getFirstname());
-        employeeForSOAP.setLastname(employee.getLastname());
-        employeeForSOAP.setMiddlename(employee.getMiddlename());
-        employeeForSOAP.setBirthdate(employee.getBirthdate().toString());
-        employeeForSOAP.setDepartmentId(employee.jsonGetDepartmentId());
-        employeeForSOAP.setPositionId(employee.getPositionId());
-        employeeForSOAP.setGradeId(employee.getGradeId());
-        employeeForSOAP.setId(employee.getId());
-        employeeForSOAP.setFired(employee.isFired());
-        return employeeForSOAP;
+    private EmployeeSOAP parseEmployee(Employee employee) {
+        EmployeeSOAP employeeSOAP = new EmployeeSOAP();
+        employeeSOAP.setFirstname(employee.getFirstname());
+        employeeSOAP.setLastname(employee.getLastname());
+        employeeSOAP.setMiddlename(employee.getMiddlename());
+        employeeSOAP.setBirthdate(employee.getBirthdate().toString());
+        employeeSOAP.setDepartmentId(employee.jsonGetDepartmentId());
+        employeeSOAP.setPositionId(employee.getPositionId());
+        employeeSOAP.setGradeId(employee.getGradeId());
+        employeeSOAP.setId(employee.getId());
+        employeeSOAP.setFired(employee.isFired());
+        return employeeSOAP;
     }
 }

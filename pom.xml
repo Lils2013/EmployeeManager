@@ -320,6 +320,7 @@
                     <schemaDirectory>src/main/webapp/WEB-INF/soap</schemaDirectory>
                     <clearOutputDir>false</clearOutputDir>
 
+
                 </configuration>
             </plugin>
         </plugins>
