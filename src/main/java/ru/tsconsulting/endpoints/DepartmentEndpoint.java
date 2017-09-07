@@ -7,6 +7,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.tsconsulting.department_ws.*;
 import ru.tsconsulting.entities.Department;
+import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 
 import java.util.List;
@@ -33,6 +34,10 @@ public class DepartmentEndpoint {
     @ResponsePayload
     public SubDepartmentsResponse subDepartments(@RequestPayload SubDepartmentsRequest subDepartmentsRequest) {
         Long departmentId = subDepartmentsRequest.getDepartmentId();
+        if (departmentRepository.findById(departmentId)==null)
+        {
+            throw new DepartmentNotFoundException(departmentId.toString());
+        }
         SubDepartmentsResponse result = new SubDepartmentsResponse();
         List<DepartmentSOAP> departmentSOAPList =  result.getDepartments();
         for (Department iter:departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId))
