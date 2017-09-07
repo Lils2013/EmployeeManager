@@ -45,7 +45,7 @@ public class EmployeesController {
     }
 
 
-    @ApiOperation(value = "Create employee by id")
+    @ApiOperation(value = "Create employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful creation of employee"),
             @ApiResponse(code = 500, message = "Internal server error")}
@@ -86,7 +86,7 @@ public class EmployeesController {
         return result;
     }
 
-    @ApiOperation(value = "Return employee by id")
+    @ApiOperation(value = "Return employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful retrieval of employee"),
             @ApiResponse(code = 404, message = "Employee with given id does not exist"),
@@ -104,7 +104,7 @@ public class EmployeesController {
         return employee;
     }
 
-    @ApiOperation(value = "Edit employee by id")
+    @ApiOperation(value = "Edit employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful edition of employee"),
             @ApiResponse(code = 404, message = "Employee with given id does not exist"),
@@ -155,7 +155,7 @@ public class EmployeesController {
         return employee;
     }
 
-    @ApiOperation(value = "Fire employee by id")
+    @ApiOperation(value = "Fire employee that was once created")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful firing of employee"),
             @ApiResponse(code = 404, message = "Employee with given id does not exist"),
@@ -173,7 +173,7 @@ public class EmployeesController {
         }
     }
 
-    @ApiOperation(value = "Hire employee by id")
+    @ApiOperation(value = "Hire employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful hiring of employee"),
             @ApiResponse(code = 404, message = "Employee with given id does not exist"),
@@ -191,7 +191,7 @@ public class EmployeesController {
         }
     }
 
-    @ApiOperation(value = "Return employee by first name and last name")
+    @ApiOperation(value = "Return employee by first name or last name")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful retrieval of employee"),
             @ApiResponse(code = 404, message = "Employee with given first name or last name  does not exist"),
@@ -244,7 +244,7 @@ public class EmployeesController {
         return result;
     }
 
-	@ApiOperation(value = "Return audit information of employee by id")
+	@ApiOperation(value = "Return audit information of employee")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successful retrieval of the audit information of employee"),
 			@ApiResponse(code = 404, message = "Audit information for given employee does not exist"),
