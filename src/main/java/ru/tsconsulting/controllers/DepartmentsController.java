@@ -80,7 +80,6 @@ public class DepartmentsController {
                                        HttpServletRequest request) {
         Department department = new Department(departmentDetails);
         Long parentId = departmentDetails.getParent();
-
         if (parentId != null) {
             Department parentDepartment = departmentRepository.findByIdAndIsDismissedIsFalse(parentId);
             if (parentDepartment == null) {
@@ -89,7 +88,15 @@ public class DepartmentsController {
                 department.setParent(parentDepartment);
             }
         }
-
+        Long chiefId = departmentDetails.getChiefId();
+        if (chiefId != null) {
+            Employee chief = employeeRepository.findByIdAndIsFiredIsFalse(chiefId);
+            if (chief == null) {
+                throw new EmployeeNotFoundException(chiefId.toString());
+            } else {
+                department.setChief(chief);
+            }
+        }
         return departmentRepository.save(department);
     }
 

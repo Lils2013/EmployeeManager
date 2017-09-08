@@ -15,13 +15,12 @@ import java.util.Arrays;
 @Table(name = "CERTIFICATE")
 public class Certificate {
 	@Id
-	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
-	@GeneratedValue(generator="incrementGenerator1")
+	@SequenceGenerator(name = "certificateGenerator", sequenceName = "certificate_sequence")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificateGenerator")
 	private Long id;
 	private String name;
 	private Long serialNumber;
 	private byte[] scan;
-	private Long testValue;
 	@ManyToOne
 	private CertificateOrganisation certificateOrganisation;
 

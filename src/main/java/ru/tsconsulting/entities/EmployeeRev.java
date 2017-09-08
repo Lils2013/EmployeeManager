@@ -7,18 +7,15 @@ import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
 import ru.tsconsulting.EmployeeListener;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @RevisionEntity(EmployeeListener.class)
 @Table(name = "EMPLOYEE_REVINFO")
 public class EmployeeRev {
     @Id
-    @GenericGenerator(name="incrementGenerator3" , strategy="increment")
-    @GeneratedValue(generator="incrementGenerator3")
+    @SequenceGenerator(name = "employeeRevGenerator", sequenceName = "employee_rev_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeRevGenerator")
     @RevisionNumber
     private int id;
     @RevisionTimestamp

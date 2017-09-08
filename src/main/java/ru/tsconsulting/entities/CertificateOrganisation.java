@@ -13,8 +13,8 @@ import javax.persistence.*;
 @Table(name = "CERTIFICATEORGANISATION")
 public class CertificateOrganisation {
     @Id
-    @GenericGenerator(name="incrementGenerator2" , strategy="increment")
-    @GeneratedValue(generator="incrementGenerator2")
+    @SequenceGenerator(name = "certificateOrganisationGenerator", sequenceName = "certorg_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificateOrganisationGenerator")
     private Long id;
     private String name;
 

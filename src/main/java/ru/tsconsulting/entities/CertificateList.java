@@ -15,8 +15,8 @@ import java.time.LocalDate;
 @Table(name = "CERTIFICATE_LIST")
 public class CertificateList {
 	@Id
-	@GenericGenerator(name="incrementGenerator1" , strategy="increment")
-	@GeneratedValue(generator="incrementGenerator1")
+	@SequenceGenerator(name = "certificateListGenerator", sequenceName = "certificatelist_sequence")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificateListGenerator")
     private long id;
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate dateAcquired;

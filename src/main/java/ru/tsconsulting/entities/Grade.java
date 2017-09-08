@@ -16,8 +16,8 @@ import java.util.Set;
 @Table(name = "GRADE")
 public class Grade {
     @Id
-    @GenericGenerator(name="incrementGenerator1" , strategy="increment")
-    @GeneratedValue(generator="incrementGenerator1")
+	@SequenceGenerator(name = "gradeGenerator", sequenceName = "grade_sequence")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gradeGenerator")
     private Long id;
     @JsonIgnore
     @NotAudited

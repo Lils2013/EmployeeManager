@@ -17,17 +17,22 @@ import java.util.Set;
 @Table(name = "DEPARTMENT")
 public class Department {
     @Id
-    @GenericGenerator(name="incrementGenerator2" , strategy="increment")
-    @GeneratedValue(generator="incrementGenerator2")
+    @SequenceGenerator(name = "departmentGenerator", sequenceName = "department_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departmentGenerator")
     private Long id;
     private String name;
-    @Column(name = "CHIEF_ID")
-    private String chiefId;
+
+    @JsonIgnore
+    @NotAudited
+    @ManyToOne
+    @JoinColumn(name = "CHIEF_ID")
+    private Employee chief;
+
     @Column(name = "IS_DISMISSED")
     private Boolean isDismissed = false;
+
     @JsonIgnore
     @JoinColumn(name = "PARENT_ID")
- //   @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Department parent;
 
@@ -45,12 +50,19 @@ public class Department {
 
 	public Department() {}
 	public Department(DepartmentDetails departmentDetails) {
-		setChiefId(departmentDetails.getChiefId());
 		setName(departmentDetails.getName());
 	}
 
     @JsonGetter("parent_id")
     public Long getDepartmentId() {
+        if (parent == null) {
+            return null;
+        }
+        return parent.getId();
+    }
+
+    @JsonGetter("chief_id")
+    public Long getChiefId() {
         if (parent == null) {
             return null;
         }
@@ -65,8 +77,8 @@ public class Department {
         return name;
     }
 
-    public String getChiefId() {
-        return chiefId;
+    public Employee getChief() {
+        return chief;
     }
 
     public Set<Employee> getEmployees() {
@@ -89,8 +101,8 @@ public class Department {
         this.name = name;
     }
 
-    public void setChiefId(String chiefId) {
-        this.chiefId = chiefId;
+    public void setChief(Employee chief) {
+        this.chief = chief;
     }
 
     public void setParent(Department parent) {
@@ -118,13 +130,13 @@ public class Department {
         return "Department{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", chiefId='" + chiefId + '\'' +
+                ", chiefId='" + chief + '\'' +
                 '}';
     }
 
 	public static class DepartmentDetails {
 	    private String name;
-	    private String chiefId;
+	    private Long chiefId;
 	    private Long parent;
 
 	    public DepartmentDetails() {}
@@ -137,11 +149,11 @@ public class Department {
 	        this.name = name;
 	    }
 
-	    public String getChiefId() {
+	    public Long getChiefId() {
 	        return chiefId;
 	    }
 
-	    public void setChiefId(String chiefId) {
+	    public void setChiefId(Long chiefId) {
 	        this.chiefId = chiefId;
 	    }
 
