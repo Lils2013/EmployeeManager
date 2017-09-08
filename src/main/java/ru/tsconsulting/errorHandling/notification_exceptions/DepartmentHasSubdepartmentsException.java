@@ -1,4 +1,4 @@
-package ru.tsconsulting.errorHandling;
+package ru.tsconsulting.errorHandling.notification_exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

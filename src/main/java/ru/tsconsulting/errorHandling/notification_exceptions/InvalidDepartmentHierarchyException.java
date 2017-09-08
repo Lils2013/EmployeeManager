@@ -1,4 +1,4 @@
-package ru.tsconsulting.errorHandling;
+package ru.tsconsulting.errorHandling.notification_exceptions;
 
 public class InvalidDepartmentHierarchyException extends RuntimeException {
     @Override
