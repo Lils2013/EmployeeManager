@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @Table(name = "DEPARTMENT_HISTORY")
 public class DepartmentHistory {
     @Id
-    @SequenceGenerator(name = "departmentHistoryGenerator", sequenceName = "department_history_sequence")
+    @SequenceGenerator(name = "departmentHistoryGenerator", sequenceName = "department_history_sequence",
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departmentHistoryGenerator")
     private Long id;
     @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")

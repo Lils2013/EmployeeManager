@@ -15,7 +15,8 @@ import java.util.Arrays;
 @Table(name = "CERTIFICATE")
 public class Certificate {
 	@Id
-	@SequenceGenerator(name = "certificateGenerator", sequenceName = "certificate_sequence")
+	@SequenceGenerator(name = "certificateGenerator", sequenceName = "certificate_sequence",
+			allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificateGenerator")
 	private Long id;
 	private String name;

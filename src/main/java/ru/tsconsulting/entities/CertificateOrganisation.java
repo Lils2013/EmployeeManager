@@ -13,7 +13,8 @@ import javax.persistence.*;
 @Table(name = "CERTIFICATEORGANISATION")
 public class CertificateOrganisation {
     @Id
-    @SequenceGenerator(name = "certificateOrganisationGenerator", sequenceName = "certorg_sequence")
+    @SequenceGenerator(name = "certificateOrganisationGenerator", sequenceName = "certorg_sequence",
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificateOrganisationGenerator")
     private Long id;
     private String name;

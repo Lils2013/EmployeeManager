@@ -15,7 +15,8 @@ import java.util.Set;
 @Table(name = "POSITION")
 public class Position {
     @Id
-	@SequenceGenerator(name = "positionGenerator", sequenceName = "position_sequence")
+	@SequenceGenerator(name = "positionGenerator", sequenceName = "position_sequence",
+			allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "positionGenerator")
     private Long id;
     @JsonIgnore

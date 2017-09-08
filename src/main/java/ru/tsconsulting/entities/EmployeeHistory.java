@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 public class EmployeeHistory {
     public EmployeeHistory(){}
     @Id
-    @SequenceGenerator(name = "employeeHistoryGenerator", sequenceName = "employee_history_sequence")
+    @SequenceGenerator(name = "employeeHistoryGenerator", sequenceName = "employee_history_sequence",
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeHistoryGenerator")
     private Long id;
     @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")
