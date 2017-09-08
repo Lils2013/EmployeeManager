@@ -1,9 +1,7 @@
-package ru.tsconsulting.errorHandling;
+package ru.tsconsulting.errorHandling.not_found_exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.ws.soap.server.endpoint.annotation.FaultCode;
-import org.springframework.ws.soap.server.endpoint.annotation.SoapFault;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Employee not found.")
 public class EmployeeNotFoundException extends EntityNotFoundException {

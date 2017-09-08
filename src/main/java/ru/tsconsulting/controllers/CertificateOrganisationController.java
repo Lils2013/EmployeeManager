@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.CertificateOrganisation;
-import ru.tsconsulting.errorHandling.EntityNotFoundException;
+import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
 import ru.tsconsulting.errorHandling.Errors;
 import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.CertificateListRepository;

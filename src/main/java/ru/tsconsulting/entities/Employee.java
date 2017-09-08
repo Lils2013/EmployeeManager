@@ -181,7 +181,9 @@ public class Employee {
     @ApiModel(value="EmployeeDetails", description="data for creating a new employee")
 	public static class EmployeeDetails {
 
+        @ApiModelProperty(required=true)
 	    private String firstname;
+        @ApiModelProperty(required=true)
 	    private String lastname;
 	    private String middlename;
 
@@ -194,7 +196,7 @@ public class Employee {
 
         @ApiModelProperty(value = "id of position", example="1")
 	    private Long position;
-        @ApiModelProperty(value = "id of department", example="1")
+        @ApiModelProperty(value = "id of department", example="1",required=true)
 	    private Long department;
         @ApiModelProperty(value = "id of grade", example="1")
 	    private Long grade;

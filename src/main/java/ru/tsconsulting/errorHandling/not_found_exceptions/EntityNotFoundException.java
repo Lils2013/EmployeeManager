@@ -1,4 +1,4 @@
-package ru.tsconsulting.errorHandling;
+package ru.tsconsulting.errorHandling.not_found_exceptions;
 
 public abstract class EntityNotFoundException extends RuntimeException{
     private String entityDetail;

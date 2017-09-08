@@ -3,6 +3,7 @@ package ru.tsconsulting.errorHandling;
 import org.springframework.ws.soap.SoapFault;
 import org.springframework.ws.soap.SoapFaultDetail;
 import org.springframework.ws.soap.server.endpoint.SoapFaultMappingExceptionResolver;
+import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
 
 import javax.xml.namespace.QName;
 

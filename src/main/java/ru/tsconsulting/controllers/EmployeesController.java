@@ -4,7 +4,6 @@ import io.swagger.annotations.*;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +12,13 @@ import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.entities.Grade;
 import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.errorHandling.*;
+import ru.tsconsulting.errorHandling.not_found_exceptions.*;
+import ru.tsconsulting.errorHandling.not_specified_exceptions.*;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 import javax.servlet.http.HttpServletRequest;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +48,20 @@ public class EmployeesController {
     @ApiOperation(value = "Create employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful creation of employee"),
+            @ApiResponse(code = 400, message = "Invalid attributes"),
+            @ApiResponse(code = 404, message = "Department, position or grade does not exist"),
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
+        if (employeeDetails.getFirstname() == null) {
+            throw new FirstnameNotSpecifiedException();
+        }
+        if (employeeDetails.getLastname() == null) {
+            throw new LastnameNotSpecifiedException();
+        }
         Employee employee = new Employee(employeeDetails);
-
         if (employeeDetails.getGrade() != null) {
             if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
                 throw new GradeNotFoundException(employeeDetails.getGrade().toString());
@@ -62,7 +69,6 @@ public class EmployeesController {
                 employee.setGrade(gradeRepository.findById(employeeDetails.getGrade()));
             }
         }
-
         if (employeeDetails.getPosition() != null) {
             if (positionRepository.findById(employeeDetails.getPosition()) == null) {
                 throw new GradeNotFoundException(employeeDetails.getPosition().toString());
@@ -70,7 +76,6 @@ public class EmployeesController {
                 employee.setPosition(positionRepository.findById(employeeDetails.getPosition()));
             }
         }
-
         if (employeeDetails.getDepartment() == null) {
             throw new DepartmentNotSpecifiedException();
         } else {
@@ -82,7 +87,6 @@ public class EmployeesController {
             }
         }
         Employee result = employeeRepository.save(employee);
-
         return result;
     }
 
@@ -96,11 +100,9 @@ public class EmployeesController {
     public Employee getEmployee(@PathVariable Long employeeId,
                                 HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
-
         if (employee == null) {
             throw new EmployeeNotFoundException(employeeId.toString());
         }
-
         return employee;
     }
 
@@ -117,13 +119,10 @@ public class EmployeesController {
                                  @RequestParam(value = "newSalary", required=false) Long newSalary,
                                  HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
-
         if (employee==null) {
             throw new EmployeeNotFoundException(employeeId.toString());
         }
-
         Position position;
-
         if(newPositionId != null) {
             position = positionRepository.findById(newPositionId);
             if (position==null) {
@@ -133,9 +132,7 @@ public class EmployeesController {
                 employee.setPosition(position);
             }
         }
-
         Grade grade;
-
         if(newGrade != null) {
             grade = gradeRepository.findById(newGrade);
             if (grade==null) {
@@ -145,13 +142,10 @@ public class EmployeesController {
                 employee.setGrade(grade);
             }
         }
-
         if(newSalary != null) {
             employee.setSalary(newSalary);
         }
-
         employeeRepository.save(employee);
-
         return employee;
     }
 
@@ -213,7 +207,7 @@ public class EmployeesController {
             employees = employeeRepository.findByLastname(lastName);
         }
         else {
-            throw new InvalidParametersException();
+            throw new NoAttributesProvidedException();
         }
 
         return employees;
@@ -271,9 +265,9 @@ public class EmployeesController {
         return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
     }
 
-    @ExceptionHandler(DepartmentNotSpecifiedException.class)
+    @ExceptionHandler(AttributeNotSpecifiedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError departmentNotSpecified(DepartmentNotSpecifiedException e) {
-        return new RestError(Errors.DEPARTMENT_NOT_SPECIFIED, e.getMessage());
+    public RestError attributeNotSpecified(AttributeNotSpecifiedException e) {
+        return new RestError(Errors.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
     }
 }

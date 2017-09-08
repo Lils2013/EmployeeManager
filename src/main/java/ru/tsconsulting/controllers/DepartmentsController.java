@@ -3,11 +3,13 @@ package ru.tsconsulting.controllers;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.*;
+import ru.tsconsulting.errorHandling.not_found_exceptions.DepartmentNotFoundException;
+import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
+import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 

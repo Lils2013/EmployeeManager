@@ -7,7 +7,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.tsconsulting.department_ws.*;
 import ru.tsconsulting.entities.Department;
-import ru.tsconsulting.errorHandling.DepartmentNotFoundException;
+import ru.tsconsulting.errorHandling.not_found_exceptions.DepartmentNotFoundException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 
 import java.util.List;
