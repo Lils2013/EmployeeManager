@@ -14,6 +14,8 @@ import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.errorHandling.not_found_exceptions.*;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.*;
+import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyFiredException;
+import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyHiredException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
@@ -269,5 +271,17 @@ public class EmployeesController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError attributeNotSpecified(AttributeNotSpecifiedException e) {
         return new RestError(Errors.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeIsAlreadyFiredException.class)
+    @ResponseStatus(HttpStatus.FOUND)
+    public RestError alreadyFired(EmployeeIsAlreadyFiredException e) {
+        return new RestError(Errors.ALREADY_FIRED, e.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeIsAlreadyHiredException.class)
+    @ResponseStatus(HttpStatus.FOUND)
+    public RestError alreadyHired(EmployeeIsAlreadyHiredException e) {
+        return new RestError(Errors.ALREADY_HIRED, e.getMessage());
     }
 }

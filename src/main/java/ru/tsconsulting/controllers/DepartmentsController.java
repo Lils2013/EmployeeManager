@@ -10,6 +10,9 @@ import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.errorHandling.not_found_exceptions.DepartmentNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
+import ru.tsconsulting.errorHandling.notification_exceptions.DepartmentHasSubdepartmentsException;
+import ru.tsconsulting.errorHandling.notification_exceptions.DepartmentIsNotEmptyException;
+import ru.tsconsulting.errorHandling.notification_exceptions.InvalidDepartmentHierarchyException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
@@ -32,51 +35,7 @@ public class DepartmentsController {
         this.employeeRepository = employeeRepository;
     }
 
-	@ApiOperation(value = "Change parent department")
-    @RequestMapping(path = "/{departmentId}/changeHierarchy", method = RequestMethod.POST)
-    public Department changeHierarchy(@PathVariable Long departmentId,
-                                      @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
-                                      HttpServletRequest request) {
-        if (Objects.equals(departmentId, newHeadDepartmentId)) {
-            throw new InvalidDepartmentHierarchyException();
-        }
-        Department original = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
-        Department newHead = departmentRepository.findByIdAndIsDismissedIsFalse(newHeadDepartmentId);
-        if (original == null) {
-            throw new DepartmentNotFoundException(departmentId.toString());
-        }
-        if (newHead == null) {
-            throw new DepartmentNotFoundException(newHeadDepartmentId.toString());
-        }
-        if (isParent(newHead,original)) {
-            throw new InvalidDepartmentHierarchyException();
-        }
-        original.setParent(newHead);
-        return departmentRepository.save(original);
-    }
-
-	@ApiOperation(value = "Return all employees of department")
-    @RequestMapping(path = "/{departmentId}/employees", method = RequestMethod.GET)
-    public List<Employee> employeeByDepartment(@PathVariable Long departmentId, HttpServletRequest request) {
-        if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
-            return employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId);
-        } else {
-            throw new DepartmentNotFoundException(departmentId.toString());
-        }
-    }
-
-	@ApiOperation(value = "Return all direct sub departments of given department")
-    @RequestMapping(path = "/{departmentId}/subs", method = RequestMethod.GET)
-    public List<Department> findSubDepartments(@PathVariable Long departmentId,
-                                        HttpServletRequest request) {
-        if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
-            return departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId);
-        } else {
-            throw new DepartmentNotFoundException(departmentId.toString());
-        }
-    }
-
-	@ApiOperation(value = "Create new department")
+    @ApiOperation(value = "Create new department")
     @RequestMapping(method = RequestMethod.POST)
     public Department createDepartment(@RequestBody Department.DepartmentDetails departmentDetails,
                                        HttpServletRequest request) {
@@ -111,6 +70,7 @@ public class DepartmentsController {
         }
         return department;
     }
+
     @RequestMapping(method = RequestMethod.GET)
     public Department getDepartmentByName(@RequestParam(value = "name", required = true)String departmentName,
                                           HttpServletRequest request)
@@ -123,10 +83,10 @@ public class DepartmentsController {
         return department;
     }
 
-	@ApiOperation(value = "Delete department")
+    @ApiOperation(value = "Delete department")
     @RequestMapping(path = "/{departmentId}", method = RequestMethod.DELETE)
     public void deleteDepartment(@PathVariable Long departmentId,
-                                              HttpServletRequest request) {
+                                 HttpServletRequest request) {
         Department current = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
 
         if (current != null) {
@@ -143,6 +103,50 @@ public class DepartmentsController {
         } else {
             throw new DepartmentNotFoundException(""+departmentId);
         }
+    }
+
+    @ApiOperation(value = "Return all direct sub departments of given department")
+    @RequestMapping(path = "/{departmentId}/subs", method = RequestMethod.GET)
+    public List<Department> findSubDepartments(@PathVariable Long departmentId,
+                                               HttpServletRequest request) {
+        if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
+            return departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId);
+        } else {
+            throw new DepartmentNotFoundException(departmentId.toString());
+        }
+    }
+
+    @ApiOperation(value = "Return all employees of department")
+    @RequestMapping(path = "/{departmentId}/employees", method = RequestMethod.GET)
+    public List<Employee> employeeByDepartment(@PathVariable Long departmentId, HttpServletRequest request) {
+        if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
+            return employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId);
+        } else {
+            throw new DepartmentNotFoundException(departmentId.toString());
+        }
+    }
+
+	@ApiOperation(value = "Change parent department")
+    @RequestMapping(path = "/{departmentId}/changeHierarchy", method = RequestMethod.POST)
+    public Department changeHierarchy(@PathVariable Long departmentId,
+                                      @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
+                                      HttpServletRequest request) {
+        if (Objects.equals(departmentId, newHeadDepartmentId)) {
+            throw new InvalidDepartmentHierarchyException();
+        }
+        Department original = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
+        Department newHead = departmentRepository.findByIdAndIsDismissedIsFalse(newHeadDepartmentId);
+        if (original == null) {
+            throw new DepartmentNotFoundException(departmentId.toString());
+        }
+        if (newHead == null) {
+            throw new DepartmentNotFoundException(newHeadDepartmentId.toString());
+        }
+        if (isParent(newHead,original)) {
+            throw new InvalidDepartmentHierarchyException();
+        }
+        original.setParent(newHead);
+        return departmentRepository.save(original);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

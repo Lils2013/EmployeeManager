@@ -1,10 +1,10 @@
-package ru.tsconsulting.errorHandling;
+package ru.tsconsulting.errorHandling.notification_exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Employee is already hired.")
+@ResponseStatus(value = HttpStatus.FOUND, reason = "Employee is already hired.")
 public class EmployeeIsAlreadyHiredException extends EntityNotFoundException {
     public EmployeeIsAlreadyHiredException(String employeeDetail) {
         super(employeeDetail);

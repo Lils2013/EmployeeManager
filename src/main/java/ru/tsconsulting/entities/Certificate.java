@@ -2,6 +2,7 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
@@ -21,6 +22,7 @@ public class Certificate {
 	private Long id;
 	private String name;
 	private Long serialNumber;
+
 	private byte[] scan;
 	@ManyToOne
 	private CertificateOrganisation certificateOrganisation;
@@ -106,6 +108,7 @@ public class Certificate {
 	public static class CertificateDetails {
 		private String name;
 		private Long serialNumber;
+        @ApiModelProperty(value = "File that contains image of the certificate. Use null for now unless otherwise instructed")
 		private byte[] scan;
 		private Long certificateOrganisationId;
 
