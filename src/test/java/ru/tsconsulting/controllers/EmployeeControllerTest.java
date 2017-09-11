@@ -138,7 +138,7 @@ public class EmployeeControllerTest {
 		when(positionRepositoryMock.findById(newPositionId)).thenReturn(newPosition);
 		when(gradeRepositoryMock.findById(newGradeId)).thenReturn(newGrade);
 
-		when(employeeRepositoryMock.findByIdAndIsFiredIsFalse(employee.getId())).thenReturn(employee);
+		when(employeeRepositoryMock.findById(employee.getId())).thenReturn(employee);
 
 		resultActions = mockMvc.perform(post("/employees/100/edit")
 				.param("newPositionId", newPositionId.toString())
