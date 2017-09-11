@@ -1,6 +1,7 @@
 package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +62,7 @@ public class DepartmentsController {
         return departmentRepository.save(department);
     }
 
+    @ApiOperation(value = "Return department by id")
     @RequestMapping(path = "/{departmentId}", method = RequestMethod.GET)
     public Department getDepartment(@PathVariable Long departmentId,
                                     HttpServletRequest request) {
@@ -71,6 +73,7 @@ public class DepartmentsController {
         return department;
     }
 
+    @ApiOperation(value = "Return department by name")
     @RequestMapping(method = RequestMethod.GET)
     public Department getDepartmentByName(@RequestParam(value = "name", required = true)String departmentName,
                                           HttpServletRequest request)
@@ -128,8 +131,10 @@ public class DepartmentsController {
 
 	@ApiOperation(value = "Change parent department")
     @RequestMapping(path = "/{departmentId}/changeHierarchy", method = RequestMethod.POST)
-    public Department changeHierarchy(@PathVariable Long departmentId,
-                                      @RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
+    public Department changeHierarchy(
+            @ApiParam(value = "id of a department", required = true)@PathVariable Long departmentId,
+            @ApiParam(value = "must not be child of changed department to avoid circular " +
+                    "dependency", required = true)@RequestParam(value = "newHeadDepartmentId") Long newHeadDepartmentId,
                                       HttpServletRequest request) {
         if (Objects.equals(departmentId, newHeadDepartmentId)) {
             throw new InvalidDepartmentHierarchyException();

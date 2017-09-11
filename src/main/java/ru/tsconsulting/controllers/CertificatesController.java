@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Certificate;
 import ru.tsconsulting.entities.CertificateList;
 import ru.tsconsulting.entities.CertificateOrganisation;
+import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.Errors;
 import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.errorHandling.not_found_exceptions.CertificateNotFoundException;
@@ -16,7 +17,9 @@ import ru.tsconsulting.errorHandling.not_found_exceptions.CertificateOrganisatio
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.AttributeNotSpecifiedException;
+import ru.tsconsulting.errorHandling.not_specified_exceptions.CertificateNotSpecifiedException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.CertificateOrganisationNameNotSpecifiedException;
+import ru.tsconsulting.errorHandling.not_specified_exceptions.EmployeeNotSpecifiedException;
 import ru.tsconsulting.errorHandling.notification_exceptions.CertificateOrganisationAlreadyExistsException;
 import ru.tsconsulting.repositories.CertificateListRepository;
 import ru.tsconsulting.repositories.CertificateOrganisationRepository;
@@ -24,6 +27,7 @@ import ru.tsconsulting.repositories.CertificateRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/certificates")
@@ -84,6 +88,16 @@ public class CertificatesController {
         return certificate;
     }
 
+    @ApiOperation(value = "Return all certificates")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of certificates"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path="/all", method = RequestMethod.GET)
+    public List<Certificate> getAllCertificates(HttpServletRequest request) {
+        return certificateRepository.findAll();
+    }
+
 	@ApiOperation(value = "Edit certificate")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successful edition of certificate"),
@@ -130,7 +144,13 @@ public class CertificatesController {
 		return certificate;
 	}
 
-    @RequestMapping(path="/organisation",method = RequestMethod.POST)
+    @ApiOperation(value = "Create certificate organisation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful creation of certificate organisation"),
+            @ApiResponse(code = 404, message = "Certificate organisation with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path="/organisations",method = RequestMethod.POST)
     public CertificateOrganisation createCertificateOrganisation(@RequestBody CertificateOrganisation.CertificateOrganisationDetails certificateOrganisationDetails,
                                                                  HttpServletRequest request) {
         CertificateOrganisation certificateOrganisation = new CertificateOrganisation(certificateOrganisationDetails);
@@ -139,13 +159,40 @@ public class CertificatesController {
             if (certificateOrganisationRepository.findByName(certificateOrganisationDetails.getName()) != null) {
                  throw new CertificateOrganisationAlreadyExistsException(certificateOrganisationDetails.getName());
             }
-            else {
-                 throw new CertificateOrganisationNameNotSpecifiedException();
-            }
+        } else {
+            throw new CertificateOrganisationNameNotSpecifiedException();
         }
 
         CertificateOrganisation result = certificateOrganisationRepository.save(certificateOrganisation);
         return result;
+    }
+
+    @ApiOperation(value = "Return certificate organisation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of certificate organisation"),
+            @ApiResponse(code = 404, message = "Certificate organisation with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path="/organisations/{certificateOrganisationId}", method = RequestMethod.GET)
+    public CertificateOrganisation getCertificateOrganisation(@PathVariable Long certificateOrganisationId,
+                                      HttpServletRequest request) {
+        CertificateOrganisation certificateOrganisation = certificateOrganisationRepository.findById(certificateOrganisationId);
+
+        if (certificateOrganisation == null) {
+            throw new CertificateOrganisationNotFoundException(certificateOrganisationId.toString());
+        }
+
+        return certificateOrganisation;
+    }
+
+    @ApiOperation(value = "Return all certificate organisations")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of certificate organisations"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path="/organisations/all", method = RequestMethod.GET)
+    public List<CertificateOrganisation> getAllCertificateOrganisations(HttpServletRequest request) {
+        return certificateOrganisationRepository.findAll();
     }
 
     @ApiOperation(value = "Add row to certificate list")
@@ -165,7 +212,7 @@ public class CertificatesController {
 				throw new CertificateNotFoundException(certificateListDetails.getCertificateId().toString());
             }
         } else {
-            throw new IllegalArgumentException("Incorrect id format(null)");
+            throw new EmployeeNotSpecifiedException();
         }
 
         if (certificateListDetails.getEmployeeId() != null) {
@@ -176,12 +223,46 @@ public class CertificatesController {
             }
 
         } else {
-            throw new IllegalArgumentException("Incorrect id format(null)");
+            throw new CertificateNotSpecifiedException();
         }
 
         CertificateList result = certificateListRepository.save(certificateList);
         return result;
     }
+
+    @ApiOperation(value = "Find rows by employee id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval the row"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path="/list/find", method = RequestMethod.GET)
+    public List<CertificateList> findByEmployeeOrCertificate( @RequestParam(required = false) Long employeeId, @RequestParam(required = false) Long certificateId,
+                                               HttpServletRequest request) {
+	    Employee employee;
+	    Certificate certificate;
+        List<CertificateList> certificateList;
+
+	    if(employeeId != null && certificateId != null) {
+	        employee = employeeRepository.findById(employeeId);
+	        certificate = certificateRepository.findById(certificateId);
+            certificateList = certificateListRepository.findByEmployeeAndCertificate(employee, certificate);
+        }
+        else if(employeeId != null) {
+	        employee = employeeRepository.findById(employeeId);
+	        certificateList = certificateListRepository.findByEmployee(employee);
+        }
+        else if(certificateId != null) {
+	        certificate = certificateRepository.findById(certificateId);
+	        certificateList = certificateListRepository.findByCertificate(certificate);
+        }
+        else {
+	        throw new EmployeeNotSpecifiedException();
+        }
+
+        return certificateList;
+    }
+
+
 
         @ExceptionHandler(EntityNotFoundException.class)
         @ResponseStatus(HttpStatus.NOT_FOUND)

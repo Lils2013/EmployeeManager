@@ -61,10 +61,10 @@ public class EmployeesController {
                                        @RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
         if (employeeDetails.getFirstname() == null) {
-            throw new FirstnameNotSpecifiedException();
+            throw new EmployeeFirstNameNotSpecifiedException();
         }
         if (employeeDetails.getLastname() == null) {
-            throw new LastnameNotSpecifiedException();
+            throw new EmployeeLastNameNotSpecifiedException();
         }
         Employee employee = new Employee(employeeDetails);
         if (employeeDetails.getGrade() != null) {
