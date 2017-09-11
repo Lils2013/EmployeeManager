@@ -22,8 +22,9 @@ import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @RestController
 @RequestMapping("/employees")
@@ -56,7 +57,8 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(method = RequestMethod.POST)
-    public Employee createEmployee(@ApiParam(value = "Data for creating a new employee") @RequestBody Employee.EmployeeDetails employeeDetails,
+    public Employee createEmployee(@ApiParam(value = "Data for creating a new employee")
+                                       @RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
         if (employeeDetails.getFirstname() == null) {
             throw new FirstnameNotSpecifiedException();
@@ -252,17 +254,57 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}/audit", method = RequestMethod.GET)
-    public List<Employee> getAudit(@ApiParam(value = "Id of employee",
+    public Map<String,Employee> getAudit(@ApiParam(value = "Id of employee",
             required = true) @PathVariable Long employeeId,
+                                   @RequestParam(value = "from", required = false) String from,
+                                   @RequestParam(value = "to", required = false) String to,
                                    HttpServletRequest request) {
         if (employeeRepository.findById(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId.toString());
         }
-        AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(Employee.class,
-                true, false);
-        query.add(AuditEntity.id().eq(employeeId));
-        List<Employee> list = query.getResultList();
-        return list;
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        List<Number> revisions = auditReader.getRevisions(Employee.class, employeeId);
+        Map<String, Employee> map = new HashMap<>();
+        if (from != null && to != null) {
+            LocalDateTime fromDate = LocalDateTime.parse(from);
+            LocalDateTime toDate = LocalDateTime.parse(to);
+            for (Number i : revisions) {
+                Date date = auditReader.getRevisionDate(i);
+                LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
+                if (localDateTime.isAfter(fromDate) && localDateTime.isBefore(toDate)) {
+                    Employee employee = auditReader.find(Employee.class, employeeId, i);
+                    map.put(localDateTime.toString(), employee);
+                }
+            }
+        } else if (from != null) {
+            LocalDateTime fromDate = LocalDateTime.parse(from);
+            for (Number i : revisions) {
+                Date date = auditReader.getRevisionDate(i);
+                LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
+                if (localDateTime.isAfter(fromDate)) {
+                    Employee employee = auditReader.find(Employee.class, employeeId, i);
+                    map.put(localDateTime.toString(), employee);
+                }
+            }
+        } else if (to != null) {
+            LocalDateTime toDate = LocalDateTime.parse(to);
+            for (Number i : revisions) {
+                Date date = auditReader.getRevisionDate(i);
+                LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
+                if (localDateTime.isBefore(toDate)) {
+                    Employee employee = auditReader.find(Employee.class, employeeId, i);
+                    map.put(localDateTime.toString(), employee);
+                }
+            }
+        } else {
+            for (Number i : revisions) {
+                Date date = auditReader.getRevisionDate(i);
+                LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
+                Employee employee = auditReader.find(Employee.class, employeeId, i);
+                map.put(localDateTime.toString(), employee);
+            }
+        }
+        return map;
     }
 
 
