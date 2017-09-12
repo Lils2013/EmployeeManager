@@ -77,7 +77,7 @@ public class EmployeesController {
         }
         if (employeeDetails.getPosition() != null) {
             if (positionRepository.findById(employeeDetails.getPosition()) == null) {
-                throw new GradeNotFoundException(employeeDetails.getPosition().toString());
+                throw new PositionNotFoundException(employeeDetails.getPosition().toString());
             } else {
                 employee.setPosition(positionRepository.findById(employeeDetails.getPosition()));
             }
