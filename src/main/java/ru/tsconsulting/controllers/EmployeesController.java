@@ -319,15 +319,6 @@ public class EmployeesController {
         return new RestError(Errors.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError attributeNotValid(MethodArgumentNotValidException e) {
-        BindingResult result = e.getBindingResult();
-        FieldError error = result.getFieldError();
-        return new RestError(Errors.INVALID_ATTRIBUTE, error.getDefaultMessage() +
-                " Rejected value is: \'" + error.getRejectedValue() + "\'");
-    }
-
     @ExceptionHandler(EmployeeIsAlreadyFiredException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError alreadyFired(EmployeeIsAlreadyFiredException e) {

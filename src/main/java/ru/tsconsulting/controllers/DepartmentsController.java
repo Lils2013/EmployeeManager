@@ -183,15 +183,6 @@ public class DepartmentsController {
         return new RestError(Errors.INVALID_HIERARCHY, e.getMessage());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError attributeNotValid(MethodArgumentNotValidException e) {
-        BindingResult result = e.getBindingResult();
-        FieldError error = result.getFieldError();
-        return new RestError(Errors.INVALID_ATTRIBUTE, error.getDefaultMessage() +
-                " Rejected value is: \'" + error.getRejectedValue() + "\'");
-    }
-
     private boolean isParent(Department potentialChild, Department potentialParent) {
         if (potentialChild == potentialParent) {
             return false;

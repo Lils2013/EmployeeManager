@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Grade;
@@ -27,7 +28,7 @@ public class GradesController {
 
     @ApiOperation(value = "Create new grade")
     @RequestMapping(method = RequestMethod.POST)
-    public Grade createGrade(@RequestBody Grade.GradeDetails gradeDetails){
+    public Grade createGrade(@Validated @RequestBody Grade.GradeDetails gradeDetails){
         return gradeRepository.save(new Grade(gradeDetails));
     }
 
@@ -35,14 +36,5 @@ public class GradesController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Grade> getAllGrades(){
         return gradeRepository.findAll();
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError attributeNotValid(MethodArgumentNotValidException e) {
-        BindingResult result = e.getBindingResult();
-        FieldError error = result.getFieldError();
-        return new RestError(Errors.INVALID_ATTRIBUTE, error.getDefaultMessage() +
-                " Rejected value is: \'" + error.getRejectedValue() + "\'");
     }
 }

@@ -28,6 +28,8 @@ public class Grade {
     @OneToMany(mappedBy = "grade")
     private Set<Employee> employees;
 
+	@NotNull
+	@Size(min = 1, max = 2)
     private String grade;
 
 	public Grade() {
@@ -53,10 +55,7 @@ public class Grade {
         this.grade = grade;
     }
 
-
-
 	public static class GradeDetails {
-
 
 		@NotNull(message = "Grade cannot be null.")
 		@Size(min = 1, max = 2, message = "Invalid size of grade string: must be between 1 and 2.")

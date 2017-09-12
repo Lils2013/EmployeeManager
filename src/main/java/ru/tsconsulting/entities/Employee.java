@@ -23,28 +23,40 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeGenerator")
     private Long id;
 
-
+    @NotNull
+    @Size(min = 1, max = 32)
     private String firstname;
+
+    @NotNull
+    @Size(min = 1, max = 32)
     private String lastname;
+
+    @Size(min = 1, max = 32)
     private String middlename;
+
+    @Size(min = 1, max = 1)
     private String gender;
+
     @Column(name = "IS_FIRED")
     private Boolean isFired = false;
+
     @JsonFormat(pattern="yyyy-MM-dd")
     @Column(columnDefinition = "DATE")
     private LocalDate birthdate;
+
     @JsonIgnore
-  //  @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Position position;
+
+    @NotNull
     @JsonIgnore
-   // @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Department department;
+
     @JsonIgnore
-   // @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Grade grade;
+
     @Column(name = "salary", precision = 20, scale = 2)
     private BigDecimal salary;
 
@@ -200,7 +212,7 @@ public class Employee {
         @Size(min = 1, max = 32, message = "Invalid size of middlename string: must be between 1 and 32.")
 	    private String middlename;
 
-        @ApiModelProperty(value = "gender, M or F, although in current implementation it can be any string value", example="M")
+        @ApiModelProperty(value = "gender, M or F, although in current implementation it can be any string of size 1", example="M")
 	    private String gender;
 
         @ApiModelProperty(value = "birth date in yyyy-MM-dd format", example="2008-10-27")

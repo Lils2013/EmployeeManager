@@ -27,8 +27,8 @@ public class Position {
     @OneToMany(mappedBy = "position")
     private Set<Employee> employees;
 
-	@NotNull(message = "Position name cannot be null.")
-	@Size(min = 1, max = 32, message = "Invalid size of position name string: must be between 1 and 32.")
+    @NotNull
+    @Size(min = 1, max = 32)
     private String name;
 
 	public Position() {
@@ -55,6 +55,9 @@ public class Position {
     }
 
 	public static class PositionDetails {
+
+		@NotNull(message = "Position name cannot be null.")
+		@Size(min = 1, max = 32, message = "Invalid size of position name string: must be between 1 and 32.")
 	    private String name;
 
 	    public PositionDetails() {
