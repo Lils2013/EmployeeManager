@@ -99,7 +99,8 @@
             <xs:element name="lastname" type="xs:string"/>
             <xs:element name="middlename" type="xs:string"/>
             <xs:element name="positionId" type="xs:long"/>
-            <xs:element name="salary" type="xs:long"/>
+            <xs:element name="salary" type="xs:double"/>
+
         </xs:sequence>
     </xs:complexType>
 </xs:schema>
