@@ -10,6 +10,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -141,6 +142,7 @@ public class Department {
     @ApiModel(value="DepartmentDetails", description="data for creating a new department")
 	public static class DepartmentDetails {
 
+        @NotNull(message = "Name cannot be null.")
         @ApiModelProperty(required=true)
         @Size(min = 1, max = 64, message = "Invalid size of name string: must be between 1 and 64.")
 	    private String name;

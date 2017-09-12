@@ -7,6 +7,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -55,6 +57,9 @@ public class Grade {
 
 	public static class GradeDetails {
 
+
+		@NotNull(message = "Grade cannot be null.")
+		@Size(min = 1, max = 2, message = "Invalid size of grade string: must be between 1 and 2.")
 	    private String grade;
 
 	    public GradeDetails() {

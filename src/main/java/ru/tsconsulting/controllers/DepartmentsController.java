@@ -185,7 +185,7 @@ public class DepartmentsController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError attributeNotSpecified(MethodArgumentNotValidException e) {
+    public RestError attributeNotValid(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
         FieldError error = result.getFieldError();
         return new RestError(Errors.INVALID_ATTRIBUTE, error.getDefaultMessage() +

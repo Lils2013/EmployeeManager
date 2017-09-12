@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -187,9 +188,16 @@ public class Employee {
 	public static class EmployeeDetails {
 
         @ApiModelProperty(required=true)
+        @NotNull(message = "Firstname cannot be null.")
+        @Size(min = 1, max = 32, message = "Invalid size of firstname string: must be between 1 and 32.")
 	    private String firstname;
+
         @ApiModelProperty(required=true)
+        @NotNull(message = "Lastname cannot be null.")
+        @Size(min = 1, max = 32, message = "Invalid size of lastname string: must be between 1 and 32.")
 	    private String lastname;
+
+        @Size(min = 1, max = 32, message = "Invalid size of middlename string: must be between 1 and 32.")
 	    private String middlename;
 
         @ApiModelProperty(value = "gender, M or F, although in current implementation it can be any string value", example="M")
@@ -201,10 +209,14 @@ public class Employee {
 
         @ApiModelProperty(value = "id of position", example="1")
 	    private Long position;
+
+        @NotNull(message = "Department cannot be null.")
         @ApiModelProperty(value = "id of department", example="1",required=true)
 	    private Long department;
+
         @ApiModelProperty(value = "id of grade", example="1")
 	    private Long grade;
+
 	    private BigDecimal salary;
 
 	    public EmployeeDetails() {
