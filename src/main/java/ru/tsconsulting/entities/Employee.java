@@ -3,10 +3,10 @@ package ru.tsconsulting.entities;
 import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 
@@ -20,6 +20,8 @@ public class Employee {
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeGenerator")
     private Long id;
+
+
     private String firstname;
     private String lastname;
     private String middlename;

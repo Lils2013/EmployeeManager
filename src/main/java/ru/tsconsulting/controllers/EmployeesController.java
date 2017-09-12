@@ -58,7 +58,7 @@ public class EmployeesController {
     )
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@ApiParam(value = "Data for creating a new employee")
-                                       @RequestBody Employee.EmployeeDetails employeeDetails,
+                                   @RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
         if (employeeDetails.getFirstname() == null) {
             throw new EmployeeFirstNameNotSpecifiedException();
@@ -120,7 +120,7 @@ public class EmployeesController {
     )
     @RequestMapping(path = "/{employeeId}/edit", method = RequestMethod.POST)
     public Employee editEmployee(@ApiParam(value = "Id of employee",
-            required = true)@PathVariable Long employeeId,
+            required = true) @PathVariable Long employeeId,
                                  @ApiParam(value = "Id of new position")
                                  @RequestParam(value = "newPositionId", required = false) Long newPositionId,
                                  @ApiParam(value = "Id of new grade")
@@ -227,9 +227,9 @@ public class EmployeesController {
     )
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
     public Employee transferEmployee(@ApiParam(value = "Id of employee",
-            required = true)@PathVariable Long employeeId,
+            required = true) @PathVariable Long employeeId,
                                      @ApiParam(value = "Id of new department",
-                                             required = true)@RequestParam(value = "newDepartmentId") Long newDepartmentId,
+                                             required = true) @RequestParam(value = "newDepartmentId") Long newDepartmentId,
                                      HttpServletRequest request) {
         if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId.toString());
@@ -254,11 +254,11 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}/audit", method = RequestMethod.GET)
-    public Map<String,Employee> getAudit(@ApiParam(value = "Id of employee",
+    public Map<String, Employee> getAudit(@ApiParam(value = "Id of employee",
             required = true) @PathVariable Long employeeId,
-                                   @RequestParam(value = "from", required = false) String from,
-                                   @RequestParam(value = "to", required = false) String to,
-                                   HttpServletRequest request) {
+                                          @RequestParam(value = "from", required = false) String from,
+                                          @RequestParam(value = "to", required = false) String to,
+                                          HttpServletRequest request) {
         if (employeeRepository.findById(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId.toString());
         }
@@ -321,13 +321,13 @@ public class EmployeesController {
     }
 
     @ExceptionHandler(EmployeeIsAlreadyFiredException.class)
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError alreadyFired(EmployeeIsAlreadyFiredException e) {
         return new RestError(Errors.ALREADY_FIRED, e.getMessage());
     }
 
     @ExceptionHandler(EmployeeIsAlreadyHiredException.class)
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError alreadyHired(EmployeeIsAlreadyHiredException e) {
         return new RestError(Errors.ALREADY_HIRED, e.getMessage());
     }

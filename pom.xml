@@ -183,6 +183,12 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-jsonSchema -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jsonSchema</artifactId>
+            <version>2.9.1</version>
+        </dependency>
 
         <dependency>
             <groupId>com.oracle</groupId>
@@ -344,8 +350,6 @@
                 <configuration>
                     <schemaDirectory>src/main/webapp/WEB-INF/soap</schemaDirectory>
                     <clearOutputDir>false</clearOutputDir>
-
-
                 </configuration>
             </plugin>
         </plugins>

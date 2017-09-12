@@ -4,6 +4,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
@@ -11,6 +15,7 @@ import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.errorHandling.not_found_exceptions.DepartmentNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
+import ru.tsconsulting.errorHandling.not_specified_exceptions.AttributeNotSpecifiedException;
 import ru.tsconsulting.errorHandling.notification_exceptions.DepartmentHasSubdepartmentsException;
 import ru.tsconsulting.errorHandling.notification_exceptions.DepartmentIsNotEmptyException;
 import ru.tsconsulting.errorHandling.notification_exceptions.InvalidDepartmentHierarchyException;
@@ -38,7 +43,7 @@ public class DepartmentsController {
 
     @ApiOperation(value = "Create new department")
     @RequestMapping(method = RequestMethod.POST)
-    public Department createDepartment(@RequestBody Department.DepartmentDetails departmentDetails,
+    public Department createDepartment(@Validated @RequestBody Department.DepartmentDetails departmentDetails,
                                        HttpServletRequest request) {
         Department department = new Department(departmentDetails);
         Long parentId = departmentDetails.getParent();
@@ -176,6 +181,15 @@ public class DepartmentsController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError invalidHierarchy(InvalidDepartmentHierarchyException e) {
         return new RestError(Errors.INVALID_HIERARCHY, e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public RestError attributeNotSpecified(MethodArgumentNotValidException e) {
+        BindingResult result = e.getBindingResult();
+        FieldError error = result.getFieldError();
+        return new RestError(Errors.INVALID_ATTRIBUTE, error.getDefaultMessage() +
+                " Rejected value is: \'" + error.getRejectedValue() + "\'");
     }
 
     private boolean isParent(Department potentialChild, Department potentialParent) {
