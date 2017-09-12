@@ -113,6 +113,29 @@ public class DepartmentsController {
         }
     }
 
+    @ApiOperation(value = "Edit department")
+    @RequestMapping(path = "/{departmentId}", method = RequestMethod.POST)
+    public void changeDepartmentName(@PathVariable Long departmentId, Long newChiefId, String newName,
+                                 HttpServletRequest request) {
+        Department department = departmentRepository.findById(departmentId);
+
+
+        if(newName != null) {
+            department.setName(newName);
+        }
+
+        if (newChiefId != null) {
+            Employee chief = employeeRepository.findByIdAndIsFiredIsFalse(newChiefId);
+            if (chief != null) {
+                department.setChief(chief);
+            } else {
+                throw new EmployeeNotFoundException(newChiefId.toString());
+            }
+        }
+
+        departmentRepository.save(department);
+    }
+
     @ApiOperation(value = "Return all direct sub departments of given department")
     @RequestMapping(path = "/{departmentId}/subs", method = RequestMethod.GET)
     public List<Department> findSubDepartments(@PathVariable Long departmentId,
