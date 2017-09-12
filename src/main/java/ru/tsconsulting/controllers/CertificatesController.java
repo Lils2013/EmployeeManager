@@ -1,6 +1,7 @@
 package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,9 @@ public class CertificatesController {
 			@ApiResponse(code = 500, message = "Internal server error")}
 	)
 	@RequestMapping(method = RequestMethod.POST)
-	public Certificate createCertificate(@RequestBody Certificate.CertificateDetails certificateDetails,
+	public Certificate createCertificate(@ApiParam(value = "CertificateOrganisationId, serialNumber - whole numbers in " +
+            "the range of (0) to (1,0E19); Name - string with max length = 255 symbols; Scan - file with max size = " +
+            "255 bytes.")@RequestBody Certificate.CertificateDetails certificateDetails,
 	                                     HttpServletRequest request) {
 		Certificate certificate = new Certificate(certificateDetails);
 
@@ -77,7 +80,9 @@ public class CertificatesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{certificateId}", method = RequestMethod.GET)
-    public Certificate getCertificate(@PathVariable Long certificateId,
+    public Certificate getCertificate(
+            @ApiParam(value = "Id of certificate, a whole number in the range of " +
+                    "(0) to (1,0E19)", required = true) @PathVariable Long certificateId,
                                 HttpServletRequest request) {
         Certificate certificate = certificateRepository.findById(certificateId);
 
@@ -105,11 +110,16 @@ public class CertificatesController {
 			@ApiResponse(code = 500, message = "Internal server error")}
 	)
 	@RequestMapping(path="/{certificateId}/edit",method = RequestMethod.POST)
-	public Certificate editCertificate(@PathVariable Long certificateId,
-	                             @RequestParam(value = "newName", required=false) String newName,
-	                             @RequestParam(value = "newSerialNumber", required=false) Long newSerialNumber,
-	                             @RequestParam(value = "newScan", required=false) byte[] newScan,
-	                             @RequestParam(value = "newCertificateOrganisationId", required=false) Long newCertificateOrganisationId,
+	public Certificate editCertificate(@ApiParam(value = "Id of certificate, a whole number in the range of (0) " +
+            "to (1,0E19)", required = true) @PathVariable Long certificateId,
+            @ApiParam(value = "New certificate name, string with max length = 255 symbols")
+            @RequestParam(value = "newName", required=false) String newName,
+            @ApiParam(value = "New serial number, a whole number in the range of (0) to (1,0E19)")
+	        @RequestParam(value = "newSerialNumber", required=false) Long newSerialNumber,
+            @ApiParam(value = "New scan, max size = 255 bytes")
+	        @RequestParam(value = "newScan", required=false) byte[] newScan,
+            @ApiParam(value = "New organization id, a whole number in the range of (0) to (1,0E19)")
+	        @RequestParam(value = "newCertificateOrganisationId", required=false) Long newCertificateOrganisationId,
 	                             HttpServletRequest request) {
 		Certificate certificate = certificateRepository.findById(certificateId);
 		if (certificate == null) {
@@ -174,14 +184,14 @@ public class CertificatesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path="/organisations/{certificateOrganisationId}", method = RequestMethod.GET)
-    public CertificateOrganisation getCertificateOrganisation(@PathVariable Long certificateOrganisationId,
+    public CertificateOrganisation getCertificateOrganisation(@ApiParam(value = "Certificate organization id, a whole " +
+            "number in the range of (0) to (1,0E19)")@PathVariable Long certificateOrganisationId,
                                       HttpServletRequest request) {
         CertificateOrganisation certificateOrganisation = certificateOrganisationRepository.findById(certificateOrganisationId);
 
         if (certificateOrganisation == null) {
             throw new CertificateOrganisationNotFoundException(certificateOrganisationId.toString());
         }
-
         return certificateOrganisation;
     }
 
@@ -236,7 +246,10 @@ public class CertificatesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path="/list/find", method = RequestMethod.GET)
-    public List<CertificateList> findByEmployeeOrCertificate( @RequestParam(required = false) Long employeeId, @RequestParam(required = false) Long certificateId,
+    public List<CertificateList> findByEmployeeOrCertificate( @ApiParam(value = "Id of an employee, a whole number " +
+            "in the range of (0) to (1,0E19)")@RequestParam(required = false) Long employeeId,
+            @ApiParam(value = "Certificate id, a whole number in the range of (0) to (1,0E19)")
+            @RequestParam(required = false) Long certificateId,
                                                HttpServletRequest request) {
 	    Employee employee;
 	    Certificate certificate;

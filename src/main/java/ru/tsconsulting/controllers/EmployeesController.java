@@ -2,14 +2,9 @@ package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.*;
 import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
@@ -25,7 +20,6 @@ import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
-
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -63,7 +57,10 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(method = RequestMethod.POST)
-    public Employee createEmployee(@ApiParam(value = "Data for creating a new employee")
+    public Employee createEmployee(@ApiParam(value = "firstname, lastname, middlename - string with max length = 255 symbols;" +
+            "department, grade, position - whole numbers in the range of (0) to (1,0E19); birthdate - datetime, compliant to " +
+            "LocalDateTime format in Java, e.g. 2007-12-03T10:15:30; gender - single charachter M or F; salary - " +
+            "a decimal number with precision = 14 and scale = 2")
                                    @Validated @RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
         Employee employee = new Employee(employeeDetails);
@@ -102,8 +99,8 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
-    public Employee getEmployee(@ApiParam(value = "Id of employee",
-            required = true) @PathVariable Long employeeId,
+    public Employee getEmployee(@ApiParam(value = "Id of employee, a whole number in the range of (0) to " +
+            "(1,0E19)", required = true) @PathVariable Long employeeId,
                                 HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {
@@ -111,8 +108,6 @@ public class EmployeesController {
         }
         return employee;
     }
-
-
 
     @ApiOperation(value = "Return all employees")
     @ApiResponses(value = {
@@ -133,11 +128,11 @@ public class EmployeesController {
     @RequestMapping(path = "/{employeeId}/edit", method = RequestMethod.POST)
     public Employee editEmployee(@ApiParam(value = "Id of employee",
             required = true) @PathVariable Long employeeId,
-                                 @ApiParam(value = "Id of new position")
+                                 @ApiParam(value = "Id of new position, a whole number in the range of (0) to (1,0E19)")
                                  @RequestParam(value = "newPositionId", required = false) Long newPositionId,
-                                 @ApiParam(value = "Id of new grade")
+                                 @ApiParam(value = "Id of new grade a whole number in the range of (0) to (1,0E19)")
                                  @RequestParam(value = "newGrade", required = false) Long newGrade,
-                                 @ApiParam(value = "New salary")
+                                 @ApiParam(value = "New salary, a decimal number with precision = 14 and scale = 2")
                                  @RequestParam(value = "newSalary", required = false) BigDecimal newSalary,
                                  HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
@@ -174,7 +169,7 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
-    public void fireEmployee(@ApiParam(value = "Id of employee to be fired",
+    public void fireEmployee(@ApiParam(value = "Id of employee to be fired, a whole number in the range of (0) to (1,0E19)",
             required = true) @PathVariable Long employeeId,
                              HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
@@ -193,7 +188,7 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.PUT)
-    public void hireEmployee(@ApiParam(value = "Id of employee to be rehired",
+    public void hireEmployee(@ApiParam(value = "Id of employee to be rehired, a whole number in the range of (0) to (1,0E19)",
             required = true) @PathVariable Long employeeId,
                              HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsTrue(employeeId);
@@ -238,9 +233,9 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
-    public Employee transferEmployee(@ApiParam(value = "Id of employee",
+    public Employee transferEmployee(@ApiParam(value = "Id of employee, a whole number in the range of (0) to (1,0E19)",
             required = true) @PathVariable Long employeeId,
-                                     @ApiParam(value = "Id of new department",
+                                     @ApiParam(value = "Id of new department, a whole number in the range of (0) to (1,0E19)",
                                              required = true) @RequestParam(value = "newDepartmentId") Long newDepartmentId,
                                      HttpServletRequest request) {
         if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
@@ -268,8 +263,10 @@ public class EmployeesController {
     @RequestMapping(path = "/{employeeId}/audit", method = RequestMethod.GET)
     public Map<LocalDateTime, Employee> getAudit(@ApiParam(value = "Id of employee",
             required = true) @PathVariable Long employeeId,
-                                          @RequestParam(value = "from", required = false) String from,
-                                          @RequestParam(value = "to", required = false) String to,
+            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, e.g. 2007-12-03T10:15:30")
+            @RequestParam(value = "from", required = false) String from,
+            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, e.g. 2007-12-03T10:15:30")
+            @RequestParam(value = "to", required = false) String to,
                                           HttpServletRequest request) {
         if (employeeRepository.findById(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId.toString());
@@ -343,7 +340,6 @@ public class EmployeesController {
     public RestError alreadyHired(EmployeeIsAlreadyHiredException e) {
         return new RestError(Errors.ALREADY_HIRED, e.getMessage());
     }
-
     @ExceptionHandler(InvalidSalaryValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError invalidSalary(InvalidSalaryValueException e) {

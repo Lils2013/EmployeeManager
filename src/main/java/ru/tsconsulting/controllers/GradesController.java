@@ -2,15 +2,9 @@ package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Grade;
-import ru.tsconsulting.errorHandling.Errors;
-import ru.tsconsulting.errorHandling.RestError;
 import ru.tsconsulting.repositories.GradeRepository;
 
 import java.util.List;
