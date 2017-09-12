@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -245,6 +242,7 @@ public class Employee {
         @ApiModelProperty(value = "id of grade", example="1")
 	    private Long grade;
 
+        @DecimalMin("0.00")
         @Digits(integer=12, fraction=2, message = "The integer and the fraction should be less than or equal to 12 and 2 respectively.")
 	    private BigDecimal salary;
 

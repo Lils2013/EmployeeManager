@@ -112,8 +112,6 @@ public class EmployeesController {
         return employee;
     }
 
-
-
     @ApiOperation(value = "Return all employees")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful retrieval of employees"),
