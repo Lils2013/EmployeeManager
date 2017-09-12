@@ -145,6 +145,9 @@ public class Employee {
     }
 
     public void setGender(String genderString) {
+	    if (genderString == null) {
+	        return;
+        }
         if (Objects.equals(genderString.toLowerCase(), "m")) {
             setGender(Gender.M);
         } else if (Objects.equals(genderString.toLowerCase(), "f")) {
