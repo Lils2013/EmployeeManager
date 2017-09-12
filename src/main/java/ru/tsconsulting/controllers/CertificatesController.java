@@ -93,7 +93,7 @@ public class CertificatesController {
             @ApiResponse(code = 200, message = "Successful retrieval of certificates"),
             @ApiResponse(code = 500, message = "Internal server error")}
     )
-    @RequestMapping(path="/all", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<Certificate> getAllCertificates(HttpServletRequest request) {
         return certificateRepository.findAll();
     }
@@ -190,7 +190,7 @@ public class CertificatesController {
             @ApiResponse(code = 200, message = "Successful retrieval of certificate organisations"),
             @ApiResponse(code = 500, message = "Internal server error")}
     )
-    @RequestMapping(path="/organisations/all", method = RequestMethod.GET)
+    @RequestMapping(path="/organisations", method = RequestMethod.GET)
     public List<CertificateOrganisation> getAllCertificateOrganisations(HttpServletRequest request) {
         return certificateOrganisationRepository.findAll();
     }
