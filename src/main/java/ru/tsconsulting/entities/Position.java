@@ -7,6 +7,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -24,6 +26,9 @@ public class Position {
    // @OneToMany(mappedBy = "position",fetch=FetchType.EAGER)
     @OneToMany(mappedBy = "position")
     private Set<Employee> employees;
+
+	@NotNull(message = "Position name cannot be null.")
+	@Size(min = 1, max = 32, message = "Invalid size of position name string: must be between 1 and 32.")
     private String name;
 
 	public Position() {

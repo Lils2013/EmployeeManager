@@ -6,6 +6,10 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
@@ -60,14 +64,8 @@ public class EmployeesController {
     )
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@ApiParam(value = "Data for creating a new employee")
-                                   @RequestBody Employee.EmployeeDetails employeeDetails,
+                                   @Validated @RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
-        if (employeeDetails.getFirstname() == null) {
-            throw new EmployeeFirstNameNotSpecifiedException();
-        }
-        if (employeeDetails.getLastname() == null) {
-            throw new EmployeeLastNameNotSpecifiedException();
-        }
         Employee employee = new Employee(employeeDetails);
         if (employeeDetails.getGrade() != null) {
             if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
@@ -328,6 +326,15 @@ public class EmployeesController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError attributeNotSpecified(AttributeNotSpecifiedException e) {
         return new RestError(Errors.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public RestError attributeNotValid(MethodArgumentNotValidException e) {
+        BindingResult result = e.getBindingResult();
+        FieldError error = result.getFieldError();
+        return new RestError(Errors.INVALID_ATTRIBUTE, error.getDefaultMessage() +
+                " Rejected value is: \'" + error.getRejectedValue() + "\'");
     }
 
     @ExceptionHandler(EmployeeIsAlreadyFiredException.class)

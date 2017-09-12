@@ -157,7 +157,7 @@ public class EmployeeEndpoint {
         employee.setMiddlename(createRequest.getMiddlename());
         employee.setLastname(createRequest.getLastname());
         employee.setGender(createRequest.getGender());
-        employee.setSalary(createRequest.getSalary());
+      //  employee.setSalary(createRequest.getSalary());
         employee.setBirthdate(LocalDate.parse(createRequest.getBirthdate()));
         employee = employeeRepository.save(employee);
         CreateResponse createResponse = new CreateResponse();
@@ -182,7 +182,7 @@ public class EmployeeEndpoint {
         }
         employeeSOAP.setId(employee.getId());
         employeeSOAP.setFired(employee.isFired());
-        employeeSOAP.setSalary(employee.getSalary());
+    //    employeeSOAP.setSalary(employee.getSalary());
         return employeeSOAP;
     }
 }
