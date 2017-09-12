@@ -28,6 +28,7 @@ public class GradesController {
         return gradeRepository.save(new Grade(gradeDetails));
     }
 
+    @ApiOperation(value = "Get all grades")
     @RequestMapping(method = RequestMethod.GET)
     public List<Grade> getAllGrades(){
         return gradeRepository.findAll();
