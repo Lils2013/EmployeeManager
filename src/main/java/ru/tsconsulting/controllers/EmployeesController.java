@@ -22,6 +22,7 @@ import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -76,7 +77,7 @@ public class EmployeesController {
         }
         if (employeeDetails.getPosition() != null) {
             if (positionRepository.findById(employeeDetails.getPosition()) == null) {
-                throw new GradeNotFoundException(employeeDetails.getPosition().toString());
+                throw new PositionNotFoundException(employeeDetails.getPosition().toString());
             } else {
                 employee.setPosition(positionRepository.findById(employeeDetails.getPosition()));
             }
@@ -126,7 +127,7 @@ public class EmployeesController {
                                  @ApiParam(value = "Id of new grade")
                                  @RequestParam(value = "newGrade", required = false) Long newGrade,
                                  @ApiParam(value = "New salary")
-                                 @RequestParam(value = "newSalary", required = false) Long newSalary,
+                                 @RequestParam(value = "newSalary", required = false) BigDecimal newSalary,
                                  HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {

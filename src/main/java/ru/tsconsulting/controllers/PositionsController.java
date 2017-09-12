@@ -28,6 +28,7 @@ public class PositionsController {
         return positionRepository.save(new Position(positionDetails));
     }
 
+    @ApiOperation(value = "Get all positions")
     @RequestMapping(method = RequestMethod.GET)
     public List<Position> getAllPositions(){
         return positionRepository.findAll();

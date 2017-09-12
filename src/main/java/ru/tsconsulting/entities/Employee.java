@@ -7,6 +7,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -43,7 +44,8 @@ public class Employee {
    // @ManyToOne(fetch=FetchType.EAGER)
     @ManyToOne
     private Grade grade;
-    private Long salary;
+    @Column(name = "salary", precision = 20, scale = 2)
+    private BigDecimal salary;
 
 	public Employee() {}
 	public Employee(EmployeeDetails employeeDetails) {
@@ -107,7 +109,7 @@ public class Employee {
         return department;
     }
 
-    public Long getSalary() {
+    public BigDecimal getSalary() {
         return salary;
     }
 
@@ -135,7 +137,7 @@ public class Employee {
         this.department = department;
     }
 
-    public void setSalary(Long salary) {
+    public void setSalary(BigDecimal salary) {
         this.salary = salary;
     }
 
@@ -203,7 +205,7 @@ public class Employee {
 	    private Long department;
         @ApiModelProperty(value = "id of grade", example="1")
 	    private Long grade;
-	    private Long salary;
+	    private BigDecimal salary;
 
 	    public EmployeeDetails() {
 	    }
@@ -264,11 +266,11 @@ public class Employee {
 	        this.department = department;
 	    }
 
-	    public Long getSalary() {
+	    public BigDecimal getSalary() {
 	        return salary;
 	    }
 
-	    public void setSalary(Long salary) {
+	    public void setSalary(BigDecimal salary) {
 	        this.salary = salary;
 	    }
 
