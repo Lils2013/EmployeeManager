@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -59,7 +60,7 @@ public class Employee {
     @ManyToOne
     private Grade grade;
 
-    @Column(name = "salary", precision = 20, scale = 2)
+    @Column(name = "salary", precision = 14, scale = 2)
     private BigDecimal salary;
 
 	public Employee() {}
@@ -244,6 +245,7 @@ public class Employee {
         @ApiModelProperty(value = "id of grade", example="1")
 	    private Long grade;
 
+        @Digits(integer=12, fraction=2, message = "The integer and the fraction should be less than or equal to 12 and 2 respectively.")
 	    private BigDecimal salary;
 
 	    public EmployeeDetails() {

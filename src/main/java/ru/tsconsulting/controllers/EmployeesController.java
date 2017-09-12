@@ -91,14 +91,6 @@ public class EmployeesController {
                 employee.setDepartment(department);
             }
         }
-        BigDecimal salary = employeeDetails.getSalary();
-        if (salary!=null)
-        {
-            if (!salary.toString().matches("\\d{0,17}[.]?\\d{0,2}"))
-            {
-                throw new InvalidSalaryValueException();
-            }
-        }
         Employee result = employeeRepository.save(employee);
         return result;
     }
@@ -255,14 +247,14 @@ public class EmployeesController {
     }
 
     @ApiOperation(value = "Return audit information of employee", notes = "Returns history of changes for an employee" +
-            " by Id, currently without specifying the date of changes")
+            " by Id, in descending order")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful retrieval of the audit information of employee"),
             @ApiResponse(code = 404, message = "Audit information for given employee does not exist"),
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}/audit", method = RequestMethod.GET)
-    public Map<String, Employee> getAudit(@ApiParam(value = "Id of employee",
+    public Map<LocalDateTime, Employee> getAudit(@ApiParam(value = "Id of employee",
             required = true) @PathVariable Long employeeId,
                                           @RequestParam(value = "from", required = false) String from,
                                           @RequestParam(value = "to", required = false) String to,
@@ -272,7 +264,7 @@ public class EmployeesController {
         }
         ZoneId defaultZoneId = ZoneId.systemDefault();
         List<Number> revisions = auditReader.getRevisions(Employee.class, employeeId);
-        Map<String, Employee> map = new HashMap<>();
+        Map<LocalDateTime, Employee> map = new TreeMap<>(Collections.reverseOrder());
         if (from != null && to != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
             LocalDateTime toDate = LocalDateTime.parse(to);
@@ -281,7 +273,7 @@ public class EmployeesController {
                 LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
                 if (localDateTime.isAfter(fromDate) && localDateTime.isBefore(toDate)) {
                     Employee employee = auditReader.find(Employee.class, employeeId, i);
-                    map.put(localDateTime.toString(), employee);
+                    map.put(localDateTime, employee);
                 }
             }
         } else if (from != null) {
@@ -291,7 +283,7 @@ public class EmployeesController {
                 LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
                 if (localDateTime.isAfter(fromDate)) {
                     Employee employee = auditReader.find(Employee.class, employeeId, i);
-                    map.put(localDateTime.toString(), employee);
+                    map.put(localDateTime, employee);
                 }
             }
         } else if (to != null) {
@@ -301,7 +293,7 @@ public class EmployeesController {
                 LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
                 if (localDateTime.isBefore(toDate)) {
                     Employee employee = auditReader.find(Employee.class, employeeId, i);
-                    map.put(localDateTime.toString(), employee);
+                    map.put(localDateTime, employee);
                 }
             }
         } else {
@@ -309,7 +301,7 @@ public class EmployeesController {
                 Date date = auditReader.getRevisionDate(i);
                 LocalDateTime localDateTime = date.toInstant().atZone(defaultZoneId).toLocalDateTime();
                 Employee employee = auditReader.find(Employee.class, employeeId, i);
-                map.put(localDateTime.toString(), employee);
+                map.put(localDateTime, employee);
             }
         }
         return map;
@@ -339,6 +331,7 @@ public class EmployeesController {
     public RestError alreadyHired(EmployeeIsAlreadyHiredException e) {
         return new RestError(Errors.ALREADY_HIRED, e.getMessage());
     }
+
     @ExceptionHandler(InvalidSalaryValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestError invalidSalary(InvalidSalaryValueException e) {
