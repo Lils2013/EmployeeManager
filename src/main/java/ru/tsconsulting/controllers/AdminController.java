@@ -2,6 +2,8 @@ package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,12 +33,13 @@ public class AdminController {
 
     @ApiOperation(value = "Get access history for an employee",
             notes = "History can be accessed even for non-existing employees")
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "There is no user with that id.")})
     @RequestMapping(path = "/employee/{employeeId}", method = RequestMethod.GET)
     public List<EmployeeHistory> getEmployeeAccessHistory(
-            @ApiParam(value = "id of an employee", required = true) @PathVariable Long employeeId,
-            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+            @ApiParam(value = "Id of an employee, a whole number in the range of (0) to (1,0E19)", required = true) @PathVariable Long employeeId,
+            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, " +
                     "e.g. 2007-12-03T10:15:30") @RequestParam(value = "from", required = false) String from,
-            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, " +
                     "e.g. 2007-12-03T10:15:30") @RequestParam(value = "to", required = false) String to) {
         if (from != null && to != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
@@ -56,10 +59,10 @@ public class AdminController {
             notes = "History can be accessed even for non-existing departmentss")
     @RequestMapping(path = "/department/{departmentId}", method = RequestMethod.GET)
     public List<DepartmentHistory> getDepartmentAccessHistory(
-            @ApiParam(value = "id of a department", required = true) @PathVariable Long departmentId,
-            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+            @ApiParam(value = "Id of a department, a whole number in the range of (0) to (1,0E19)", required = true) @PathVariable Long departmentId,
+            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, " +
                     "e.g. 2007-12-03T10:15:30") @RequestParam(value = "from", required = false) String from,
-            @ApiParam(value = "requires datetime, compliant to LocalDateTime format in Java, " +
+            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, " +
                     "e.g. 2007-12-03T10:15:30") @RequestParam(value = "to", required = false) String to) {
         if (from != null && to != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
