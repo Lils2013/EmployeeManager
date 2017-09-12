@@ -112,6 +112,18 @@ public class EmployeesController {
         return employee;
     }
 
+
+
+    @ApiOperation(value = "Return all employees")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of employees"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Employee> getAllEmployees(HttpServletRequest request) {
+        return employeeRepository.findAll();
+    }
+
     @ApiOperation(value = "Edit employee", notes = "Currently supports editing of position, grade and salary")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful edition of employee"),

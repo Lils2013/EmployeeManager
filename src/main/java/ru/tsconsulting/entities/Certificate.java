@@ -7,6 +7,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 
 
@@ -106,10 +109,18 @@ public class Certificate {
 	}
 
 	public static class CertificateDetails {
+
+        @NotNull(message = "Name cannot be null.")
+        @Size(min = 1, max = 32, message = "Invalid size of name string: must be between 1 and 32.")
 		private String name;
+
+        @Size(min = 1, max = 64, message = "Invalid size of serial number: must be between 1 and 64.")
 		private Long serialNumber;
+
         @ApiModelProperty(value = "File that contains image of the certificate. Use null for now unless otherwise instructed")
 		private byte[] scan;
+
+        @ApiModelProperty(value = "id of certificate organisation", example="1",required=true)
 		private Long certificateOrganisationId;
 
 		public CertificateDetails(){
