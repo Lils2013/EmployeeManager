@@ -16,6 +16,7 @@ import ru.tsconsulting.errorHandling.not_found_exceptions.*;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.*;
 import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyFiredException;
 import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyHiredException;
+import ru.tsconsulting.errorHandling.notification_exceptions.InvalidSalaryValueException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
@@ -90,6 +91,14 @@ public class EmployeesController {
                 throw new DepartmentNotFoundException(employeeDetails.getDepartment().toString());
             } else {
                 employee.setDepartment(department);
+            }
+        }
+        BigDecimal salary = employeeDetails.getSalary();
+        if (salary!=null)
+        {
+            if (!salary.toString().matches("\\d{0,17}[.]?\\d{0,2}"))
+            {
+                throw new InvalidSalaryValueException();
             }
         }
         Employee result = employeeRepository.save(employee);
@@ -331,5 +340,10 @@ public class EmployeesController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestError alreadyHired(EmployeeIsAlreadyHiredException e) {
         return new RestError(Errors.ALREADY_HIRED, e.getMessage());
+    }
+    @ExceptionHandler(InvalidSalaryValueException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public RestError invalidSalary(InvalidSalaryValueException e) {
+        return new RestError(Errors.INVALID_ATTRIBUTE, e.getMessage());
     }
 }

@@ -15,11 +15,13 @@ import ru.tsconsulting.errorHandling.not_found_exceptions.DepartmentNotFoundExce
 import ru.tsconsulting.errorHandling.not_specified_exceptions.DepartmentNotSpecifiedException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.GradeNotFoundException;
+import ru.tsconsulting.errorHandling.notification_exceptions.InvalidSalaryValueException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -141,6 +143,14 @@ public class EmployeeEndpoint {
                 throw new DepartmentNotFoundException(departmentId.toString());
             } else {
                 employee.setDepartment(department);
+            }
+        }
+        BigDecimal salary = createRequest.getSalary();
+        if (salary!=null)
+        {
+            if (!salary.toString().matches("\\d{0,17}[.]?\\d{0,2}"))
+            {
+                throw new InvalidSalaryValueException();
             }
         }
         employee.setFirstname(createRequest.getFirstname());
