@@ -7,9 +7,11 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 
 @Entity
@@ -34,8 +36,8 @@ public class Employee {
     @Size(min = 1, max = 32)
     private String middlename;
 
-    @Size(min = 1, max = 1)
-    private String gender;
+    @Enumerated(EnumType.ORDINAL)
+    private Gender gender;
 
     @Column(name = "IS_FIRED")
     private Boolean isFired = false;
@@ -110,7 +112,7 @@ public class Employee {
         return middlename;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
@@ -138,8 +140,16 @@ public class Employee {
         this.middlename = middlename;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public void setGender(String genderString) {
+        if (Objects.equals(genderString.toLowerCase(), "m")) {
+            setGender(Gender.M);
+        } else if (Objects.equals(genderString.toLowerCase(), "f")) {
+            setGender(Gender.F);
+        }
     }
 
     public void setBirthdate(LocalDate birthdate) {
@@ -212,7 +222,9 @@ public class Employee {
         @Size(min = 1, max = 32, message = "Invalid size of middlename string: must be between 1 and 32.")
 	    private String middlename;
 
-        @ApiModelProperty(value = "gender, M or F, although in current implementation it can be any string of size 1", example="M")
+        @ApiModelProperty(value = "gender, M or F",
+                example="M", allowableValues = "M,m,F,f")
+        @Pattern(regexp="^([MmFf])$",message="Invalid gender.")
 	    private String gender;
 
         @ApiModelProperty(value = "birth date in yyyy-MM-dd format", example="2008-10-27")

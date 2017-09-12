@@ -145,14 +145,14 @@ public class EmployeeEndpoint {
                 employee.setDepartment(department);
             }
         }
-        BigDecimal salary = createRequest.getSalary();
-        if (salary!=null)
-        {
-            if (!salary.toString().matches("\\d{0,17}[.]?\\d{0,2}"))
-            {
-                throw new InvalidSalaryValueException();
-            }
-        }
+//        BigDecimal salary = createRequest.getSalary();
+//        if (salary!=null)
+//        {
+//            if (!salary.toString().matches("\\d{0,17}[.]?\\d{0,2}"))
+//            {
+//                throw new InvalidSalaryValueException();
+//            }
+//        }
         employee.setFirstname(createRequest.getFirstname());
         employee.setMiddlename(createRequest.getMiddlename());
         employee.setLastname(createRequest.getLastname());
