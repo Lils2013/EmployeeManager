@@ -7,12 +7,23 @@
        http://www.springframework.org/schema/security
        http://www.springframework.org/schema/security/spring-security.xsd">
 
+    <import resource="dispatcher-servlet.xml"/>
+
     <security:http auto-config="true" use-expressions="true">
         <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <!--<security:logout/>-->
+        <security:remember-me token-validity-seconds="20"/>
+        <security:http-basic/>
     </security:http>
 
-    <security:user-service id="userService">
-        <security:user name="admin" password="admin"
-              authorities="ROLE_ADMIN"/>
-    </security:user-service>
+    <security:jdbc-user-service id="jdbcUserService" data-source-ref="dbDataSource"
+        users-by-username-query="SELECT USERNAME, PASSWORD, ENABLED FROM USERS WHERE USERNAME=?"
+        authorities-by-username-query="SELECT USERNAME, AUTHORITY FROM USERS JOIN AUTHORITIES ON AUTH_ID=AUTHORITIES.ID
+        WHERE USERNAME=?"/>
+
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="jdbcUserService">
+            <security:password-encoder hash="sha-256"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
 </beans>
