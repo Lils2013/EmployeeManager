@@ -16,6 +16,7 @@
         <slf4j.version>1.7.5</slf4j.version>
         <jackson.version>2.9.0</jackson.version>
         <hibernate.version>5.2.10.Final</hibernate.version>
+        <spring.security>4.2.3.RELEASE</spring.security>
     </properties>
 
 
@@ -291,6 +292,24 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-spring</artifactId>
             <version>5.15.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.security}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.security}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.security}</version>
         </dependency>
 
     </dependencies>
