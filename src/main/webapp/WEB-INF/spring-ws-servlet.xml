@@ -3,13 +3,19 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:sws="http://www.springframework.org/schema/web-services"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd">
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/web-services
+       http://www.springframework.org/schema/web-services/web-services.xsd
+       http://www.springframework.org/schema/data/jpa
+       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <sws:annotation-driven/>
 
     <context:annotation-config />
-
-    <import resource="dispatcher-servlet.xml" />
 
     <sws:dynamic-wsdl id="employeeSOAP"
                       portTypeName="EmployeesPort"

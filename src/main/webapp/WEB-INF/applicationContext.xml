@@ -1,52 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/data/jpa
        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
-       http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd">
+       http://www.springframework.org/schema/jee
+       http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
-        <!--<property name="packagesToScan" value="ru.tsconsulting"/>-->
-        <!--<property name="dataSource" ref="dataSource"/>-->
+    <jee:jndi-lookup id="dbDataSource" jndi-name="jdbc/myOracle" expected-type="javax.sql.DataSource"/>
 
-        <!--<property name="jpaProperties">-->
-            <!--<props>-->
-                <!--<prop key="hibernate.show_sql">true</prop>-->
-                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
-                <!--<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>-->
-                <!--<prop key="hibernate.default_schema">TEST_B</prop>-->
-            <!--</props>-->
-        <!--</property>-->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="packagesToScan" value="ru.tsconsulting"/>
+        <property name="dataSource" ref="dbDataSource"/>
 
-        <!--<property name="persistenceProvider">-->
-            <!--<bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>-->
-        <!--</property>-->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+                <prop key="hibernate.default_schema">TEST_B</prop>
+            </props>
+        </property>
 
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        </property>
+    </bean>
 
-    <!--</bean>-->
-    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
-        <!--<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>-->
-        <!--<property name="url" value="jdbc:oracle:thin:@89.108.84.144:1521:BPM8"/>-->
-        <!--<property name="username" value="test_b"/>-->
-        <!--<property name="password" value="test_b"/>-->
-    <!--</bean>-->
+    <bean id="auditReader" class="org.hibernate.envers.AuditReaderFactory" factory-method="get">
+        <constructor-arg>
+            <bean factory-bean="entityManagerFactory" factory-method="createEntityManager"/>
+        </constructor-arg>
+    </bean>
 
-    <!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">-->
-        <!--<property name="dataSource" ref="dataSource" />-->
-    <!--</bean>-->
-
-    <!--<jpa:repositories base-package="ru.tsconsulting.repositories"/>-->
-
-    <!--&lt;!&ndash;<context:component-scan base-package="ru.tsconsulting"/>&ndash;&gt;-->
-
-    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+    <jpa:repositories base-package="ru.tsconsulting.repositories"/>
 
 </beans>

@@ -2,18 +2,27 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/security
-       http://www.springframework.org/schema/security/spring-security.xsd">
+       http://www.springframework.org/schema/security/spring-security.xsd
+       http://www.springframework.org/schema/jee
+       http://www.springframework.org/schema/jee/spring-jee.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <import resource="dispatcher-servlet.xml"/>
+    <bean id="successHandler" class="org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler"/>
+
+    <context:component-scan base-package="ru.tsconsulting.endpoints" />
 
     <security:http auto-config="true" use-expressions="true">
         <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
-        <!--<security:logout/>-->
+        <security:logout success-handler-ref="successHandler" delete-cookies="remember-me"/>
         <security:remember-me token-validity-seconds="20"/>
-        <security:http-basic/>
+        <security:csrf disabled="true"/>
+        <!--<security:http-basic/>-->
     </security:http>
 
     <security:jdbc-user-service id="jdbcUserService" data-source-ref="dbDataSource"
@@ -26,4 +35,5 @@
             <security:password-encoder hash="sha-256"/>
         </security:authentication-provider>
     </security:authentication-manager>
+
 </beans>
