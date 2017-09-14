@@ -4,7 +4,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd
@@ -14,8 +13,6 @@
 	   http://www.springframework.org/schema/context/spring-context.xsd
 	   http://www.springframework.org/schema/aop
 	   http://www.springframework.org/schema/aop/spring-aop.xsd
-	   http://www.springframework.org/schema/data/jpa
-	   http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
 	   http://www.springframework.org/schema/tx
 	   http://www.springframework.org/schema/tx/spring-tx.xsd">
 
@@ -30,16 +27,11 @@
         <property name="dataSource" ref="dbDataSource"/>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="dataSource" ref="dbDataSource"/>
-    </bean>
-
-    <jpa:repositories base-package="ru.tsconsulting.repositories"/>
-
-    <context:component-scan base-package="ru.tsconsulting"/>
+    <context:component-scan base-package="ru.tsconsulting">
+        <context:exclude-filter type="annotation" expression="org.springframework.ws.server.endpoint.annotation.Endpoint"/>
+    </context:component-scan>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
 
     <!--<bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" />-->
 

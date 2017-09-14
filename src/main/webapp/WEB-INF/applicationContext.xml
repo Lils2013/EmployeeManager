@@ -38,4 +38,8 @@
 
     <jpa:repositories base-package="ru.tsconsulting.repositories"/>
 
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+
 </beans>
