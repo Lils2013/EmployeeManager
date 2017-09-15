@@ -1,6 +1,7 @@
 package ru.tsconsulting.interceptors;
 
 import org.aspectj.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.entities.EmployeeHistory;
@@ -15,6 +16,7 @@ public class EmployeeInterceptor {
 
     private final EmployeeHistoryRepository employeeHistoryRepository;
 
+    @Autowired
     public EmployeeInterceptor(EmployeeHistoryRepository employeeHistoryRepository) {
         this.employeeHistoryRepository = employeeHistoryRepository;
     }

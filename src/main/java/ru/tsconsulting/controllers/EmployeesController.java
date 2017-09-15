@@ -42,6 +42,7 @@ public class EmployeesController {
                                GradeRepository gradeRepository,
                                DepartmentRepository departmentRepository,
                                AuditReader auditReader) {
+        System.out.println("EMPLOYEE CONTROLLER INITIALIZED");
         this.employeeRepository = employeeRepository;
         this.positionRepository = positionRepository;
         this.gradeRepository = gradeRepository;

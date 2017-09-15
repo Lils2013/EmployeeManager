@@ -22,53 +22,16 @@
 	   http://www.springframework.org/schema/jee
 	   http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    <mvc:annotation-driven/>
-
     <aop:aspectj-autoproxy/>
+
+    <mvc:annotation-driven/>
 
     <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
 
-    <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate">
-        <property name="dataSource" ref="dbDataSource"/>
-    </bean>
+    <context:component-scan base-package="ru.tsconsulting.controllers, ru.tsconsulting.interceptors"/>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
-        <property name="packagesToScan" value="ru.tsconsulting"/>
-        <property name="dataSource" ref="dbDataSource"/>
-
-        <property name="jpaProperties">
-            <props>
-                <prop key="hibernate.show_sql">true</prop>
-                <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
-                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
-                <prop key="hibernate.default_schema">TEST_B</prop>
-            </props>
-        </property>
-
-        <property name="persistenceProvider">
-            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
-        </property>
-    </bean>
-
-    <bean id="auditReader" class="org.hibernate.envers.AuditReaderFactory" factory-method="get">
-        <constructor-arg>
-            <bean factory-bean="entityManagerFactory" factory-method="createEntityManager"/>
-        </constructor-arg>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="dataSource" ref="dbDataSource"/>
-    </bean>
-
-    <jpa:repositories base-package="ru.tsconsulting.repositories"/>
-
-    <context:component-scan base-package="ru.tsconsulting">
-    </context:component-scan>
-
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
-    <jee:jndi-lookup id="dbDataSource" jndi-name="jdbc/myOracle" expected-type="javax.sql.DataSource"/>
+    <bean class="ru.tsconsulting.configuration.SwaggerConfig"/>
 
     <!--<bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" />-->
 
