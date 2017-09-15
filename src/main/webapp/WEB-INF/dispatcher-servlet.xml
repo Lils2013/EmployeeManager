@@ -4,7 +4,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd
 	   http://www.springframework.org/schema/beans
@@ -12,26 +11,21 @@
 	   http://www.springframework.org/schema/context
 	   http://www.springframework.org/schema/context/spring-context.xsd
 	   http://www.springframework.org/schema/aop
-	   http://www.springframework.org/schema/aop/spring-aop.xsd
-	   http://www.springframework.org/schema/tx
-	   http://www.springframework.org/schema/tx/spring-tx.xsd">
+	   http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <mvc:annotation-driven/>
-
-    <aop:aspectj-autoproxy/>
-
     <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
+
+    <aop:aspectj-autoproxy/>
 
     <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate">
         <property name="dataSource" ref="dbDataSource"/>
     </bean>
 
-    <context:component-scan base-package="ru.tsconsulting">
-        <context:exclude-filter type="annotation" expression="org.springframework.ws.server.endpoint.annotation.Endpoint"/>
-    </context:component-scan>
+    <bean class="ru.tsconsulting.configuration.SwaggerConfig"/>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <context:component-scan base-package="ru.tsconsulting.controllers, ru.tsconsulting.interceptors"/>
 
     <!--<bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory" />-->
 

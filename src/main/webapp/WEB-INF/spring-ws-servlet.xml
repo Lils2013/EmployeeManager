@@ -12,9 +12,9 @@
 
     <sws:annotation-driven/>
 
-    <context:annotation-config />
-
     <context:component-scan base-package="ru.tsconsulting.endpoints" />
+
+    <bean class="ru.tsconsulting.configuration.SoapServerConfig"/>
 
     <sws:dynamic-wsdl id="employeeSOAP"
                       portTypeName="EmployeesPort"

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Department;
@@ -37,6 +38,7 @@ public class DepartmentsController {
         this.employeeRepository = employeeRepository;
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Create new department")
     @RequestMapping(method = RequestMethod.POST)
     public Department createDepartment(@ApiParam(value = "chiefId, parent - whole numbers in the range of (0) to (1,0E19);" +
@@ -89,7 +91,7 @@ public class DepartmentsController {
         }
         return department;
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Delete department")
     @RequestMapping(path = "/{departmentId}", method = RequestMethod.DELETE)
     public void deleteDepartment(@ApiParam(value = "Id of a department, a whole number in the range of (0) to " +
@@ -112,7 +114,7 @@ public class DepartmentsController {
             throw new DepartmentNotFoundException(""+departmentId);
         }
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Edit department")
     @RequestMapping(path = "/{departmentId}", method = RequestMethod.POST)
     public void changeDepartmentName(@PathVariable Long departmentId, Long newChiefId, String newName,
@@ -158,7 +160,7 @@ public class DepartmentsController {
             throw new DepartmentNotFoundException(departmentId.toString());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
 	@ApiOperation(value = "Change parent department")
     @RequestMapping(path = "/{departmentId}/changeHierarchy", method = RequestMethod.POST)
     public Department changeHierarchy(
@@ -188,26 +190,26 @@ public class DepartmentsController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public RestError entityNotFound(EntityNotFoundException e) {
-        return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
+    public RestStatus entityNotFound(EntityNotFoundException e) {
+        return new RestStatus(Status.ENTITY_NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentIsNotEmptyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError departmentIsNotEmpty(DepartmentIsNotEmptyException e) {
-        return new RestError(Errors.DEPARTMENT_NOT_EMPTY, e.getMessage());
+    public RestStatus departmentIsNotEmpty(DepartmentIsNotEmptyException e) {
+        return new RestStatus(Status.DEPARTMENT_NOT_EMPTY, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentHasSubdepartmentsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError departmentHasSubDepartments(DepartmentHasSubdepartmentsException e) {
-        return new RestError(Errors.DEPARTMENT_HAS_SUB_DEPARTMENTS, e.getMessage());
+    public RestStatus departmentHasSubDepartments(DepartmentHasSubdepartmentsException e) {
+        return new RestStatus(Status.DEPARTMENT_HAS_SUB_DEPARTMENTS, e.getMessage());
     }
 
     @ExceptionHandler(InvalidDepartmentHierarchyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError invalidHierarchy(InvalidDepartmentHierarchyException e) {
-        return new RestError(Errors.INVALID_HIERARCHY, e.getMessage());
+    public RestStatus invalidHierarchy(InvalidDepartmentHierarchyException e) {
+        return new RestStatus(Status.INVALID_HIERARCHY, e.getMessage());
     }
 
     private boolean isParent(Department potentialChild, Department potentialParent) {

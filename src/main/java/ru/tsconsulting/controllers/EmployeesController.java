@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import org.hibernate.envers.AuditReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Department;
@@ -48,7 +49,7 @@ public class EmployeesController {
         this.auditReader = auditReader;
     }
 
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Create employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful creation of employee"),
@@ -119,6 +120,7 @@ public class EmployeesController {
         return employeeRepository.findAll();
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Edit employee", notes = "Currently supports editing of position, grade and salary")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful edition of employee"),
@@ -161,7 +163,7 @@ public class EmployeesController {
         employeeRepository.save(employee);
         return employee;
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Fire employee that was once created")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful firing of employee"),
@@ -180,7 +182,7 @@ public class EmployeesController {
             throw new EmployeeIsAlreadyFiredException(employeeId.toString());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Rehire employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful hiring of employee"),
@@ -225,7 +227,7 @@ public class EmployeesController {
         }
         return employees;
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Transfer employee from one department to another")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful transfer of employee"),
@@ -252,7 +254,7 @@ public class EmployeesController {
 
         return result;
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BOSS')")
     @ApiOperation(value = "Return audit information of employee", notes = "Returns history of changes for an employee" +
             " by Id, in descending order")
     @ApiResponses(value = {
@@ -319,30 +321,30 @@ public class EmployeesController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public RestError entityNotFound(EntityNotFoundException e) {
-        return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
+    public RestStatus entityNotFound(EntityNotFoundException e) {
+        return new RestStatus(Status.ENTITY_NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(AttributeNotSpecifiedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError attributeNotSpecified(AttributeNotSpecifiedException e) {
-        return new RestError(Errors.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
+    public RestStatus attributeNotSpecified(AttributeNotSpecifiedException e) {
+        return new RestStatus(Status.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
     }
 
     @ExceptionHandler(EmployeeIsAlreadyFiredException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError alreadyFired(EmployeeIsAlreadyFiredException e) {
-        return new RestError(Errors.ALREADY_FIRED, e.getMessage());
+    public RestStatus alreadyFired(EmployeeIsAlreadyFiredException e) {
+        return new RestStatus(Status.ALREADY_FIRED, e.getMessage());
     }
 
     @ExceptionHandler(EmployeeIsAlreadyHiredException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError alreadyHired(EmployeeIsAlreadyHiredException e) {
-        return new RestError(Errors.ALREADY_HIRED, e.getMessage());
+    public RestStatus alreadyHired(EmployeeIsAlreadyHiredException e) {
+        return new RestStatus(Status.ALREADY_HIRED, e.getMessage());
     }
     @ExceptionHandler(InvalidSalaryValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError invalidSalary(InvalidSalaryValueException e) {
-        return new RestError(Errors.INVALID_ATTRIBUTE, e.getMessage());
+    public RestStatus invalidSalary(InvalidSalaryValueException e) {
+        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
     }
 }

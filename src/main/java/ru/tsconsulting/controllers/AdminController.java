@@ -6,11 +6,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.DepartmentHistory;
 import ru.tsconsulting.entities.EmployeeHistory;
-import ru.tsconsulting.errorHandling.Errors;
-import ru.tsconsulting.errorHandling.RestError;
+import ru.tsconsulting.errorHandling.Status;
+import ru.tsconsulting.errorHandling.RestStatus;
 import ru.tsconsulting.repositories.DepartmentHistoryRepository;
 import ru.tsconsulting.repositories.EmployeeHistoryRepository;
 
@@ -30,7 +31,6 @@ public class AdminController {
         this.departmentHistoryRepository = departmentHistoryRepository;
         this.employeeHistoryRepository = employeeHistoryRepository;
     }
-
     @ApiOperation(value = "Get access history for an employee",
             notes = "History can be accessed even for non-existing employees")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "There is no user with that id.")})
@@ -54,7 +54,6 @@ public class AdminController {
         }
         return employeeHistoryRepository.findByEmployeeId(employeeId);
     }
-
     @ApiOperation(value = "Get access history for a  department",
             notes = "History can be accessed even for non-existing departmentss")
     @RequestMapping(path = "/department/{departmentId}", method = RequestMethod.GET)
@@ -80,7 +79,7 @@ public class AdminController {
 
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError failedToParse(DateTimeParseException e) {
-        return new RestError(Errors.PARSE_FAIL, "DateTime could not be parsed");
+    public RestStatus failedToParse(DateTimeParseException e) {
+        return new RestStatus(Status.PARSE_FAIL, "DateTime could not be parsed");
     }
 }

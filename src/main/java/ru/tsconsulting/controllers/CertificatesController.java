@@ -11,8 +11,8 @@ import ru.tsconsulting.entities.Certificate;
 import ru.tsconsulting.entities.CertificateList;
 import ru.tsconsulting.entities.CertificateOrganisation;
 import ru.tsconsulting.entities.Employee;
-import ru.tsconsulting.errorHandling.Errors;
-import ru.tsconsulting.errorHandling.RestError;
+import ru.tsconsulting.errorHandling.Status;
+import ru.tsconsulting.errorHandling.RestStatus;
 import ru.tsconsulting.errorHandling.not_found_exceptions.CertificateNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.CertificateOrganisationNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
@@ -279,20 +279,20 @@ public class CertificatesController {
 
         @ExceptionHandler(EntityNotFoundException.class)
         @ResponseStatus(HttpStatus.NOT_FOUND)
-        public RestError entityNotFound (EntityNotFoundException e){
-            return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
+        public RestStatus entityNotFound (EntityNotFoundException e){
+            return new RestStatus(Status.ENTITY_NOT_FOUND, e.getMessage());
         }
 
     @ExceptionHandler(AttributeNotSpecifiedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError attributeNotSpecified(AttributeNotSpecifiedException e) {
-        return new RestError(Errors.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
+    public RestStatus attributeNotSpecified(AttributeNotSpecifiedException e) {
+        return new RestStatus(Status.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
     }
 
     @ExceptionHandler(CertificateOrganisationAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.ALREADY_REPORTED)
-    public RestError alreadyExists(CertificateOrganisationAlreadyExistsException e) {
-        return new RestError(Errors.ALREADY_EXISTS, e.getMessage());
+    public RestStatus alreadyExists(CertificateOrganisationAlreadyExistsException e) {
+        return new RestStatus(Status.ALREADY_EXISTS, e.getMessage());
     }
 
 }
