@@ -3,6 +3,7 @@ package ru.tsconsulting.interceptors;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.DepartmentHistory;
@@ -19,10 +20,10 @@ public class DepartmentInterceptor {
 
     private final DepartmentHistoryRepository departmentHistoryRepository;
 
-    public DepartmentInterceptor(DepartmentHistoryRepository departmentHistoryRepository, DepartmentRepository departmentRepository) {
+    @Autowired
+    public DepartmentInterceptor(DepartmentHistoryRepository departmentHistoryRepository) {
         this.departmentHistoryRepository = departmentHistoryRepository;
     }
-
 
     private DepartmentHistory createRecord( Long departmentId, HttpServletRequest request, Long operationId, Boolean status) {
     	DepartmentHistory record = new DepartmentHistory();

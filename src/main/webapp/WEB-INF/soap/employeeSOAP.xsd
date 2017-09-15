@@ -3,7 +3,6 @@
 
     <xs:element name="transferRequest">
         <xs:complexType>
-
             <xs:sequence>
                 <xs:element name="employeeId" type="xs:long"/>
                 <xs:element name="newDepartmentId" type="xs:long"/>

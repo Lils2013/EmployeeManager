@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/data/jpa
+       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/jee
+	   http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+    <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate">
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
+        <property name="packagesToScan" value="ru.tsconsulting"/>
+        <property name="dataSource" ref="dbDataSource"/>
+
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
+                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+                <prop key="hibernate.default_schema">TEST_B</prop>
+            </props>
+        </property>
+
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="auditReader" class="org.hibernate.envers.AuditReaderFactory" factory-method="get">
+        <constructor-arg>
+            <bean factory-bean="entityManagerFactory" factory-method="createEntityManager"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <jee:jndi-lookup id="dbDataSource" jndi-name="jdbc/myOracle" expected-type="javax.sql.DataSource"/>
+
+    <jpa:repositories base-package="ru.tsconsulting.repositories"/>
+
+    <context:component-scan base-package="ru.tsconsulting.errorHandling"/>
+
+    <bean class="ru.tsconsulting.configuration.CachingConfig" />
+</beans>
