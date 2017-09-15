@@ -41,7 +41,6 @@ public class EmployeesController {
                                GradeRepository gradeRepository,
                                DepartmentRepository departmentRepository,
                                AuditReader auditReader) {
-        System.out.println("EMPLOYEE CONTROLLER INITIALIZED");
         this.employeeRepository = employeeRepository;
         this.positionRepository = positionRepository;
         this.gradeRepository = gradeRepository;
@@ -49,7 +48,7 @@ public class EmployeesController {
         this.auditReader = auditReader;
     }
 
-
+    @CrossOrigin
     @ApiOperation(value = "Create employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful creation of employee"),
