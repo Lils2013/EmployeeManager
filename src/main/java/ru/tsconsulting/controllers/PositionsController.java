@@ -9,6 +9,7 @@ import ru.tsconsulting.repositories.PositionRepository;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/positions")
 public class PositionsController {

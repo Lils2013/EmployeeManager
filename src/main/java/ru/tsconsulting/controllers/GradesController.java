@@ -9,6 +9,7 @@ import ru.tsconsulting.repositories.GradeRepository;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/grades")
 public class GradesController {
