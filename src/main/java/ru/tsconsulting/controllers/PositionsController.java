@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.repositories.PositionRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -22,13 +23,14 @@ public class PositionsController {
 
 	@ApiOperation(value = "Create new position")
     @RequestMapping(method = RequestMethod.POST)
-    public Position createPosition(@Validated @RequestBody Position.PositionDetails positionDetails){
+    public Position createPosition(@Validated @RequestBody Position.PositionDetails positionDetails,
+                                   HttpServletRequest request){
         return positionRepository.save(new Position(positionDetails));
     }
 
     @ApiOperation(value = "Get all positions")
     @RequestMapping(method = RequestMethod.GET)
-    public List<Position> getAllPositions(){
+    public List<Position> getAllPositions(HttpServletRequest request){
         return positionRepository.findAll();
     }
 

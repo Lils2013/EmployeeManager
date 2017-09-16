@@ -49,10 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().and()
                 .logout().and().authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/departments/**").hasRole("USER")
-                .antMatchers("/employees/**").hasRole("USER")
-                .antMatchers("/grades/**").hasRole("USER")
-                .antMatchers("/positions/**").hasRole("USER")
+                .antMatchers("/departments/**").hasRole("USER, ADMIN")
+                .antMatchers("/employees/**").hasRole("USER, ADMIN")
+                .antMatchers("/grades/**").hasRole("USER, ADMIN")
+                .antMatchers("/positions/**").hasRole("USER, ADMIN")
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
             public <O extends FilterSecurityInterceptor> O postProcess(
                     O fsi) {
@@ -78,22 +78,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             accessHistory.setIp(webAuthenticationDetails.getRemoteAddress());
             accessHistory.setPrincipal(authEvent.getAuthentication().getName());
             accessHistory.setAuthenticated(false);
+            accessHistory.setSuccesful(false);
             accessHistoryRepository.save(accessHistory);
-        } else if (event instanceof AuthorizedEvent) {
-            AccessHistory accessHistory = new AccessHistory();
+        }
+        else if (event instanceof AuthorizedEvent) {
             AuthorizedEvent authEvent = (AuthorizedEvent) event;
-            LocalDateTime triggerTime =
-                    LocalDateTime.ofInstant(Instant.ofEpochMilli(authEvent.getTimestamp()),
-                            TimeZone.getDefault().toZoneId());
-            accessHistory.setDateTime(triggerTime);
             FilterInvocation filterInvocation = (FilterInvocation) authEvent.getSource();
-            accessHistory.setUrl(filterInvocation.getRequestUrl());
-            WebAuthenticationDetails webAuthenticationDetails = (WebAuthenticationDetails)
-                    authEvent.getAuthentication().getDetails();
-            accessHistory.setIp(webAuthenticationDetails.getRemoteAddress());
-            accessHistory.setPrincipal(authEvent.getAuthentication().getName());
-            accessHistory.setAuthenticated(true);
-            accessHistoryRepository.save(accessHistory);
+            filterInvocation.getHttpRequest().setAttribute("start",LocalDateTime.ofInstant(Instant.ofEpochMilli(authEvent.getTimestamp()),
+                    TimeZone.getDefault().toZoneId()));
         }
     }
 }

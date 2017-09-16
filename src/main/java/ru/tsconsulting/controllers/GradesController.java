@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Grade;
 import ru.tsconsulting.repositories.GradeRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -22,13 +23,14 @@ public class GradesController {
 
     @ApiOperation(value = "Create new grade")
     @RequestMapping(method = RequestMethod.POST)
-    public Grade createGrade(@Validated @RequestBody Grade.GradeDetails gradeDetails){
+    public Grade createGrade(@Validated @RequestBody Grade.GradeDetails gradeDetails,
+                             HttpServletRequest request){
         return gradeRepository.save(new Grade(gradeDetails));
     }
 
     @ApiOperation(value = "Get all grades")
     @RequestMapping(method = RequestMethod.GET)
-    public List<Grade> getAllGrades(){
+    public List<Grade> getAllGrades(HttpServletRequest request){
         return gradeRepository.findAll();
     }
 }

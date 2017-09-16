@@ -32,6 +32,9 @@ public class AccessHistory {
     @Column(name = "IS_AUTHENTICATED")
     private boolean isAuthenticated;
 
+    @Column(name = "IS_SUCCESFUL")
+    private boolean isSuccesful;
+
     public Long getId() {
         return id;
     }
@@ -78,6 +81,14 @@ public class AccessHistory {
 
     public void setAuthenticated(boolean authenticated) {
         isAuthenticated = authenticated;
+    }
+
+    public boolean isSuccesful() {
+        return isSuccesful;
+    }
+
+    public void setSuccesful(boolean succesful) {
+        isSuccesful = succesful;
     }
 
     @Override
