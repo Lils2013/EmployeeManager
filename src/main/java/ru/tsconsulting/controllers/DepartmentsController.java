@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/departments")
 public class DepartmentsController {
