@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.AccessHistory;
 import ru.tsconsulting.entities.DepartmentHistory;
 import ru.tsconsulting.entities.EmployeeHistory;
-import ru.tsconsulting.errorHandling.Errors;
-import ru.tsconsulting.errorHandling.RestError;
+import ru.tsconsulting.errorHandling.Status;
+import ru.tsconsulting.errorHandling.RestStatus;
 import ru.tsconsulting.repositories.AccessHistoryRepository;
 import ru.tsconsulting.repositories.DepartmentHistoryRepository;
 import ru.tsconsulting.repositories.EmployeeHistoryRepository;
@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -124,7 +122,7 @@ public class AdminController {
 
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError failedToParse(DateTimeParseException e) {
-        return new RestError(Errors.PARSE_FAIL, "DateTime could not be parsed");
+    public RestStatus failedToParse(DateTimeParseException e) {
+        return new RestStatus(Status.PARSE_FAIL, "DateTime could not be parsed");
     }
 }

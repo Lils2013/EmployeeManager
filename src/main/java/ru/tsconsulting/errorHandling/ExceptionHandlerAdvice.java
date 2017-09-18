@@ -14,10 +14,11 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody RestError attributeNotValid(MethodArgumentNotValidException e) {
+    public @ResponseBody
+    RestStatus attributeNotValid(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
         FieldError error = result.getFieldError();
-        return new RestError(Errors.INVALID_ATTRIBUTE, error.getDefaultMessage() +
+        return new RestStatus(Status.INVALID_ATTRIBUTE, error.getDefaultMessage() +
                 " Rejected value is: \'" + error.getRejectedValue() + "\'");
     }
 
