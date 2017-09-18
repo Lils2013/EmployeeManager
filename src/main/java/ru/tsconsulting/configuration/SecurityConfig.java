@@ -2,11 +2,14 @@ package ru.tsconsulting.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.access.event.AuthorizedEvent;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,12 +17,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import ru.tsconsulting.entities.AccessHistory;
 import ru.tsconsulting.repositories.AccessHistoryRepository;
 
+import javax.sql.DataSource;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
@@ -29,6 +36,10 @@ import java.util.TimeZone;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AccessHistoryRepository accessHistoryRepository;
+
+    @Autowired
+    private DataSource dataSource;
+
 
     @Autowired
     public SecurityConfig(AccessHistoryRepository accessHistoryRepository) {
@@ -41,10 +52,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("USER", "BOSS", "ADMIN")
-        .and().withUser("boss").password("boss").roles("USER", "BOSS")
-        .and().withUser("user").password("user").roles("USER");
+        auth
+                .jdbcAuthentication()
+                .dataSource(dataSource)
+        .usersByUsernameQuery("select username, password, enabled from users where username = ?")
+                .authoritiesByUsernameQuery("SELECT USERNAME, AUTHORITY FROM ROLES_LIST INNER JOIN USERS ON USER_ID=USERS.ID" +
+                        " INNER JOIN AUTHORITIES ON ROLE_ID = AUTHORITIES.ID WHERE USERNAME=?")
+        .passwordEncoder(new ShaPasswordEncoder(256));
+
     }
+
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -52,21 +70,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/login").and().authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/departments/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/departments/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/departments/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/departments/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.DELETE, "/departments/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.PUT, "/departments/**").hasRole("EDITOR")
                 .antMatchers("/departments/**").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/employees/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/employees/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/employees/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/employees/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.DELETE, "/employees/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.PUT, "/employees/**").hasRole("EDITOR")
                 .antMatchers("/employees/**").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/grades/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/grades/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/grades/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/grades/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.DELETE, "/grades/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.PUT, "/grades/**").hasRole("EDITOR")
                 .antMatchers("/grades/**").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/positions/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/positions/**").hasAnyRole("BOSS", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/positions/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/positions/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.DELETE, "/positions/**").hasRole("EDITOR")
+                .antMatchers(HttpMethod.PUT, "/positions/**").hasRole("EDITOR")
                 .antMatchers("/positions/**").hasRole("USER")
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
             public <O extends FilterSecurityInterceptor> O postProcess(
@@ -75,6 +93,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 return fsi;
             }
         }).and().csrf().disable();
+        http.authorizeRequests().anyRequest().authenticated()
+                .and()
+                .httpBasic();
     }
 
     @EventListener
@@ -103,4 +124,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     TimeZone.getDefault().toZoneId()));
         }
     }
+
+
 }
