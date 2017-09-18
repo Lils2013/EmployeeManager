@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.access.event.AuthorizedEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
@@ -40,18 +41,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("USER", "ADMIN");
-        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("USER", "BOSS", "ADMIN")
+        .and().withUser("boss").password("boss").roles("USER", "BOSS")
+        .and().withUser("user").password("user").roles("USER");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin().and()
-                .logout().and().authorizeRequests()
+                .logout()
+                .logoutSuccessUrl("/login").and().authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/departments/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/departments/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/departments/**").hasAnyRole("BOSS", "ADMIN")
                 .antMatchers("/departments/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/employees/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/employees/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/employees/**").hasAnyRole("BOSS", "ADMIN")
                 .antMatchers("/employees/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/grades/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/grades/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/grades/**").hasAnyRole("BOSS", "ADMIN")
                 .antMatchers("/grades/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/positions/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/positions/**").hasAnyRole("BOSS", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/positions/**").hasAnyRole("BOSS", "ADMIN")
                 .antMatchers("/positions/**").hasRole("USER")
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
             public <O extends FilterSecurityInterceptor> O postProcess(
