@@ -17,7 +17,7 @@ public class AccessHistory {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accessHistoryGenerator")
     private Long id;
 
-    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss a")
     private LocalDateTime dateTime;
 
     @Column(name = "IP")

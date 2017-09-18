@@ -30,6 +30,7 @@ public class DepartmentEndpoint {
         getResponse.setDepartment(parseDepartment(department));
         return getResponse;
     }
+
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "subDepartmentsRequest")
     @ResponsePayload
     public SubDepartmentsResponse subDepartments(@RequestPayload SubDepartmentsRequest subDepartmentsRequest) {

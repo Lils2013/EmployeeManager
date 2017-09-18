@@ -49,10 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().and()
                 .logout().and().authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/departments/**").hasRole("USER, ADMIN")
-                .antMatchers("/employees/**").hasRole("USER, ADMIN")
-                .antMatchers("/grades/**").hasRole("USER, ADMIN")
-                .antMatchers("/positions/**").hasRole("USER, ADMIN")
+                .antMatchers("/departments/**").hasRole("USER")
+                .antMatchers("/employees/**").hasRole("USER")
+                .antMatchers("/grades/**").hasRole("USER")
+                .antMatchers("/positions/**").hasRole("USER")
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
             public <O extends FilterSecurityInterceptor> O postProcess(
                     O fsi) {
