@@ -11,8 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.*;
-import ru.tsconsulting.errorHandling.Errors;
-import ru.tsconsulting.errorHandling.RestError;
+import ru.tsconsulting.errorHandling.Status;
+import ru.tsconsulting.errorHandling.RestStatus;
 import ru.tsconsulting.errorHandling.not_found_exceptions.RoleNotFoundException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.ParameterNotSpecifiedException;
 import ru.tsconsulting.errorHandling.notification_exceptions.RoleAlreadyExistsException;
@@ -199,19 +199,19 @@ public class AdminController {
 
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError failedToParse(DateTimeParseException e) {
-        return new RestError(Errors.PARSE_FAIL, "DateTime could not be parsed");
+    public RestStatus failedToParse(DateTimeParseException e) {
+        return new RestStatus(Status.PARSE_FAIL, "DateTime could not be parsed");
     }
 
     @ExceptionHandler(RoleAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.ALREADY_REPORTED)
-    public RestError failedToParse(RoleAlreadyExistsException e) {
-        return new RestError(Errors.ALREADY_EXISTS, "Role is already exists");
+    public RestStatus failedToParse(RoleAlreadyExistsException e) {
+        return new RestStatus(Status.ALREADY_EXISTS, "Role is already exists");
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.ALREADY_REPORTED)
-    public RestError failedToParse(UserAlreadyExistsException e) {
-        return new RestError(Errors.ALREADY_EXISTS, "Username is already taken. Please try another one");
+    public RestStatus failedToParse(UserAlreadyExistsException e) {
+        return new RestStatus(Status.ALREADY_EXISTS, "Username is already taken. Please try another one");
     }
 }
