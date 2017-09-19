@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class RolesList {
     @Id
     @SequenceGenerator(name = "rolesListGenerator", sequenceName = "roleslist_sequence",
-            allocationSize = 1, initialValue = 2)
+            allocationSize = 1, initialValue = 4)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rolesListGenerator")
     private long id;
     @ManyToOne
@@ -38,6 +38,24 @@ public class RolesList {
             return null;
         }
         return role.getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RolesList rolesList = (RolesList) o;
+
+        if (user != null ? !user.equals(rolesList.user) : rolesList.user != null) return false;
+        return role != null ? role.equals(rolesList.role) : rolesList.role == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = user != null ? user.hashCode() : 0;
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        return result;
     }
 
     public long getId() {

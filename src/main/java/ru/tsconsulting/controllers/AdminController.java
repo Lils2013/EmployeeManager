@@ -14,17 +14,19 @@ import ru.tsconsulting.entities.*;
 import ru.tsconsulting.errorHandling.Status;
 import ru.tsconsulting.errorHandling.RestStatus;
 import ru.tsconsulting.errorHandling.not_found_exceptions.RoleNotFoundException;
+import ru.tsconsulting.errorHandling.not_found_exceptions.UserNotFoundException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.ParameterNotSpecifiedException;
+import ru.tsconsulting.errorHandling.not_specified_exceptions.RolesNotSpecifiedException;
+import ru.tsconsulting.errorHandling.not_specified_exceptions.UsernameNotSpecifiedException;
 import ru.tsconsulting.errorHandling.notification_exceptions.RoleAlreadyExistsException;
 import ru.tsconsulting.errorHandling.notification_exceptions.UserAlreadyExistsException;
 import ru.tsconsulting.repositories.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -132,9 +134,10 @@ public class AdminController {
         return departmentHistoryRepository.findByDepartmentId(departmentId);
     }
 
+    @Transactional
     @ApiOperation(value = "Register new user")
     @RequestMapping(path = "/user", method = RequestMethod.POST)
-    public String registerUser(@Validated @RequestBody User.UserDetails userDetails,
+    public User registerUser(@Validated @RequestBody User.UserDetails userDetails,
                                    HttpServletRequest request){
         if(userDetails.getUsername() == null || userDetails.getPassword() == null || userDetails.getEnabled() == null) {
             throw new ParameterNotSpecifiedException();
@@ -143,58 +146,52 @@ public class AdminController {
             throw new UserAlreadyExistsException(userDetails.getUsername());
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        userDetails.setPassword( encoder.encode(userDetails.getPassword()));
-        userRepository.save(new User(userDetails));
-        return "User with username " + userDetails.getUsername() + " successfully registered";
+        userDetails.setPassword(encoder.encode(userDetails.getPassword()));
+        User user = new User(userDetails);
+        userRepository.save(user);
+        RolesList rolesList = new RolesList();
+        rolesList.setRole(roleRepository.findByName("ROLE_USER"));
+        rolesList.setUser(user);
+        rolesListRepository.save(rolesList);
+        return user;
     }
 
     @ApiOperation(value = "Give privileges to user")
     @RequestMapping(path = "/user/role/grant", method = RequestMethod.POST)
-    public String registerUser(@Validated @RequestBody String userName, String[] roles,
+    public List<RolesList> giveRoleToUser(@Validated @RequestBody String userName, String[] roles,
                                HttpServletRequest request){
         User user = new User();
         Role role = new Role();
-
+        List<RolesList> rolesListOutput = new ArrayList<>();
         if(userName == null) {
-            throw new UsernameNotFoundException(userName);
+            throw new UsernameNotSpecifiedException();
         }
         else if(roles == null) {
-            return "Roles is null";
+            throw new RolesNotSpecifiedException();
         }
         else {
-            user = userRepository.findByUsername(userName);
+            if((user = userRepository.findByUsername(userName)) != null) {
+                for(String r : roles) {
+                    if((role = roleRepository.findByName(r)) != null) {
+                        RolesList rolesList = new RolesList();
+                        if(rolesListRepository.findByUserAndRole(user, role) == null) {
+                            rolesList.setUser(user);
+                            rolesList.setRole(role);
 
-            for(String r : roles) {
-                if((role = roleRepository.findByName(r)) != null) {
+                            rolesListOutput.add(rolesListRepository.save(rolesList));
+                        }
+                    }
+                    else {
+                        throw new RoleNotFoundException(r);
+                    }
 
-                    RolesList rolesList = new RolesList();
-                    rolesList.setUser(user);
-                    rolesList.setRole(role);
-                    rolesListRepository.save(rolesList);
                 }
-                else {
-                    throw new RoleNotFoundException(r);
-                }
-
+            }
+            else {
+                throw new UserNotFoundException(userName);
             }
         }
-        List<String> rolesOutput = new ArrayList<>(Arrays.asList(roles));
-        return "User with username " + userName + " has been granted following roles:\n "
-                 + rolesOutput;
-    }
-
-    @ApiOperation(value = "Create new role")
-    @RequestMapping(path = "/user/role", method = RequestMethod.POST)
-    public Role createRole(@Validated @RequestBody Role.RoleDetails roleDetails,
-                             HttpServletRequest request){
-        if(roleDetails.getName() == null) {
-            throw new ParameterNotSpecifiedException();
-        }
-        else if(roleRepository.findByName(roleDetails.getName()) != null) {
-            throw new RoleAlreadyExistsException(roleDetails.getName());
-        }
-
-        return roleRepository.save(new Role(roleDetails));
+        return rolesListOutput;
     }
 
     @ExceptionHandler(DateTimeParseException.class)

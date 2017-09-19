@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Role {
     @Id
     @SequenceGenerator(name = "roleGenerator", sequenceName = "role_sequence",
-            allocationSize = 1, initialValue = 2)
+            allocationSize = 1, initialValue = 4)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roleGenerator")
     private Long id;
     private String name;

@@ -1,5 +1,6 @@
 package ru.tsconsulting.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 
@@ -16,6 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userGenerator")
     private Long id;
     private String username;
+    @JsonIgnore
     private String password;
     private Boolean enabled;
 

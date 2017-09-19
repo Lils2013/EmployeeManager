@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
+import org.springframework.jdbc.datasource.init.ScriptException;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.access.event.AuthorizedEvent;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
@@ -30,7 +33,10 @@ import ru.tsconsulting.errorHandling.handler.AuthSuccess;
 import ru.tsconsulting.errorHandling.handler.LogoutSuccess;
 import ru.tsconsulting.repositories.AccessHistoryRepository;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
@@ -71,13 +77,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
-
+                .passwordEncoder(new BCryptPasswordEncoder())
         .usersByUsernameQuery("select username, password, enabled from users where username = ?")
                 .authoritiesByUsernameQuery("select username, name from roles_list inner join users on user_id=users.id" +
-                        " inner join role on role_id = role.id where username = ?")
-        .passwordEncoder(new BCryptPasswordEncoder());
+                        " inner join role on role_id = role.id where username = ?");
+
 
     }
+
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
