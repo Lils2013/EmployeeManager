@@ -13,18 +13,17 @@ import java.util.Set;
 
 @Entity
 @Audited
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "POSITION")
 public class Position {
     @Id
+	@Access(AccessType.PROPERTY)
 	@SequenceGenerator(name = "positionGenerator", sequenceName = "position_sequence",
 			allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "positionGenerator")
     private Long id;
     @JsonIgnore
     @NotAudited
-   // @OneToMany(mappedBy = "position",fetch=FetchType.EAGER)
-    @OneToMany(mappedBy = "position")
+    @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
     private Set<Employee> employees;
 
     @NotNull

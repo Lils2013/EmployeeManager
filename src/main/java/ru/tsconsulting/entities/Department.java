@@ -17,10 +17,10 @@ import java.util.Set;
 
 @Entity
 @Audited
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "DEPARTMENT")
 public class Department {
     @Id
+    @Access(AccessType.PROPERTY)
     @SequenceGenerator(name = "departmentGenerator", sequenceName = "department_sequence",
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departmentGenerator")
@@ -38,25 +38,25 @@ public class Department {
 
     @JsonIgnore
     @JoinColumn(name = "PARENT_ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Department parent;
 
     @JsonIgnore
     @NotAudited
-  //  @OneToMany(mappedBy="parent",fetch=FetchType.EAGER)
-    @OneToMany(mappedBy="parent")
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private Set<Department> childDepartments = new HashSet<>();
 
     @JsonIgnore
     @NotAudited
- //   @OneToMany(mappedBy = "department",fetch=FetchType.EAGER)
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private Set<Employee> employees = new HashSet<>();
 
-	public Department() {}
-	public Department(DepartmentDetails departmentDetails) {
-		setName(departmentDetails.getName());
-	}
+    public Department() {
+    }
+
+    public Department(DepartmentDetails departmentDetails) {
+        setName(departmentDetails.getName());
+    }
 
     @JsonGetter("parent_id")
     public Long getDepartmentId() {
@@ -139,60 +139,61 @@ public class Department {
                 '}';
     }
 
-    @ApiModel(value="DepartmentDetails", description="data for creating a new department")
-	public static class DepartmentDetails {
+    @ApiModel(value = "DepartmentDetails", description = "data for creating a new department")
+    public static class DepartmentDetails {
 
         @NotNull(message = "Name cannot be null.")
-        @ApiModelProperty(required=true)
+        @ApiModelProperty(required = true)
         @Size(min = 1, max = 64, message = "Invalid size of name string: must be between 1 and 64.")
-	    private String name;
-	    private Long chiefId;
-	    private Long parent;
+        private String name;
+        private Long chiefId;
+        private Long parent;
 
-	    public DepartmentDetails() {}
+        public DepartmentDetails() {
+        }
 
-	    public String getName() {
-	        return name;
-	    }
+        public String getName() {
+            return name;
+        }
 
-	    public void setName(String name) {
-	        this.name = name;
-	    }
+        public void setName(String name) {
+            this.name = name;
+        }
 
-	    public Long getChiefId() {
-	        return chiefId;
-	    }
+        public Long getChiefId() {
+            return chiefId;
+        }
 
-	    public void setChiefId(Long chiefId) {
-	        this.chiefId = chiefId;
-	    }
+        public void setChiefId(Long chiefId) {
+            this.chiefId = chiefId;
+        }
 
-	    public Long getParent() {
-	        return parent;
-	    }
+        public Long getParent() {
+            return parent;
+        }
 
-	    public void setParent(Long parent) {
-	        this.parent = parent;
-	    }
+        public void setParent(Long parent) {
+            this.parent = parent;
+        }
 
-	    @Override
-	    public boolean equals(Object o) {
-	        if (this == o) return true;
-	        if (o == null || getClass() != o.getClass()) return false;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
-	        DepartmentDetails that = (DepartmentDetails) o;
+            DepartmentDetails that = (DepartmentDetails) o;
 
-	        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-	        if (chiefId != null ? !chiefId.equals(that.chiefId) : that.chiefId != null) return false;
-	        return parent != null ? parent.equals(that.parent) : that.parent == null;
-	    }
+            if (name != null ? !name.equals(that.name) : that.name != null) return false;
+            if (chiefId != null ? !chiefId.equals(that.chiefId) : that.chiefId != null) return false;
+            return parent != null ? parent.equals(that.parent) : that.parent == null;
+        }
 
-	    @Override
-	    public int hashCode() {
-	        int result = name != null ? name.hashCode() : 0;
-	        result = 31 * result + (chiefId != null ? chiefId.hashCode() : 0);
-	        result = 31 * result + (parent != null ? parent.hashCode() : 0);
-	        return result;
-	    }
-	}
+        @Override
+        public int hashCode() {
+            int result = name != null ? name.hashCode() : 0;
+            result = 31 * result + (chiefId != null ? chiefId.hashCode() : 0);
+            result = 31 * result + (parent != null ? parent.hashCode() : 0);
+            return result;
+        }
+    }
 }

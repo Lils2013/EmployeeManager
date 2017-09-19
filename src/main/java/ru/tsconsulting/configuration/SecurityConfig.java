@@ -39,14 +39,12 @@ import java.util.TimeZone;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private AccessHistoryRepository accessHistoryRepository;
-    private AuthSuccess authSuccessHandler;
-    private AuthFailure authFailureHandler;
-    private AccessDenied accessDeniedHandler;
-    private LogoutSuccess logoutSuccessHandler;
-
-    @Autowired
-    private DataSource dataSource;
+    private final AccessHistoryRepository accessHistoryRepository;
+    private final AuthSuccess authSuccessHandler;
+    private final AuthFailure authFailureHandler;
+    private final AccessDenied accessDeniedHandler;
+    private final LogoutSuccess logoutSuccessHandler;
+    private final DataSource dataSource;
 
 
     @Autowired
@@ -54,15 +52,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                           AuthSuccess authSuccess,
                           AuthFailure authFailure,
                           AccessDenied accessDenied,
-                          LogoutSuccess logoutSuccess) {
+                          LogoutSuccess logoutSuccess,
+                          DataSource dataSource) {
         this.accessHistoryRepository = accessHistoryRepository;
         this.authFailureHandler = authFailure;
         this.authSuccessHandler = authSuccess;
         this.accessDeniedHandler = accessDenied;
         this.logoutSuccessHandler = logoutSuccess;
-    }
-
-    public SecurityConfig() {
+        this.dataSource = dataSource;
     }
 
     @Autowired
@@ -71,10 +68,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
-        .usersByUsernameQuery("select username, password, enabled from users where username = ?")
-                .authoritiesByUsernameQuery("SELECT USERNAME, AUTHORITY FROM ROLES_LIST INNER JOIN USERS ON USER_ID=USERS.ID" +
-                        " INNER JOIN AUTHORITIES ON ROLE_ID = AUTHORITIES.ID WHERE USERNAME=?")
-        .passwordEncoder(new ShaPasswordEncoder(256));
+        .usersByUsernameQuery("SELECT u.username, u.password, u.enabled FROM users u WHERE u.username = ?")
+                .authoritiesByUsernameQuery("SELECT u.username, r.name FROM roles_list ro " +
+                        "INNER JOIN users u ON ro.user_id=u.id " +
+                        "INNER JOIN role r ON ro.role_id = r.id WHERE u.username=?")
+        .passwordEncoder(new BCryptPasswordEncoder());
 
     }
 

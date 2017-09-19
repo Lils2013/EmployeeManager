@@ -14,10 +14,10 @@ import java.util.Objects;
 
 @Entity
 @Audited
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "EMPLOYEE")
 public class Employee {
     @Id
+    @Access(AccessType.PROPERTY)
     @SequenceGenerator(name = "employeeGenerator", sequenceName = "employee_sequence",
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeGenerator")
@@ -45,18 +45,19 @@ public class Employee {
     private LocalDate birthdate;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Position position;
 
     @NotNull
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Department department;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Grade grade;
 
+    @DecimalMin("0.00")
     @Column(name = "salary", precision = 14, scale = 2)
     private BigDecimal salary;
 

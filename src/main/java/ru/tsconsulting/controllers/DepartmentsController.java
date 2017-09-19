@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.tsconsulting.entities.AccessHistory;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.*;
@@ -20,8 +21,7 @@ import ru.tsconsulting.repositories.EmployeeRepository;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -143,7 +143,18 @@ public class DepartmentsController {
             "(1,0E19)")@PathVariable Long departmentId,
                                                HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
-            return departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId);
+            List<Department> result = new ArrayList<>();
+            result.addAll(departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId));
+            result.sort((o1, o2) -> {
+                if (o1.getId() > o2.getId()) {
+                    return 1;
+                } else if (o1.getId() < o2.getId()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+            return result;
         } else {
             throw new DepartmentNotFoundException(departmentId.toString());
         }
@@ -154,7 +165,18 @@ public class DepartmentsController {
     public List<Employee> employeeByDepartment(@ApiParam(value = "Id of a department, a whole number in the range of (0) to " +
             "(1,0E19)")@PathVariable Long departmentId, HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
-            return employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId);
+            List<Employee> result = new ArrayList<>();
+            result.addAll(employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId));
+            result.sort((o1, o2) -> {
+                if (o1.getId() > o2.getId()) {
+                    return 1;
+                } else if (o1.getId() < o2.getId()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+            return result;
         } else {
             throw new DepartmentNotFoundException(departmentId.toString());
         }

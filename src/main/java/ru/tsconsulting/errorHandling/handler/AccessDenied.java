@@ -13,9 +13,10 @@ import java.io.PrintWriter;
 
 @Component
 public class AccessDenied implements org.springframework.security.web.access.AccessDeniedHandler {
-    @Override
-    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
 
+    @Override
+    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+                       AccessDeniedException e) throws IOException, ServletException {
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         RestStatus restStatus = new RestStatus(Status.ACCESS_DENIED, e.getMessage());

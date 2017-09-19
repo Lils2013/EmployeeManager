@@ -117,7 +117,18 @@ public class EmployeesController {
     )
     @RequestMapping(method = RequestMethod.GET)
     public List<Employee> getAllEmployees(HttpServletRequest request) {
-        return employeeRepository.findAll();
+        List<Employee> result = new ArrayList<>();
+        result.addAll(employeeRepository.findAll());
+        result.sort((o1, o2) -> {
+            if (o1.getId() > o2.getId()) {
+                return 1;
+            } else if (o1.getId() < o2.getId()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        return result;
     }
 
     @ApiOperation(value = "Edit employee", notes = "Currently supports editing of position, grade and salary")

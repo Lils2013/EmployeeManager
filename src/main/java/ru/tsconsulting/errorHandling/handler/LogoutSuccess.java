@@ -15,7 +15,8 @@ import java.io.PrintWriter;
 @Component
 public class LogoutSuccess  implements LogoutSuccessHandler{
     @Override
-    public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+                                Authentication authentication) throws IOException, ServletException {
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         RestStatus restStatus = new RestStatus(Status.OK, "Successfully logged out");

@@ -16,11 +16,14 @@ import java.io.PrintWriter;
 
 @Component
 public class AuthSuccess implements AuthenticationSuccessHandler {
+
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+                                        Authentication authentication) throws IOException, ServletException {
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-        RestStatus restStatus = new RestStatus(Status.OK, "Access granted for '" + authentication.getName()+"'");
+        RestStatus restStatus = new RestStatus(Status.OK,
+                "Access granted for '" + authentication.getName() + "'");
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(restStatus);
         PrintWriter out = httpServletResponse.getWriter();

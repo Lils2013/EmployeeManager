@@ -59,4 +59,6 @@ http://www.springframework.org/schema/jee
     <bean class="ru.tsconsulting.configuration.CachingConfig" />
 
     <bean class="ru.tsconsulting.configuration.SecurityConfig"/>
+
+    <bean class="ru.tsconsulting.configuration.ApplicationConfig"/>
 </beans>

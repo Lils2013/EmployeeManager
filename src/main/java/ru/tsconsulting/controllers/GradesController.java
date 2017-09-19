@@ -8,6 +8,7 @@ import ru.tsconsulting.entities.Grade;
 import ru.tsconsulting.repositories.GradeRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -32,6 +33,17 @@ public class GradesController {
     @ApiOperation(value = "Get all grades")
     @RequestMapping(method = RequestMethod.GET)
     public List<Grade> getAllGrades(HttpServletRequest request){
-        return gradeRepository.findAll();
+        List<Grade> result = new ArrayList<>();
+        result.addAll(gradeRepository.findAll());
+        result.sort((o1, o2) -> {
+            if (o1.getId() > o2.getId()) {
+                return 1;
+            } else if (o1.getId() < o2.getId()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        return result;
     }
 }

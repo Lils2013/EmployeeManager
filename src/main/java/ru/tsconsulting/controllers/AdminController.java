@@ -32,7 +32,9 @@ public class AdminController {
     private final AccessHistoryRepository accessHistoryRepository;
 
     @Autowired
-    public AdminController(DepartmentHistoryRepository departmentHistoryRepository, EmployeeHistoryRepository employeeHistoryRepository, AccessHistoryRepository accessHistoryRepository) {
+    public AdminController(DepartmentHistoryRepository departmentHistoryRepository,
+                           EmployeeHistoryRepository employeeHistoryRepository,
+                           AccessHistoryRepository accessHistoryRepository) {
         this.departmentHistoryRepository = departmentHistoryRepository;
         this.employeeHistoryRepository = employeeHistoryRepository;
         this.accessHistoryRepository = accessHistoryRepository;
