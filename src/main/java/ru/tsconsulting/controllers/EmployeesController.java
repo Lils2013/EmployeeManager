@@ -58,11 +58,7 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(method = RequestMethod.POST)
-    public Employee createEmployee(@ApiParam(value = "firstname, lastname, middlename - string with max length = 255 symbols;" +
-            "department, grade, position - whole numbers in the range of (0) to (1,0E19); birthdate - datetime, compliant to " +
-            "LocalDateTime format in Java, e.g. 2007-12-03T10:15:30; gender - single charachter M or F; salary - " +
-            "a decimal number with precision = 14 and scale = 2")
-                                   @Validated @RequestBody Employee.EmployeeDetails employeeDetails,
+    public Employee createEmployee(@Validated @RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
         Employee employee = new Employee(employeeDetails);
         if (employeeDetails.getGrade() != null) {
@@ -100,8 +96,8 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
-    public Employee getEmployee(@ApiParam(value = "Id of employee, a whole number in the range of (0) to " +
-            "(1,0E19)", required = true) @PathVariable Long employeeId,
+    public Employee getEmployee(@ApiParam(value = "Id of employee, positive integer", required = true)
+                                    @PathVariable Long employeeId,
                                 HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {
@@ -117,7 +113,18 @@ public class EmployeesController {
     )
     @RequestMapping(method = RequestMethod.GET)
     public List<Employee> getAllEmployees(HttpServletRequest request) {
-        return employeeRepository.findAll();
+        List<Employee> result = new ArrayList<>();
+        result.addAll(employeeRepository.findAll());
+        result.sort((o1, o2) -> {
+            if (o1.getId() > o2.getId()) {
+                return 1;
+            } else if (o1.getId() < o2.getId()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        return result;
     }
 
     @ApiOperation(value = "Edit employee", notes = "Currently supports editing of position, grade and salary")
@@ -127,13 +134,13 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}/edit", method = RequestMethod.POST)
-    public Employee editEmployee(@ApiParam(value = "Id of employee",
+    public Employee editEmployee(@ApiParam(value = "Id of employee, positive integer",
             required = true) @PathVariable Long employeeId,
-                                 @ApiParam(value = "Id of new position, a whole number in the range of (0) to (1,0E19)")
+                                 @ApiParam(value = "Id of new position, positive integer")
                                  @RequestParam(value = "newPositionId", required = false) Long newPositionId,
-                                 @ApiParam(value = "Id of new grade a whole number in the range of (0) to (1,0E19)")
+                                 @ApiParam(value = "Id of new grade positive integer")
                                  @RequestParam(value = "newGrade", required = false) Long newGrade,
-                                 @ApiParam(value = "New salary, a decimal number with precision = 14 and scale = 2")
+                                 @ApiParam(value = "New salary, a non-negative decimal with precision = 14 and scale = 2")
                                  @RequestParam(value = "newSalary", required = false) BigDecimal newSalary,
                                  HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
@@ -170,7 +177,7 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.DELETE)
-    public void fireEmployee(@ApiParam(value = "Id of employee to be fired, a whole number in the range of (0) to (1,0E19)",
+    public void fireEmployee(@ApiParam(value = "Id of employee to be fired, positive integer",
             required = true) @PathVariable Long employeeId,
                              HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
@@ -189,7 +196,7 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.PUT)
-    public void hireEmployee(@ApiParam(value = "Id of employee to be rehired, a whole number in the range of (0) to (1,0E19)",
+    public void hireEmployee(@ApiParam(value = "Id of employee to be rehired, positive integer",
             required = true) @PathVariable Long employeeId,
                              HttpServletRequest request) {
         Employee employee = employeeRepository.findByIdAndIsFiredIsTrue(employeeId);
@@ -234,9 +241,9 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}/transfer", method = RequestMethod.POST)
-    public Employee transferEmployee(@ApiParam(value = "Id of employee, a whole number in the range of (0) to (1,0E19)",
+    public Employee transferEmployee(@ApiParam(value = "Id of employee, positive integer)",
             required = true) @PathVariable Long employeeId,
-                                     @ApiParam(value = "Id of new department, a whole number in the range of (0) to (1,0E19)",
+                                     @ApiParam(value = "Id of new department, positive integer",
                                              required = true) @RequestParam(value = "newDepartmentId") Long newDepartmentId,
                                      HttpServletRequest request) {
         if (employeeRepository.findByIdAndIsFiredIsFalse(employeeId) == null) {
@@ -262,7 +269,7 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(path = "/{employeeId}/audit", method = RequestMethod.GET)
-    public Map<LocalDateTime, Employee> getAudit(@ApiParam(value = "Id of employee",
+    public Map<LocalDateTime, Employee> getAudit(@ApiParam(value = "Id of employee, positive integer",
             required = true) @PathVariable Long employeeId,
             @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, e.g. 2007-12-03T10:15:30")
             @RequestParam(value = "from", required = false) String from,
