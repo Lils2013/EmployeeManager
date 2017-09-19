@@ -24,6 +24,10 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import ru.tsconsulting.entities.AccessHistory;
+import ru.tsconsulting.errorHandling.handler.AccessDenied;
+import ru.tsconsulting.errorHandling.handler.AuthFailure;
+import ru.tsconsulting.errorHandling.handler.AuthSuccess;
+import ru.tsconsulting.errorHandling.handler.LogoutSuccess;
 import ru.tsconsulting.repositories.AccessHistoryRepository;
 
 import javax.sql.DataSource;
@@ -36,14 +40,26 @@ import java.util.TimeZone;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AccessHistoryRepository accessHistoryRepository;
+    private AuthSuccess authSuccessHandler;
+    private AuthFailure authFailureHandler;
+    private AccessDenied accessDeniedHandler;
+    private LogoutSuccess logoutSuccessHandler;
 
     @Autowired
     private DataSource dataSource;
 
 
     @Autowired
-    public SecurityConfig(AccessHistoryRepository accessHistoryRepository) {
+    public SecurityConfig(AccessHistoryRepository accessHistoryRepository,
+                          AuthSuccess authSuccess,
+                          AuthFailure authFailure,
+                          AccessDenied accessDenied,
+                          LogoutSuccess logoutSuccess) {
         this.accessHistoryRepository = accessHistoryRepository;
+        this.authFailureHandler = authFailure;
+        this.authSuccessHandler = authSuccess;
+        this.accessDeniedHandler = accessDenied;
+        this.logoutSuccessHandler = logoutSuccess;
     }
 
     public SecurityConfig() {
@@ -63,13 +79,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().and()
-                .logout()
-                .logoutSuccessUrl("/login").and().authorizeRequests()
+        http.formLogin().successHandler(authSuccessHandler).failureHandler(authFailureHandler).and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).and()
+                .logout().logoutSuccessHandler(logoutSuccessHandler).and()
+                .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/departments/**").hasRole("EDITOR")
                 .antMatchers(HttpMethod.DELETE, "/departments/**").hasRole("EDITOR")
@@ -123,6 +138,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     TimeZone.getDefault().toZoneId()));
         }
     }
-
-
 }

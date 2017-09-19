@@ -320,30 +320,30 @@ public class EmployeesController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public RestError entityNotFound(EntityNotFoundException e) {
-        return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
+    public RestStatus entityNotFound(EntityNotFoundException e) {
+        return new RestStatus(Status.ENTITY_NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(AttributeNotSpecifiedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError attributeNotSpecified(AttributeNotSpecifiedException e) {
-        return new RestError(Errors.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
+    public RestStatus attributeNotSpecified(AttributeNotSpecifiedException e) {
+        return new RestStatus(Status.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
     }
 
     @ExceptionHandler(EmployeeIsAlreadyFiredException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError alreadyFired(EmployeeIsAlreadyFiredException e) {
-        return new RestError(Errors.ALREADY_FIRED, e.getMessage());
+    public RestStatus alreadyFired(EmployeeIsAlreadyFiredException e) {
+        return new RestStatus(Status.ALREADY_FIRED, e.getMessage());
     }
 
     @ExceptionHandler(EmployeeIsAlreadyHiredException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError alreadyHired(EmployeeIsAlreadyHiredException e) {
-        return new RestError(Errors.ALREADY_HIRED, e.getMessage());
+    public RestStatus alreadyHired(EmployeeIsAlreadyHiredException e) {
+        return new RestStatus(Status.ALREADY_HIRED, e.getMessage());
     }
     @ExceptionHandler(InvalidSalaryValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestError invalidSalary(InvalidSalaryValueException e) {
-        return new RestError(Errors.INVALID_ATTRIBUTE, e.getMessage());
+    public RestStatus invalidSalary(InvalidSalaryValueException e) {
+        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
     }
 }

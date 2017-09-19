@@ -3,7 +3,6 @@ package ru.tsconsulting.controllers;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +20,8 @@ import ru.tsconsulting.repositories.EmployeeRepository;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.TimeZone;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -193,26 +189,26 @@ public class DepartmentsController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public RestError entityNotFound(EntityNotFoundException e) {
-        return new RestError(Errors.ENTITY_NOT_FOUND, e.getMessage());
+    public RestStatus entityNotFound(EntityNotFoundException e) {
+        return new RestStatus(Status.ENTITY_NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentIsNotEmptyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError departmentIsNotEmpty(DepartmentIsNotEmptyException e) {
-        return new RestError(Errors.DEPARTMENT_NOT_EMPTY, e.getMessage());
+    public RestStatus departmentIsNotEmpty(DepartmentIsNotEmptyException e) {
+        return new RestStatus(Status.DEPARTMENT_NOT_EMPTY, e.getMessage());
     }
 
     @ExceptionHandler(DepartmentHasSubdepartmentsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError departmentHasSubDepartments(DepartmentHasSubdepartmentsException e) {
-        return new RestError(Errors.DEPARTMENT_HAS_SUB_DEPARTMENTS, e.getMessage());
+    public RestStatus departmentHasSubDepartments(DepartmentHasSubdepartmentsException e) {
+        return new RestStatus(Status.DEPARTMENT_HAS_SUB_DEPARTMENTS, e.getMessage());
     }
 
     @ExceptionHandler(InvalidDepartmentHierarchyException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public RestError invalidHierarchy(InvalidDepartmentHierarchyException e) {
-        return new RestError(Errors.INVALID_HIERARCHY, e.getMessage());
+    public RestStatus invalidHierarchy(InvalidDepartmentHierarchyException e) {
+        return new RestStatus(Status.INVALID_HIERARCHY, e.getMessage());
     }
 
     private boolean isParent(Department potentialChild, Department potentialParent) {
