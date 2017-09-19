@@ -106,9 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 return fsi;
             }
         }).and().csrf().disable();
-        http.authorizeRequests().anyRequest().authenticated()
-                .and()
-                .httpBasic();
+
     }
 
     @EventListener
