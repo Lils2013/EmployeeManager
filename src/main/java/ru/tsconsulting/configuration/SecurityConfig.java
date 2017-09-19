@@ -55,10 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
+                .passwordEncoder(new ShaPasswordEncoder(256))
         .usersByUsernameQuery("select username, password, enabled from users where username = ?")
-                .authoritiesByUsernameQuery("SELECT USERNAME, AUTHORITY FROM ROLES_LIST INNER JOIN USERS ON USER_ID=USERS.ID" +
-                        " INNER JOIN AUTHORITIES ON ROLE_ID = AUTHORITIES.ID WHERE USERNAME=?")
-        .passwordEncoder(new ShaPasswordEncoder(256));
+                .authoritiesByUsernameQuery("select username, name from roles_list inner join users on user_id=users.id" +
+                        " inner join role on role_id = role.id where username = ?")
+        .passwordEncoder(new BCryptPasswordEncoder());
 
     }
 
@@ -93,9 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 return fsi;
             }
         }).and().csrf().disable();
-        http.authorizeRequests().anyRequest().authenticated()
-                .and()
-                .httpBasic();
+
     }
 
     @EventListener
