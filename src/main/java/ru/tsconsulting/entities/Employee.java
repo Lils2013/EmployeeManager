@@ -211,16 +211,17 @@ public class Employee {
     @ApiModel(value="EmployeeDetails", description="data for creating a new employee")
 	public static class EmployeeDetails {
 
-        @ApiModelProperty(required=true)
+        @ApiModelProperty(value = "firstname, string with size between 1 and 32", example="John", required=true)
         @NotNull(message = "Firstname cannot be null.")
         @Size(min = 1, max = 32, message = "Invalid size of firstname string: must be between 1 and 32.")
 	    private String firstname;
 
-        @ApiModelProperty(required=true)
+        @ApiModelProperty(value = "lastname, string with size between 1 and 32", example="Doe", required=true)
         @NotNull(message = "Lastname cannot be null.")
         @Size(min = 1, max = 32, message = "Invalid size of lastname string: must be between 1 and 32.")
 	    private String lastname;
 
+        @ApiModelProperty(value = "middlename, string with size between 1 and 32", example="Smith", required=true)
         @Size(min = 1, max = 32, message = "Invalid size of middlename string: must be between 1 and 32.")
 	    private String middlename;
 
@@ -243,6 +244,7 @@ public class Employee {
         @ApiModelProperty(value = "id of grade", example="1")
 	    private Long grade;
 
+        @ApiModelProperty(value = "non-negative decimal number with precision = 14 and scale = 2", example="123.45")
         @DecimalMin("0.00")
         @Digits(integer=12, fraction=2, message = "The integer and the fraction should be less than or equal to 12 and 2 respectively.")
 	    private BigDecimal salary;

@@ -142,11 +142,16 @@ public class Department {
     @ApiModel(value = "DepartmentDetails", description = "data for creating a new department")
     public static class DepartmentDetails {
 
-        @NotNull(message = "Name cannot be null.")
-        @ApiModelProperty(required = true)
+        @NotNull(message = "Department name cannot be null.")
+        @ApiModelProperty(value = "department name, string with size between 1 and 64", example="Development",
+                required = true)
         @Size(min = 1, max = 64, message = "Invalid size of name string: must be between 1 and 64.")
         private String name;
+
+        @ApiModelProperty(value = "id of chief, positive integer", example="1")
         private Long chiefId;
+
+        @ApiModelProperty(value = "id of parent department, positive integer", example="1")
         private Long parent;
 
         public DepartmentDetails() {

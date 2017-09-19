@@ -1,6 +1,7 @@
 package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,8 @@ public class PositionsController {
 
 	@ApiOperation(value = "Create new position")
     @RequestMapping(method = RequestMethod.POST)
-    public Position createPosition(@Validated @RequestBody Position.PositionDetails positionDetails,
+    public Position createPosition(@ApiParam(value = "Department details", required = true)
+                                       @Validated @RequestBody Position.PositionDetails positionDetails,
                                    HttpServletRequest request){
         return positionRepository.save(new Position(positionDetails));
     }

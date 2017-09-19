@@ -2,6 +2,7 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -55,6 +56,8 @@ public class Grade {
 
 	public static class GradeDetails {
 
+        @ApiModelProperty(value = "grade name, string with size between 1 and 2", example="A",
+                required = true)
 		@NotNull(message = "Grade cannot be null.")
 		@Size(min = 1, max = 2, message = "Invalid size of grade string: must be between 1 and 2.")
 	    private String grade;

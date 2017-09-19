@@ -1,6 +1,7 @@
 package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,8 @@ public class GradesController {
 
     @ApiOperation(value = "Create new grade")
     @RequestMapping(method = RequestMethod.POST)
-    public Grade createGrade(@Validated @RequestBody Grade.GradeDetails gradeDetails,
+    public Grade createGrade(@ApiParam(value = "Department details", required = true)
+                                 @Validated @RequestBody Grade.GradeDetails gradeDetails,
                              HttpServletRequest request){
         return gradeRepository.save(new Grade(gradeDetails));
     }
