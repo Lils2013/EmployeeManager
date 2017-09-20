@@ -36,16 +36,7 @@ public class GradesController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Grade> getAllGrades(HttpServletRequest request){
         List<Grade> result = new ArrayList<>();
-        result.addAll(gradeRepository.findAll());
-        result.sort((o1, o2) -> {
-            if (o1.getId() > o2.getId()) {
-                return 1;
-            } else if (o1.getId() < o2.getId()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
+        result.addAll(gradeRepository.findAllByOrderByIdAsc());
         return result;
     }
 }

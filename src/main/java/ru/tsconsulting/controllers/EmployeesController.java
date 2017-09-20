@@ -115,16 +115,7 @@ public class EmployeesController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Employee> getAllEmployees(HttpServletRequest request) {
         List<Employee> result = new ArrayList<>();
-        result.addAll(employeeRepository.findAll());
-        result.sort((o1, o2) -> {
-            if (o1.getId() > o2.getId()) {
-                return 1;
-            } else if (o1.getId() < o2.getId()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
+        result.addAll(employeeRepository.findAllByOrderByIdAsc());
         return result;
     }
 
