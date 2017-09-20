@@ -6,25 +6,21 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.entities.*;
-import ru.tsconsulting.errorHandling.Status;
+import ru.tsconsulting.entities.AccessHistory;
+import ru.tsconsulting.entities.DepartmentHistory;
+import ru.tsconsulting.entities.EmployeeHistory;
 import ru.tsconsulting.errorHandling.RestStatus;
-import ru.tsconsulting.errorHandling.not_found_exceptions.UserNotFoundException;
-import ru.tsconsulting.errorHandling.not_specified_exceptions.ParameterNotSpecifiedException;
-import ru.tsconsulting.errorHandling.not_specified_exceptions.RolesNotSpecifiedException;
-import ru.tsconsulting.errorHandling.not_specified_exceptions.UsernameNotSpecifiedException;
-import ru.tsconsulting.errorHandling.notification_exceptions.RoleAlreadyExistsException;
-import ru.tsconsulting.errorHandling.notification_exceptions.UserAlreadyExistsException;
-import ru.tsconsulting.repositories.*;
+import ru.tsconsulting.errorHandling.Status;
+import ru.tsconsulting.repositories.AccessHistoryRepository;
+import ru.tsconsulting.repositories.DepartmentHistoryRepository;
+import ru.tsconsulting.repositories.EmployeeHistoryRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -125,66 +121,9 @@ public class AdminController {
         return departmentHistoryRepository.findByDepartmentId(departmentId);
     }
 
-//    @Transactional
-//    @ApiOperation(value = "Register new user")
-//    @RequestMapping(path = "/user", method = RequestMethod.POST)
-//    public User registerUser(@Validated @RequestBody User.UserDetails userDetails,
-//                                   HttpServletRequest request){
-//        if(userDetails.getUsername() == null || userDetails.getPassword() == null || userDetails.getEnabled() == null) {
-//            throw new ParameterNotSpecifiedException();
-//        }
-//        else if(userRepository.findByUsername(userDetails.getUsername()) != null) {
-//            throw new UserAlreadyExistsException(userDetails.getUsername());
-//        }
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        userDetails.setPassword(encoder.encode(userDetails.getPassword()));
-//        User user = new User(userDetails);
-//        user.getRoles().add(Role.ROLE_USER);
-//        userRepository.save(user);
-//        return user;
-//    }
-
-//    @ApiOperation(value = "Give privileges to user")
-//    @RequestMapping(path = "/user/grant", method = RequestMethod.POST)
-//    public User giveRoleToUser(@Validated @RequestBody String userName, String[] roles,
-//                               HttpServletRequest request){
-//        User user;
-//        if(userName == null) {
-//            throw new UsernameNotSpecifiedException();
-//        } else if(roles == null) {
-//            throw new RolesNotSpecifiedException();
-//        } else {
-//            if((user = userRepository.findByUsername(userName)) != null) {
-//                for(String r : roles) {
-//                    try {
-//                        Role role = Role.valueOf(r);
-//                        user.getRoles().add(role);
-//                    } catch(IllegalArgumentException ignored) {
-//                    }
-//                }
-//            } else {
-//                throw new UserNotFoundException(userName);
-//            }
-//        }
-//        userRepository.save(user);
-//        return user;
-//    }
-
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestStatus failedToParse(DateTimeParseException e) {
         return new RestStatus(Status.PARSE_FAIL, "DateTime could not be parsed");
-    }
-
-    @ExceptionHandler(RoleAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
-    public RestStatus failedToParse(RoleAlreadyExistsException e) {
-        return new RestStatus(Status.ALREADY_EXISTS, "Role is already exists");
-    }
-
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
-    public RestStatus failedToParse(UserAlreadyExistsException e) {
-        return new RestStatus(Status.ALREADY_EXISTS, "Username is already taken. Please try another one");
     }
 }

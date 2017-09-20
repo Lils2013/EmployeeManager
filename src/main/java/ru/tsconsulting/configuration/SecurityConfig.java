@@ -92,6 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/departments/**").hasRole("EDITOR")
                 .antMatchers(HttpMethod.PUT, "/departments/**").hasRole("EDITOR")
                 .antMatchers("/departments/**").hasRole("USER")
+                .antMatchers("/employees/{\\d+}/grant").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/employees/**").hasRole("EDITOR")
                 .antMatchers(HttpMethod.DELETE, "/employees/**").hasRole("EDITOR")
                 .antMatchers(HttpMethod.PUT, "/employees/**").hasRole("EDITOR")

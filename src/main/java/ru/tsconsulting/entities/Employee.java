@@ -22,7 +22,7 @@ public class Employee {
     @Id
     @Access(AccessType.PROPERTY)
     @SequenceGenerator(name = "employeeGenerator", sequenceName = "employee_sequence",
-            allocationSize = 1, initialValue = 1)
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeGenerator")
     private Long id;
 
@@ -71,9 +71,7 @@ public class Employee {
     @JsonIgnore
     private String password;
 
-//    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @NotAudited
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @JoinTable(name = "ROLES_LIST", joinColumns = @JoinColumn(name = "EMPLOYEE_ID"))
     @Column(name = "ROLE_ID", nullable = false)
     @Enumerated(EnumType.STRING)

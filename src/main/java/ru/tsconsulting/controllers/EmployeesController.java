@@ -171,7 +171,7 @@ public class EmployeesController {
         return employee;
     }
 
-    @ApiOperation(value = "Edit employee", notes = "Currently supports editing of position, grade and salary")
+    @ApiOperation(value = "Grant privileges to employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful edition of employee"),
             @ApiResponse(code = 404, message = "Employee with given id does not exist"),
@@ -285,9 +285,7 @@ public class EmployeesController {
 
         Employee employee = employeeRepository.findByIdAndIsFiredIsFalse(employeeId);
         employee.setDepartment(departmentRepository.findByIdAndIsDismissedIsFalse(newDepartmentId));
-        Employee result = employeeRepository.save(employee);
-
-        return result;
+        return employeeRepository.save(employee);
     }
 
     @ApiOperation(value = "Return audit information of employee", notes = "Returns history of changes for an employee" +
