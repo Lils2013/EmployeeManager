@@ -25,7 +25,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Employee findByIdAndIsFiredIsTrue (Long id);
 
-    List<Employee> findByFirstnameAndLastnameAndIsFiredFalse (String firstName, String lastName);
+    Employee findByUsername (String username);
+
+    List<Employee> findByFirstnameAndLastname(String firstName, String lastName);
 
     List<Employee> findByFirstname (String firstName);
 

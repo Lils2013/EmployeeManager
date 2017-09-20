@@ -34,16 +34,13 @@ public class AdminController {
     private final DepartmentHistoryRepository departmentHistoryRepository;
     private final EmployeeHistoryRepository employeeHistoryRepository;
     private final AccessHistoryRepository accessHistoryRepository;
-    private final UserRepository userRepository;
 
     @Autowired
     public AdminController(DepartmentHistoryRepository departmentHistoryRepository,
-                           EmployeeHistoryRepository employeeHistoryRepository, AccessHistoryRepository accessHistoryRepository,
-                           UserRepository userRepository) {
+                           EmployeeHistoryRepository employeeHistoryRepository, AccessHistoryRepository accessHistoryRepository) {
         this.departmentHistoryRepository = departmentHistoryRepository;
         this.employeeHistoryRepository = employeeHistoryRepository;
         this.accessHistoryRepository = accessHistoryRepository;
-        this.userRepository = userRepository;
     }
 
     @ApiOperation(value = "Get full access history")
@@ -128,50 +125,50 @@ public class AdminController {
         return departmentHistoryRepository.findByDepartmentId(departmentId);
     }
 
-    @Transactional
-    @ApiOperation(value = "Register new user")
-    @RequestMapping(path = "/user", method = RequestMethod.POST)
-    public User registerUser(@Validated @RequestBody User.UserDetails userDetails,
-                                   HttpServletRequest request){
-        if(userDetails.getUsername() == null || userDetails.getPassword() == null || userDetails.getEnabled() == null) {
-            throw new ParameterNotSpecifiedException();
-        }
-        else if(userRepository.findByUsername(userDetails.getUsername()) != null) {
-            throw new UserAlreadyExistsException(userDetails.getUsername());
-        }
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        userDetails.setPassword(encoder.encode(userDetails.getPassword()));
-        User user = new User(userDetails);
-        user.getRoles().add(Role.ROLE_USER);
-        userRepository.save(user);
-        return user;
-    }
+//    @Transactional
+//    @ApiOperation(value = "Register new user")
+//    @RequestMapping(path = "/user", method = RequestMethod.POST)
+//    public User registerUser(@Validated @RequestBody User.UserDetails userDetails,
+//                                   HttpServletRequest request){
+//        if(userDetails.getUsername() == null || userDetails.getPassword() == null || userDetails.getEnabled() == null) {
+//            throw new ParameterNotSpecifiedException();
+//        }
+//        else if(userRepository.findByUsername(userDetails.getUsername()) != null) {
+//            throw new UserAlreadyExistsException(userDetails.getUsername());
+//        }
+//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//        userDetails.setPassword(encoder.encode(userDetails.getPassword()));
+//        User user = new User(userDetails);
+//        user.getRoles().add(Role.ROLE_USER);
+//        userRepository.save(user);
+//        return user;
+//    }
 
-    @ApiOperation(value = "Give privileges to user")
-    @RequestMapping(path = "/user/grant", method = RequestMethod.POST)
-    public User giveRoleToUser(@Validated @RequestBody String userName, String[] roles,
-                               HttpServletRequest request){
-        User user;
-        if(userName == null) {
-            throw new UsernameNotSpecifiedException();
-        } else if(roles == null) {
-            throw new RolesNotSpecifiedException();
-        } else {
-            if((user = userRepository.findByUsername(userName)) != null) {
-                for(String r : roles) {
-                    try {
-                        Role role = Role.valueOf(r);
-                        user.getRoles().add(role);
-                    } catch(IllegalArgumentException ignored) {
-                    }
-                }
-            } else {
-                throw new UserNotFoundException(userName);
-            }
-        }
-        userRepository.save(user);
-        return user;
-    }
+//    @ApiOperation(value = "Give privileges to user")
+//    @RequestMapping(path = "/user/grant", method = RequestMethod.POST)
+//    public User giveRoleToUser(@Validated @RequestBody String userName, String[] roles,
+//                               HttpServletRequest request){
+//        User user;
+//        if(userName == null) {
+//            throw new UsernameNotSpecifiedException();
+//        } else if(roles == null) {
+//            throw new RolesNotSpecifiedException();
+//        } else {
+//            if((user = userRepository.findByUsername(userName)) != null) {
+//                for(String r : roles) {
+//                    try {
+//                        Role role = Role.valueOf(r);
+//                        user.getRoles().add(role);
+//                    } catch(IllegalArgumentException ignored) {
+//                    }
+//                }
+//            } else {
+//                throw new UserNotFoundException(userName);
+//            }
+//        }
+//        userRepository.save(user);
+//        return user;
+//    }
 
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

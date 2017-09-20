@@ -4,22 +4,22 @@ import io.swagger.annotations.*;
 import org.hibernate.envers.AuditReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.entities.Department;
-import ru.tsconsulting.entities.Employee;
-import ru.tsconsulting.entities.Grade;
-import ru.tsconsulting.entities.Position;
+import ru.tsconsulting.entities.*;
 import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.errorHandling.not_found_exceptions.*;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.*;
 import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyFiredException;
 import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyHiredException;
 import ru.tsconsulting.errorHandling.notification_exceptions.InvalidSalaryValueException;
+import ru.tsconsulting.errorHandling.notification_exceptions.NotUniqueUsernameException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
+
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -60,6 +60,9 @@ public class EmployeesController {
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@Validated @RequestBody Employee.EmployeeDetails employeeDetails,
                                    HttpServletRequest request) {
+        if (employeeRepository.findByUsername(employeeDetails.getUsername()) != null) {
+            throw new NotUniqueUsernameException(employeeDetails.getUsername());
+        }
         Employee employee = new Employee(employeeDetails);
         if (employeeDetails.getGrade() != null) {
             if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
@@ -75,18 +78,16 @@ public class EmployeesController {
                 employee.setPosition(positionRepository.findById(employeeDetails.getPosition()));
             }
         }
-        if (employeeDetails.getDepartment() == null) {
-            throw new DepartmentNotSpecifiedException();
+        Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
+        if (department == null) {
+            throw new DepartmentNotFoundException(employeeDetails.getDepartment().toString());
         } else {
-            Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
-            if (department == null) {
-                throw new DepartmentNotFoundException(employeeDetails.getDepartment().toString());
-            } else {
-                employee.setDepartment(department);
-            }
+            employee.setDepartment(department);
         }
-        Employee result = employeeRepository.save(employee);
-        return result;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        employee.setPassword(encoder.encode(employeeDetails.getPassword()));
+        employee.getRoles().add(Role.ROLE_USER);
+        return employeeRepository.save(employee);
     }
 
     @ApiOperation(value = "Return employee")
@@ -97,7 +98,7 @@ public class EmployeesController {
     )
     @RequestMapping(path = "/{employeeId}", method = RequestMethod.GET)
     public Employee getEmployee(@ApiParam(value = "Id of employee, positive integer", required = true)
-                                    @PathVariable Long employeeId,
+                                @PathVariable Long employeeId,
                                 HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {
@@ -170,6 +171,34 @@ public class EmployeesController {
         return employee;
     }
 
+    @ApiOperation(value = "Edit employee", notes = "Currently supports editing of position, grade and salary")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful edition of employee"),
+            @ApiResponse(code = 404, message = "Employee with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path = "/{employeeId}/grant", method = RequestMethod.POST)
+    public Employee grantPrivileges(@ApiParam(value = "Id of employee, positive integer",
+            required = true) @PathVariable Long employeeId, String[] roles,
+                                    HttpServletRequest request) {
+        Employee employee = employeeRepository.findById(employeeId);
+        if (employee == null) {
+            throw new EmployeeNotFoundException(employeeId.toString());
+        }
+        if (roles == null) {
+            throw new RolesNotSpecifiedException();
+        } else {
+            for (String r : roles) {
+                try {
+                    Role role = Role.valueOf(r);
+                    employee.getRoles().add(role);
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+        }
+        return employeeRepository.save(employee);
+    }
+
     @ApiOperation(value = "Fire employee that was once created")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful firing of employee"),
@@ -223,7 +252,7 @@ public class EmployeesController {
                                                          HttpServletRequest request) {
         List<Employee> employees;
         if (firstName != null && lastName != null) {
-            employees = employeeRepository.findByFirstnameAndLastnameAndIsFiredFalse(firstName, lastName);
+            employees = employeeRepository.findByFirstnameAndLastname(firstName, lastName);
         } else if (firstName != null) {
             employees = employeeRepository.findByFirstname(firstName);
         } else if (lastName != null) {
@@ -271,11 +300,11 @@ public class EmployeesController {
     @RequestMapping(path = "/{employeeId}/audit", method = RequestMethod.GET)
     public Map<LocalDateTime, Employee> getAudit(@ApiParam(value = "Id of employee, positive integer",
             required = true) @PathVariable Long employeeId,
-            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, e.g. 2007-12-03T10:15:30")
-            @RequestParam(value = "from", required = false) String from,
-            @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, e.g. 2007-12-03T10:15:30")
-            @RequestParam(value = "to", required = false) String to,
-                                          HttpServletRequest request) {
+                                                 @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, e.g. 2007-12-03T10:15:30")
+                                                 @RequestParam(value = "from", required = false) String from,
+                                                 @ApiParam(value = "Requires datetime, compliant to LocalDateTime format in Java, e.g. 2007-12-03T10:15:30")
+                                                 @RequestParam(value = "to", required = false) String to,
+                                                 HttpServletRequest request) {
         if (employeeRepository.findById(employeeId) == null) {
             throw new EmployeeNotFoundException(employeeId.toString());
         }
@@ -348,9 +377,16 @@ public class EmployeesController {
     public RestStatus alreadyHired(EmployeeIsAlreadyHiredException e) {
         return new RestStatus(Status.ALREADY_HIRED, e.getMessage());
     }
+
     @ExceptionHandler(InvalidSalaryValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestStatus invalidSalary(InvalidSalaryValueException e) {
+        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
+    }
+
+    @ExceptionHandler(NotUniqueUsernameException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public RestStatus invalidUsername(NotUniqueUsernameException e) {
         return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
     }
 }

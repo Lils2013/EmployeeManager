@@ -74,13 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .jdbcAuthentication()
-                .dataSource(dataSource)
-
-                .usersByUsernameQuery("select username, password, enabled from users where username = ?")
-                .authoritiesByUsernameQuery("select u.username, r.name from roles_list ro inner join users u on ro.user_id=u.id" +
-                        " inner join role r on ro.role_id = r.id where u.username = ?").passwordEncoder(new BCryptPasswordEncoder());
+        auth.jdbcAuthentication().dataSource(dataSource)
+                .usersByUsernameQuery("select u.username, u.password, (0-u.is_fired)+1 from employee u where u.username = ?")
+                .authoritiesByUsernameQuery("select u.username, ro.role_id from roles_list ro inner join employee u " +
+                        "on ro.employee_id=u.id where u.username = ?")
+                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override

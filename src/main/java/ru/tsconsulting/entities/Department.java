@@ -28,7 +28,6 @@ public class Department {
     private String name;
 
     @JsonIgnore
-    @NotAudited
     @ManyToOne
     @JoinColumn(name = "CHIEF_ID")
     private Employee chief;

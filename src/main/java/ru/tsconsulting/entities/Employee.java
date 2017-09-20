@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -19,7 +22,7 @@ public class Employee {
     @Id
     @Access(AccessType.PROPERTY)
     @SequenceGenerator(name = "employeeGenerator", sequenceName = "employee_sequence",
-            allocationSize = 1)
+            allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeGenerator")
     private Long id;
 
@@ -61,6 +64,21 @@ public class Employee {
     @Column(name = "salary", precision = 14, scale = 2)
     private BigDecimal salary;
 
+    @NotNull
+    @Size(min = 1, max = 32)
+    private String username;
+
+    @JsonIgnore
+    private String password;
+
+//    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @NotAudited
+    @ElementCollection(targetClass = Role.class)
+    @JoinTable(name = "ROLES_LIST", joinColumns = @JoinColumn(name = "EMPLOYEE_ID"))
+    @Column(name = "ROLE_ID", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
+
 	public Employee() {}
 	public Employee(EmployeeDetails employeeDetails) {
 		setFirstname(employeeDetails.getFirstname());
@@ -69,6 +87,7 @@ public class Employee {
 		setGender(employeeDetails.getGender());
 		setBirthdate(employeeDetails.getBirthdate());
 		setSalary(employeeDetails.getSalary());
+		setUsername(employeeDetails.getUsername());
 	}
 
     @JsonGetter("department_id")
@@ -194,6 +213,30 @@ public class Employee {
         isFired = fired;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -248,6 +291,14 @@ public class Employee {
         @DecimalMin("0.00")
         @Digits(integer=12, fraction=2, message = "The integer and the fraction should be less than or equal to 12 and 2 respectively.")
 	    private BigDecimal salary;
+
+        @NotNull
+        @Size(min = 1, max = 32)
+        private String username;
+
+        @NotNull
+        @Size(min = 1, max = 32)
+        private String password;
 
 	    public EmployeeDetails() {
 	    }
@@ -324,7 +375,23 @@ public class Employee {
 	        this.grade = grade;
 	    }
 
-	    @Override
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        @Override
 	    public boolean equals(Object o) {
 	        if (this == o) return true;
 	        if (o == null || getClass() != o.getClass()) return false;
