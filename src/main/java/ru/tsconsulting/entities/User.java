@@ -1,14 +1,14 @@
 package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Audited
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "USERS")
 public class User {
     @Id
@@ -21,8 +21,13 @@ public class User {
     private String password;
     private Boolean enabled;
 
-    public User() {
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "ROLES_LIST", joinColumns = @JoinColumn(name = "USER_ID"))
+    @Column(name = "ROLE_ID", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
 
+    public User() {
     }
 
     public User(UserDetails userDetails) {
@@ -43,10 +48,6 @@ public class User {
         return username;
     }
 
-    public void setUserName(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -63,6 +64,17 @@ public class User {
         this.enabled = enabled;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     @Override
     public boolean equals(Object o) {

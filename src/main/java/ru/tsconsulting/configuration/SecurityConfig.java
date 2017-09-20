@@ -78,14 +78,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .jdbcAuthentication()
                 .dataSource(dataSource)
 
-        .usersByUsernameQuery("select username, password, enabled from users where username = ?")
-                .authoritiesByUsernameQuery("select username, name from roles_list inner join users on user_id=users.id" +
-                        " inner join role on role_id = role.id where username = ?").passwordEncoder(new BCryptPasswordEncoder());
-
-
+                .usersByUsernameQuery("select username, password, enabled from users where username = ?")
+                .authoritiesByUsernameQuery("select u.username, r.name from roles_list ro inner join users u on ro.user_id=u.id" +
+                        " inner join role r on ro.role_id = r.id where u.username = ?").passwordEncoder(new BCryptPasswordEncoder());
     }
-
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -111,12 +107,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/positions/**").hasRole("EDITOR")
                 .antMatchers("/positions/**").hasRole("USER")
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-            public <O extends FilterSecurityInterceptor> O postProcess(
-                    O fsi) {
-                fsi.setPublishAuthorizationSuccess(true);
-                return fsi;
-            }
-        }).and().csrf().disable();
+                    public <O extends FilterSecurityInterceptor> O postProcess(
+                            O fsi) {
+                        fsi.setPublishAuthorizationSuccess(true);
+                        return fsi;
+                    }
+                }).and().csrf().disable();
 
     }
 
@@ -138,11 +134,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             accessHistory.setAuthenticated(false);
             accessHistory.setSuccesful(false);
             accessHistoryRepository.save(accessHistory);
-        }
-        else if (event instanceof AuthorizedEvent) {
+        } else if (event instanceof AuthorizedEvent) {
             AuthorizedEvent authEvent = (AuthorizedEvent) event;
             FilterInvocation filterInvocation = (FilterInvocation) authEvent.getSource();
-            filterInvocation.getHttpRequest().setAttribute("start",LocalDateTime.ofInstant(Instant.ofEpochMilli(authEvent.getTimestamp()),
+            filterInvocation.getHttpRequest().setAttribute("start", LocalDateTime.ofInstant(Instant.ofEpochMilli(authEvent.getTimestamp()),
                     TimeZone.getDefault().toZoneId()));
         }
     }

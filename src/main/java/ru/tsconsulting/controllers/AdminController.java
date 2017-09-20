@@ -6,14 +6,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.*;
 import ru.tsconsulting.errorHandling.Status;
 import ru.tsconsulting.errorHandling.RestStatus;
-import ru.tsconsulting.errorHandling.not_found_exceptions.RoleNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.UserNotFoundException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.ParameterNotSpecifiedException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.RolesNotSpecifiedException;
@@ -37,19 +35,15 @@ public class AdminController {
     private final EmployeeHistoryRepository employeeHistoryRepository;
     private final AccessHistoryRepository accessHistoryRepository;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final RolesListRepository rolesListRepository;
 
     @Autowired
     public AdminController(DepartmentHistoryRepository departmentHistoryRepository,
                            EmployeeHistoryRepository employeeHistoryRepository, AccessHistoryRepository accessHistoryRepository,
-                           UserRepository userRepository, RoleRepository roleRepository, RolesListRepository rolesListRepository) {
+                           UserRepository userRepository) {
         this.departmentHistoryRepository = departmentHistoryRepository;
         this.employeeHistoryRepository = employeeHistoryRepository;
         this.accessHistoryRepository = accessHistoryRepository;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.rolesListRepository = rolesListRepository;
     }
 
     @ApiOperation(value = "Get full access history")
@@ -148,50 +142,35 @@ public class AdminController {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         userDetails.setPassword(encoder.encode(userDetails.getPassword()));
         User user = new User(userDetails);
+        user.getRoles().add(Role.ROLE_USER);
         userRepository.save(user);
-        RolesList rolesList = new RolesList();
-        rolesList.setRole(roleRepository.findByName("ROLE_USER"));
-        rolesList.setUser(user);
-        rolesListRepository.save(rolesList);
         return user;
     }
 
     @ApiOperation(value = "Give privileges to user")
-    @RequestMapping(path = "/user/role/grant", method = RequestMethod.POST)
-    public List<RolesList> giveRoleToUser(@Validated @RequestBody String userName, String[] roles,
+    @RequestMapping(path = "/user/grant", method = RequestMethod.POST)
+    public User giveRoleToUser(@Validated @RequestBody String userName, String[] roles,
                                HttpServletRequest request){
-        User user = new User();
-        Role role = new Role();
-        List<RolesList> rolesListOutput = new ArrayList<>();
+        User user;
         if(userName == null) {
             throw new UsernameNotSpecifiedException();
-        }
-        else if(roles == null) {
+        } else if(roles == null) {
             throw new RolesNotSpecifiedException();
-        }
-        else {
+        } else {
             if((user = userRepository.findByUsername(userName)) != null) {
                 for(String r : roles) {
-                    if((role = roleRepository.findByName(r)) != null) {
-                        RolesList rolesList = new RolesList();
-                        if(rolesListRepository.findByUserAndRole(user, role) == null) {
-                            rolesList.setUser(user);
-                            rolesList.setRole(role);
-
-                            rolesListOutput.add(rolesListRepository.save(rolesList));
-                        }
+                    try {
+                        Role role = Role.valueOf(r);
+                        user.getRoles().add(role);
+                    } catch(IllegalArgumentException ignored) {
                     }
-                    else {
-                        throw new RoleNotFoundException(r);
-                    }
-
                 }
-            }
-            else {
+            } else {
                 throw new UserNotFoundException(userName);
             }
         }
-        return rolesListOutput;
+        userRepository.save(user);
+        return user;
     }
 
     @ExceptionHandler(DateTimeParseException.class)
