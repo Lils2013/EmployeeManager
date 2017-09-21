@@ -41,7 +41,7 @@ public class DepartmentEndpoint {
         }
         SubDepartmentsResponse result = new SubDepartmentsResponse();
         List<DepartmentSOAP> departmentSOAPList =  result.getDepartments();
-        for (Department iter:departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId))
+        for (Department iter:departmentRepository.findByParentIdAndIsDismissedIsFalseOrderByIdAsc(departmentId))
         {
             departmentSOAPList.add(parseDepartment(iter));
         }

@@ -22,7 +22,8 @@ public class CachingConfig {
                 new ConcurrentMapCache("employeesOfDepartment"),
                 new ConcurrentMapCache("notFiredEmployee"),
                 new ConcurrentMapCache("subDepartments"),
-                new ConcurrentMapCache("notDismissedDepartment")));
+                new ConcurrentMapCache("notDismissedDepartment"),
+                new ConcurrentMapCache("allEmployees")));
         return cacheManager;
     }
 

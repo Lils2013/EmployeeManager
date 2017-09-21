@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface AccessHistoryRepository extends JpaRepository<AccessHistory, Long> {
 
-    List<AccessHistory> findByDateTimeBetween(LocalDateTime from, LocalDateTime to);
+    List<AccessHistory> findByDateTimeBetweenOrderByIdAsc(LocalDateTime from, LocalDateTime to);
 
-    List<AccessHistory> findByDateTimeAfter(LocalDateTime from);
+    List<AccessHistory> findByDateTimeAfterOrderByIdAsc(LocalDateTime from);
 
-    List<AccessHistory> findByDateTimeBefore(LocalDateTime to);
+    List<AccessHistory> findByDateTimeBeforeOrderByIdAsc(LocalDateTime to);
 
     List<AccessHistory> findAllByOrderByIdAsc();
 }

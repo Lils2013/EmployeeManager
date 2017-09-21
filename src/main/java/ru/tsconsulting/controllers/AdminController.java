@@ -50,13 +50,13 @@ public class AdminController {
         if (from != null && to != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
             LocalDateTime toDate = LocalDateTime.parse(to);
-            result.addAll(accessHistoryRepository.findByDateTimeBetween(fromDate, toDate));
+            result.addAll(accessHistoryRepository.findByDateTimeBetweenOrderByIdAsc(fromDate, toDate));
         } else if (from != null) {
             LocalDateTime fromDate = LocalDateTime.parse(from);
-            result.addAll(accessHistoryRepository.findByDateTimeAfter(fromDate));
+            result.addAll(accessHistoryRepository.findByDateTimeAfterOrderByIdAsc(fromDate));
         } else if (to != null) {
             LocalDateTime toDate = LocalDateTime.parse(to);
-            result.addAll(accessHistoryRepository.findByDateTimeBefore(toDate));
+            result.addAll(accessHistoryRepository.findByDateTimeBeforeOrderByIdAsc(toDate));
         } else {
             result.addAll(accessHistoryRepository.findAllByOrderByIdAsc());
         }

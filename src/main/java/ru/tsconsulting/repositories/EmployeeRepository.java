@@ -15,9 +15,6 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Cacheable("employeesOfDepartment")
-    List<Employee> findByDepartmentIdAndIsFiredIsFalse(Long id);
-
-    @Cacheable("employeesOfDepartment")
     List<Employee> findByDepartmentIdAndIsFiredIsFalseOrderByIdAsc(Long id);
 
     @Cacheable("employee")
@@ -36,14 +33,14 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> findByLastname (String lastName);
 
+    @Cacheable("allEmployees")
+    List<Employee> findAllByOrderByIdAsc();
 
     @Override
     @Caching(put={@CachePut(value="employee", key="#result.id"),
             @CachePut(value="notFiredEmployee", key="#result.id", condition="#result.isFired() == false")},
     evict={@CacheEvict(value="employeesOfDepartment", allEntries = true),
+            @CacheEvict(value="allEmployees", allEntries = true),
             @CacheEvict(value="notFiredEmployee",  key="#result.id", condition="#result.isFired() == true")})
     Employee save (@Param("employee") Employee employee);
-
-    List<Employee> findAllByOrderByIdAsc();
-
 }

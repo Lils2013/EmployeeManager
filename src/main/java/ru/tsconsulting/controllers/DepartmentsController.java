@@ -95,8 +95,8 @@ public class DepartmentsController {
                                  HttpServletRequest request) {
         Department current = departmentRepository.findByIdAndIsDismissedIsFalse(departmentId);
         if (current != null) {
-            if (employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId).isEmpty()) {
-                if (departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId).isEmpty()) {
+            if (employeeRepository.findByDepartmentIdAndIsFiredIsFalseOrderByIdAsc(departmentId).isEmpty()) {
+                if (departmentRepository.findByParentIdAndIsDismissedIsFalseOrderByIdAsc(departmentId).isEmpty()) {
                     current.setDismissed(true);
                     departmentRepository.save(current);
                 } else {
@@ -142,9 +142,7 @@ public class DepartmentsController {
             required = true) @PathVariable Long departmentId,
                                                HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
-            List<Department> result = new ArrayList<>();
-            result.addAll(departmentRepository.findByParentIdAndIsDismissedIsFalseOrderByIdAsc(departmentId));
-            return result;
+            return departmentRepository.findByParentIdAndIsDismissedIsFalseOrderByIdAsc(departmentId);
         } else {
             throw new DepartmentNotFoundException(departmentId.toString());
         }
@@ -155,9 +153,7 @@ public class DepartmentsController {
     public List<Employee> employeeByDepartment(@ApiParam(value = "Id of a department, positive integer",
             required = true) @PathVariable Long departmentId, HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
-            List<Employee> result = new ArrayList<>();
-            result.addAll(employeeRepository.findByDepartmentIdAndIsFiredIsFalseOrderByIdAsc(departmentId));
-            return result;
+            return employeeRepository.findByDepartmentIdAndIsFiredIsFalseOrderByIdAsc(departmentId);
         } else {
             throw new DepartmentNotFoundException(departmentId.toString());
         }

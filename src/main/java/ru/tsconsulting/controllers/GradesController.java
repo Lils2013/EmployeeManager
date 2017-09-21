@@ -35,8 +35,6 @@ public class GradesController {
     @ApiOperation(value = "Get all grades")
     @RequestMapping(method = RequestMethod.GET)
     public List<Grade> getAllGrades(HttpServletRequest request){
-        List<Grade> result = new ArrayList<>();
-        result.addAll(gradeRepository.findAllByOrderByIdAsc());
-        return result;
+        return gradeRepository.findAllByOrderByIdAsc();
     }
 }

@@ -35,9 +35,7 @@ public class PositionsController {
     @ApiOperation(value = "Get all positions")
     @RequestMapping(method = RequestMethod.GET)
     public List<Position> getAllPositions(HttpServletRequest request) {
-        List<Position> result = new ArrayList<>();
-        result.addAll(positionRepository.findAllByOrderByIdAsc());
-        return result;
+        return positionRepository.findAllByOrderByIdAsc();
     }
 
 }

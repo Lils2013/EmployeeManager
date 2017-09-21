@@ -88,7 +88,7 @@ public class EmployeeEndpoint {
         }
         EmployeeByDepResponse result = new EmployeeByDepResponse();
         List<EmployeeSOAP> employeeSOAPList = result.getEmployees();
-        for (Employee iter : employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId)) {
+        for (Employee iter : employeeRepository.findByDepartmentIdAndIsFiredIsFalseOrderByIdAsc(departmentId)) {
             employeeSOAPList.add(parseEmployee(iter));
         }
         return result;
