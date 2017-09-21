@@ -1,6 +1,7 @@
 package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.*;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -50,7 +52,8 @@ public class EmployeesController {
     }
 
     @CrossOrigin
-    @ApiOperation(value = "Create employee")
+    @ApiOperation(value = "Create employee",
+            notes = "Employee has USER role by default")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful creation of employee"),
             @ApiResponse(code = 400, message = "Invalid attributes"),
@@ -171,13 +174,14 @@ public class EmployeesController {
         return employee;
     }
 
-    @ApiOperation(value = "Grant privileges to employee")
+    @ApiOperation(value = "Grant privileges to employee",
+            notes = "Employee always has USER role. Can only be used by ADMIN")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful edition of employee"),
             @ApiResponse(code = 404, message = "Employee with given id does not exist"),
             @ApiResponse(code = 500, message = "Internal server error")}
     )
-    @RequestMapping(path = "/{employeeId}/grant", method = RequestMethod.POST)
+    @RequestMapping(path = "/{employeeId}/roles", method = RequestMethod.POST)
     public Employee grantPrivileges(@ApiParam(value = "Id of employee, positive integer",
             required = true) @PathVariable Long employeeId, String[] roles,
                                     HttpServletRequest request) {
@@ -196,6 +200,36 @@ public class EmployeesController {
                 }
             }
         }
+        return employeeRepository.save(employee);
+    }
+
+    @ApiOperation(value = "Set privileges of employee",
+            notes = "Employee always has USER role, gets added automatically. Can only be used by ADMIN")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful edition of employee"),
+            @ApiResponse(code = 404, message = "Employee with given id does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
+    @RequestMapping(path = "/{employeeId}/roles", method = RequestMethod.PUT)
+    public Employee setPrivileges(@ApiParam(value = "Id of employee, positive integer",
+            required = true) @PathVariable Long employeeId, String[] roles,
+                                    HttpServletRequest request) {
+        Employee employee = employeeRepository.findById(employeeId);
+        if (employee == null) {
+            throw new EmployeeNotFoundException(employeeId.toString());
+        }
+        Set<Role> roleSet = new HashSet<>();
+        if (roles != null) {
+            for (String r : roles) {
+                try {
+                    Role role = Role.valueOf(r);
+                    roleSet.add(role);
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+        }
+        roleSet.add(Role.ROLE_USER);
+        employee.setRoles(roleSet);
         return employeeRepository.save(employee);
     }
 
