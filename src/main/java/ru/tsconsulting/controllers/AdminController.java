@@ -58,17 +58,8 @@ public class AdminController {
             LocalDateTime toDate = LocalDateTime.parse(to);
             result.addAll(accessHistoryRepository.findByDateTimeBefore(toDate));
         } else {
-            result.addAll(accessHistoryRepository.findAll());
+            result.addAll(accessHistoryRepository.findAllByOrderByIdAsc());
         }
-        result.sort((o1, o2) -> {
-            if (o1.getId() > o2.getId()) {
-                return 1;
-            } else if (o1.getId() < o2.getId()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
         return result;
     }
 

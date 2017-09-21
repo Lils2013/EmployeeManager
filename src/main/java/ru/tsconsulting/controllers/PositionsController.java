@@ -36,16 +36,7 @@ public class PositionsController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Position> getAllPositions(HttpServletRequest request) {
         List<Position> result = new ArrayList<>();
-        result.addAll(positionRepository.findAll());
-        result.sort((o1, o2) -> {
-            if (o1.getId() > o2.getId()) {
-                return 1;
-            } else if (o1.getId() < o2.getId()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
+        result.addAll(positionRepository.findAllByOrderByIdAsc());
         return result;
     }
 

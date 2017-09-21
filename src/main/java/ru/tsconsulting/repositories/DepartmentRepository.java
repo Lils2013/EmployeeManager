@@ -14,6 +14,9 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Cacheable("subDepartments")
     List<Department> findByParentIdAndIsDismissedIsFalse(Long id);
 
+    @Cacheable("subDepartments")
+    List<Department> findByParentIdAndIsDismissedIsFalseOrderByIdAsc(Long id);
+
     @Cacheable("department")
     Department findById(Long id);
 

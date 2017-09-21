@@ -14,4 +14,6 @@ public interface AccessHistoryRepository extends JpaRepository<AccessHistory, Lo
     List<AccessHistory> findByDateTimeAfter(LocalDateTime from);
 
     List<AccessHistory> findByDateTimeBefore(LocalDateTime to);
+
+    List<AccessHistory> findAllByOrderByIdAsc();
 }

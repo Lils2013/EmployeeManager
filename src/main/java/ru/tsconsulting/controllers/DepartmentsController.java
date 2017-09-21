@@ -143,16 +143,7 @@ public class DepartmentsController {
                                                HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
             List<Department> result = new ArrayList<>();
-            result.addAll(departmentRepository.findByParentIdAndIsDismissedIsFalse(departmentId));
-            result.sort((o1, o2) -> {
-                if (o1.getId() > o2.getId()) {
-                    return 1;
-                } else if (o1.getId() < o2.getId()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            });
+            result.addAll(departmentRepository.findByParentIdAndIsDismissedIsFalseOrderByIdAsc(departmentId));
             return result;
         } else {
             throw new DepartmentNotFoundException(departmentId.toString());
@@ -165,16 +156,7 @@ public class DepartmentsController {
             required = true) @PathVariable Long departmentId, HttpServletRequest request) {
         if (departmentRepository.findByIdAndIsDismissedIsFalse(departmentId) != null) {
             List<Employee> result = new ArrayList<>();
-            result.addAll(employeeRepository.findByDepartmentIdAndIsFiredIsFalse(departmentId));
-            result.sort((o1, o2) -> {
-                if (o1.getId() > o2.getId()) {
-                    return 1;
-                } else if (o1.getId() < o2.getId()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            });
+            result.addAll(employeeRepository.findByDepartmentIdAndIsFiredIsFalseOrderByIdAsc(departmentId));
             return result;
         } else {
             throw new DepartmentNotFoundException(departmentId.toString());

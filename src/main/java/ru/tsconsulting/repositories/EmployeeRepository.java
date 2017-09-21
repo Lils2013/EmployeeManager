@@ -17,6 +17,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Cacheable("employeesOfDepartment")
     List<Employee> findByDepartmentIdAndIsFiredIsFalse(Long id);
 
+    @Cacheable("employeesOfDepartment")
+    List<Employee> findByDepartmentIdAndIsFiredIsFalseOrderByIdAsc(Long id);
+
     @Cacheable("employee")
     Employee findById (Long id);
 
@@ -40,5 +43,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     evict={@CacheEvict(value="employeesOfDepartment", allEntries = true),
             @CacheEvict(value="notFiredEmployee",  key="#result.id", condition="#result.isFired() == true")})
     Employee save (@Param("employee") Employee employee);
+
+    List<Employee> findAllByOrderByIdAsc();
 
 }
