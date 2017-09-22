@@ -2,41 +2,28 @@ package ru.tsconsulting.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
-import org.springframework.jdbc.datasource.init.ScriptException;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.access.event.AuthorizedEvent;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
-import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import ru.tsconsulting.entities.AccessHistory;
 import ru.tsconsulting.errorHandling.handler.AccessDenied;
 import ru.tsconsulting.errorHandling.handler.AuthFailure;
 import ru.tsconsulting.errorHandling.handler.AuthSuccess;
 import ru.tsconsulting.errorHandling.handler.LogoutSuccess;
 import ru.tsconsulting.repositories.AccessHistoryRepository;
-
-import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
@@ -71,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig() {
     }
 
-    @Autowired
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
@@ -115,21 +101,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
+    @Autowired
+    private HttpServletRequest request;
     @EventListener
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof AuthorizationFailureEvent) {
+        if (event instanceof AuthorizationFailureEvent||event instanceof AbstractAuthenticationFailureEvent) {
             AccessHistory accessHistory = new AccessHistory();
-            AuthorizationFailureEvent authEvent = (AuthorizationFailureEvent) event;
             LocalDateTime triggerTime =
-                    LocalDateTime.ofInstant(Instant.ofEpochMilli(authEvent.getTimestamp()),
+                    LocalDateTime.ofInstant(Instant.ofEpochMilli(event.getTimestamp()),
                             TimeZone.getDefault().toZoneId());
             accessHistory.setDateTime(triggerTime);
-            FilterInvocation filterInvocation = (FilterInvocation) authEvent.getSource();
-            accessHistory.setUrl(filterInvocation.getRequestUrl());
-            WebAuthenticationDetails webAuthenticationDetails = (WebAuthenticationDetails)
-                    authEvent.getAuthentication().getDetails();
-            accessHistory.setIp(webAuthenticationDetails.getRemoteAddress());
-            accessHistory.setPrincipal(authEvent.getAuthentication().getName());
+            accessHistory.setUrl(request.getRequestURI());
+            accessHistory.setIp(request.getRemoteAddr());
+            accessHistory.setPrincipal("anonymousUser");
             accessHistory.setAuthenticated(false);
             accessHistory.setSuccesful(false);
             accessHistoryRepository.save(accessHistory);
@@ -140,4 +124,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     TimeZone.getDefault().toZoneId()));
         }
     }
+
 }
