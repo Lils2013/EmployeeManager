@@ -119,7 +119,6 @@ public class DepartmentsController {
                                      HttpServletRequest request) {
         Department department = departmentRepository.findById(departmentId);
 
-
         if (newName != null) {
             department.setName(newName);
         }
