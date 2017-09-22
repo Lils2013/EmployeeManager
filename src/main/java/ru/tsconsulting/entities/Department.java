@@ -25,6 +25,7 @@ public class Department {
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departmentGenerator")
     private Long id;
+    @Column(unique = true)
     private String name;
 
     @JsonIgnore

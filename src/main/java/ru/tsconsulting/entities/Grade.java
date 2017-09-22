@@ -29,6 +29,7 @@ public class Grade {
 
 	@NotNull
 	@Size(min = 1, max = 2)
+    @Column(unique = true)
     private String grade;
 
 	public Grade() {

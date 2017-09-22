@@ -8,5 +8,7 @@ import java.util.List;
 public interface GradeRepository extends JpaRepository<Grade,Long>{
     Grade findById(Long id);
 
+    Grade findByGrade(String name);
+
     List<Grade> findAllByOrderByIdAsc();
 }

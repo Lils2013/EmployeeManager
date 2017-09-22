@@ -1,7 +1,6 @@
 package ru.tsconsulting.controllers;
 
 import io.swagger.annotations.*;
-import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,8 +11,8 @@ import ru.tsconsulting.entities.*;
 import ru.tsconsulting.errorHandling.*;
 import ru.tsconsulting.errorHandling.not_found_exceptions.*;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.*;
-import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyFiredException;
-import ru.tsconsulting.errorHandling.notification_exceptions.EmployeeIsAlreadyHiredException;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.EmployeeIsAlreadyFiredException;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.EmployeeIsAlreadyHiredException;
 import ru.tsconsulting.errorHandling.notification_exceptions.InvalidSalaryValueException;
 import ru.tsconsulting.errorHandling.notification_exceptions.NotUniqueUsernameException;
 import ru.tsconsulting.repositories.DepartmentRepository;
@@ -22,7 +21,6 @@ import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;

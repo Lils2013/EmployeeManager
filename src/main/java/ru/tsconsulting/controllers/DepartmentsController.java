@@ -10,6 +10,8 @@ import ru.tsconsulting.entities.AccessHistory;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.*;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.DepartmentAlreadyExistsException;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.EntityAlreadyExistsException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.DepartmentNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
@@ -43,6 +45,9 @@ public class DepartmentsController {
     public Department createDepartment(@ApiParam(value = "Department details", required = true) @Validated @RequestBody Department.DepartmentDetails departmentDetails,
                                        HttpServletRequest request) {
         Department department = new Department(departmentDetails);
+        if(departmentRepository.findByName(departmentDetails.getName()) != null) {
+            throw new DepartmentAlreadyExistsException(departmentDetails.getName());
+        }
         Long parentId = departmentDetails.getParent();
         if (parentId != null) {
             Department parentDepartment = departmentRepository.findByIdAndIsDismissedIsFalse(parentId);
@@ -112,16 +117,22 @@ public class DepartmentsController {
 
     @ApiOperation(value = "Edit department")
     @RequestMapping(path = "/{departmentId}", method = RequestMethod.POST)
-    public void changeDepartmentName(@ApiParam(value = "Id of a department, positive integer",
+    public Department changeDepartmentName(@ApiParam(value = "Id of a department, positive integer",
             required = true) @PathVariable Long departmentId,
-                                     @ApiParam(value = "Id of a new chief, positive integer") Long newChiefId,
-                                     @ApiParam(value = "New department name, string with size between 1 and 64") String newName,
+                                     @ApiParam(value = "Id of a new chief, positive integer")
+                                     @RequestParam(value = "newChiefId", required = false)Long newChiefId,
+                                     @ApiParam(value = "New department name, string with size between 1 and 64")
+                                     @RequestParam(value = "newName", required = false)String newName,
                                      HttpServletRequest request) {
         Department department = departmentRepository.findById(departmentId);
 
 
         if (newName != null) {
+
             department.setName(newName);
+            if(departmentRepository.findByName(newName) != null) {
+                throw new DepartmentAlreadyExistsException(newName);
+            }
         }
 
         if (newChiefId != null) {
@@ -133,7 +144,7 @@ public class DepartmentsController {
             }
         }
 
-        departmentRepository.save(department);
+       return departmentRepository.save(department);
     }
 
     @ApiOperation(value = "Return all direct sub departments of given department")
@@ -208,6 +219,12 @@ public class DepartmentsController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RestStatus invalidHierarchy(InvalidDepartmentHierarchyException e) {
         return new RestStatus(Status.INVALID_HIERARCHY, e.getMessage());
+    }
+
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public RestStatus alreadyExists(EntityAlreadyExistsException e) {
+        return new RestStatus(Status.ALREADY_EXISTS, e.getMessage());
     }
 
     private boolean isParent(Department potentialChild, Department potentialParent) {

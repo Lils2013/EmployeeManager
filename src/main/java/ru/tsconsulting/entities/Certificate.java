@@ -23,6 +23,7 @@ public class Certificate {
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificateGenerator")
     private Long id;
+	@Column(unique = true)
     private String name;
 	private Long serialNumber;
 
