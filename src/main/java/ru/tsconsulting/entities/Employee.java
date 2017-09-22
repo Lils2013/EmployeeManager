@@ -291,10 +291,12 @@ public class Employee {
 	    private BigDecimal salary;
 
         @NotNull
+        @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only latin alphanumeric characters.")
         @Size(min = 1, max = 32)
         private String username;
 
         @NotNull
+        @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Password must contain only latin alphanumeric characters.")
         @Size(min = 1, max = 32)
         private String password;
 
