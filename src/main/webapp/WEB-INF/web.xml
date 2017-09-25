@@ -30,6 +30,7 @@
             <param-name>transformWsdlLocations</param-name>
             <param-value>true</param-value>
         </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>spring-ws</servlet-name>

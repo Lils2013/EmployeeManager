@@ -1,11 +1,9 @@
 package ru.tsconsulting.entities;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.RevisionEntity;
-import org.hibernate.envers.RevisionListener;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
-import ru.tsconsulting.EmployeeListener;
+import ru.tsconsulting.listeners.EmployeeListener;
 
 import javax.persistence.*;
 

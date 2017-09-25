@@ -20,14 +20,15 @@ http://www.springframework.org/schema/jee
         <property name="dataSource" ref="dbDataSource"/>
     </bean>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+          depends-on="flyway">
         <property name="packagesToScan" value="ru.tsconsulting"/>
         <property name="dataSource" ref="dbDataSource"/>
 
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.show_sql">true</prop>
-<!--                 <prop key="hibernate.hbm2ddl.auto">create</prop> -->
+                <!--                 <prop key="hibernate.hbm2ddl.auto">create</prop> -->
                 <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
                 <prop key="hibernate.default_schema">TEST_B</prop>
             </props>
@@ -56,7 +57,16 @@ http://www.springframework.org/schema/jee
 
     <context:component-scan base-package="ru.tsconsulting.errorHandling"/>
 
-    <bean class="ru.tsconsulting.configuration.CachingConfig" />
-
+    <bean class="ru.tsconsulting.configuration.CachingConfig"/>
     <bean class="ru.tsconsulting.configuration.SecurityConfig"/>
+    <bean class="ru.tsconsulting.listeners.AccessListener"/>
+
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    </bean>
+    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="receiveTimeout" value="1000"/>
+    </bean>
+
 </beans>

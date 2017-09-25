@@ -33,28 +33,22 @@ import java.util.TimeZone;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AccessHistoryRepository accessHistoryRepository;
     private final AuthSuccess authSuccessHandler;
     private final AuthFailure authFailureHandler;
     private final AccessDenied accessDeniedHandler;
     private final LogoutSuccess logoutSuccessHandler;
     private final DataSource dataSource;
-    private final HttpServletRequest request;
-
 
     @Autowired
-    public SecurityConfig(AccessHistoryRepository accessHistoryRepository,
-                          AuthSuccess authSuccess,
+    public SecurityConfig(AuthSuccess authSuccess,
                           AuthFailure authFailure,
                           AccessDenied accessDenied,
-                          LogoutSuccess logoutSuccess, DataSource dataSource, HttpServletRequest request) {
-        this.accessHistoryRepository = accessHistoryRepository;
+                          LogoutSuccess logoutSuccess, DataSource dataSource) {
         this.authFailureHandler = authFailure;
         this.authSuccessHandler = authSuccess;
         this.accessDeniedHandler = accessDenied;
         this.logoutSuccessHandler = logoutSuccess;
         this.dataSource = dataSource;
-        this.request = request;
     }
 
     @Override
@@ -98,28 +92,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     }
                 }).and().csrf().disable();
 
-    }
-
-    @EventListener
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof AuthorizationFailureEvent || event instanceof AbstractAuthenticationFailureEvent) {
-            AccessHistory accessHistory = new AccessHistory();
-            LocalDateTime triggerTime =
-                    LocalDateTime.ofInstant(Instant.ofEpochMilli(event.getTimestamp()),
-                            TimeZone.getDefault().toZoneId());
-            accessHistory.setDateTime(triggerTime);
-            accessHistory.setUrl(request.getRequestURI());
-            accessHistory.setIp(request.getRemoteAddr());
-            accessHistory.setPrincipal("anonymousUser");
-            accessHistory.setAuthenticated(false);
-            accessHistory.setSuccesful(false);
-            accessHistoryRepository.save(accessHistory);
-        } else if (event instanceof AuthorizedEvent) {
-            AuthorizedEvent authEvent = (AuthorizedEvent) event;
-            FilterInvocation filterInvocation = (FilterInvocation) authEvent.getSource();
-            filterInvocation.getHttpRequest().setAttribute("start", LocalDateTime.ofInstant(Instant.ofEpochMilli(authEvent.getTimestamp()),
-                    TimeZone.getDefault().toZoneId()));
-        }
     }
 
 }

@@ -4,8 +4,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.AccessHistory;
 import ru.tsconsulting.entities.DepartmentHistory;
@@ -16,6 +18,7 @@ import ru.tsconsulting.repositories.AccessHistoryRepository;
 import ru.tsconsulting.repositories.DepartmentHistoryRepository;
 import ru.tsconsulting.repositories.EmployeeHistoryRepository;
 
+import javax.jms.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -30,13 +33,19 @@ public class AdminController {
     private final DepartmentHistoryRepository departmentHistoryRepository;
     private final EmployeeHistoryRepository employeeHistoryRepository;
     private final AccessHistoryRepository accessHistoryRepository;
+    private final JmsTemplate jmsTemplate;
+    private final ConnectionFactory cf;
 
     @Autowired
     public AdminController(DepartmentHistoryRepository departmentHistoryRepository,
-                           EmployeeHistoryRepository employeeHistoryRepository, AccessHistoryRepository accessHistoryRepository) {
+                           EmployeeHistoryRepository employeeHistoryRepository,
+                           AccessHistoryRepository accessHistoryRepository, JmsTemplate jmsTemplate,
+                           ConnectionFactory cf) {
         this.departmentHistoryRepository = departmentHistoryRepository;
         this.employeeHistoryRepository = employeeHistoryRepository;
         this.accessHistoryRepository = accessHistoryRepository;
+        this.jmsTemplate = jmsTemplate;
+        this.cf = cf;
     }
 
     @ApiOperation(value = "Get full access history")
@@ -110,6 +119,33 @@ public class AdminController {
             return departmentHistoryRepository.findByDepartmentIdAndDateTimeBefore(departmentId, toDate);
         }
         return departmentHistoryRepository.findByDepartmentId(departmentId);
+    }
+
+    @RequestMapping(path = "/soap", method = RequestMethod.POST)
+    public void sendSoapRequest(@RequestParam(value = "queue") String queue,
+                                @RequestParam(value = "soap") String soap,
+                                  HttpServletRequest request) {
+        jmsTemplate.send("SoapRequestQueue", session -> {
+            TextMessage message = session.createTextMessage(soap);
+            message.setJMSReplyTo(new ActiveMQQueue(queue));
+            return message;
+        });
+    }
+
+    @RequestMapping(path = "/soap", method = RequestMethod.GET)
+    public String getSoapResponse(@RequestParam(value = "queue", required = true) String queue,
+                                  HttpServletRequest request) {
+        TextMessage receivedMessage = (TextMessage) jmsTemplate.receive(queue);
+        String response = "Queue is empty";
+        if (receivedMessage == null) {
+            return response;
+        }
+        try {
+            response = receivedMessage.getText();
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
     @ExceptionHandler(DateTimeParseException.class)

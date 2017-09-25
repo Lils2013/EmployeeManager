@@ -1,4 +1,4 @@
-package ru.tsconsulting;
+package ru.tsconsulting.listeners;
 
 import org.hibernate.envers.RevisionListener;
 public class EmployeeListener implements RevisionListener {

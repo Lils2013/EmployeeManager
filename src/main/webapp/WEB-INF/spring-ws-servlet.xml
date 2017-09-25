@@ -3,7 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:sws="http://www.springframework.org/schema/web-services"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd">
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
 
     <sws:annotation-driven/>
 
@@ -24,12 +25,6 @@
                       targetNamespace="http://tsconsulting.ru/department-ws">
         <sws:xsd location="/WEB-INF/soap/departmentSOAP.xsd"/>
     </sws:dynamic-wsdl>
-
-    <bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory"/>
-
-    <bean id="soapInterceptor" class="ru.tsconsulting.interceptors.SoapInterceptor"/>
-
-    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
 
     <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory"/>
@@ -52,11 +47,8 @@
         </property>
     </bean>
 
-    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-        <property name="connectionFactory" ref="connectionFactory" />
-    </bean>
-
     <sws:interceptors>
         <bean class="ru.tsconsulting.interceptors.SoapInterceptor"/>
     </sws:interceptors>
+
 </beans>

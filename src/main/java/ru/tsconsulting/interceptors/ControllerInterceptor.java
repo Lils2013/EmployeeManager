@@ -39,11 +39,7 @@ public class ControllerInterceptor {
         accessHistory.setAuthenticated(true);
         accessHistory.setPrincipal(request.getUserPrincipal().getName());
         accessHistory.setIp(request.getRemoteAddr());
-        if (request.getQueryString() == null) {
-            accessHistory.setUrl(request.getRequestURI());
-        } else {
-            accessHistory.setUrl(request.getRequestURI() + "?" + request.getQueryString());
-        }
+        accessHistory.setUrl(request.getRequestURI());
         accessHistory.setDateTime((LocalDateTime) request.getAttribute("start"));
         return accessHistory;
     }
