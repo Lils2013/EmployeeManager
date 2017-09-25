@@ -10,5 +10,7 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
 
     Position findById(Long id);
 
+    Position findByName(String name);
+
     List<Position> findAllByOrderByIdAsc();
 }

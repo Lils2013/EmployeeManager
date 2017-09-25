@@ -29,6 +29,7 @@ public class Position {
 
     @NotNull
     @Size(min = 1, max = 32)
+    @Column(unique = true)
     private String name;
 
 	public Position() {

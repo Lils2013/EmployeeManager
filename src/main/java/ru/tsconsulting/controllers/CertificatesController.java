@@ -13,6 +13,7 @@ import ru.tsconsulting.entities.CertificateOrganisation;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.errorHandling.Status;
 import ru.tsconsulting.errorHandling.RestStatus;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.EntityAlreadyExistsException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.CertificateNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.CertificateOrganisationNotFoundException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
@@ -21,7 +22,7 @@ import ru.tsconsulting.errorHandling.not_specified_exceptions.AttributeNotSpecif
 import ru.tsconsulting.errorHandling.not_specified_exceptions.CertificateNotSpecifiedException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.CertificateOrganisationNameNotSpecifiedException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.EmployeeNotSpecifiedException;
-import ru.tsconsulting.errorHandling.notification_exceptions.CertificateOrganisationAlreadyExistsException;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.CertificateOrganisationAlreadyExistsException;
 import ru.tsconsulting.repositories.CertificateListRepository;
 import ru.tsconsulting.repositories.CertificateOrganisationRepository;
 import ru.tsconsulting.repositories.CertificateRepository;
@@ -290,11 +291,10 @@ public class CertificatesController {
         return new RestStatus(Status.ATTRIBUTE_NOT_SPECIFIED, e.getMessage());
     }
 
-    @ExceptionHandler(CertificateOrganisationAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
-    public RestStatus alreadyExists(CertificateOrganisationAlreadyExistsException e) {
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public RestStatus alreadyExists(EntityAlreadyExistsException e) {
         return new RestStatus(Status.ALREADY_EXISTS, e.getMessage());
     }
-
 }
 

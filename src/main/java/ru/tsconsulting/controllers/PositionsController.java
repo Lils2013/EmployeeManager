@@ -3,9 +3,15 @@ package ru.tsconsulting.controllers;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Position;
+import ru.tsconsulting.errorHandling.RestStatus;
+import ru.tsconsulting.errorHandling.Status;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.CertificateOrganisationAlreadyExistsException;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.EntityAlreadyExistsException;
+import ru.tsconsulting.errorHandling.already_exist_exceptions.PositionAlreadyExistsException;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +35,9 @@ public class PositionsController {
     public Position createPosition(@ApiParam(value = "Department details", required = true)
                                        @Validated @RequestBody Position.PositionDetails positionDetails,
                                    HttpServletRequest request){
+        if(positionRepository.findByName(positionDetails.getName()) != null) {
+            throw new PositionAlreadyExistsException(positionDetails.getName());
+        }
         return positionRepository.save(new Position(positionDetails));
     }
 
@@ -38,4 +47,10 @@ public class PositionsController {
         return positionRepository.findAllByOrderByIdAsc();
     }
 
+
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public RestStatus alreadyExists(EntityAlreadyExistsException e) {
+        return new RestStatus(Status.ALREADY_EXISTS, e.getMessage());
+    }
 }

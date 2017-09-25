@@ -293,6 +293,7 @@ public class Employee {
         @NotNull
         @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only latin alphanumeric characters.")
         @Size(min = 1, max = 32)
+        @Column(unique = true)
         private String username;
 
         @NotNull
