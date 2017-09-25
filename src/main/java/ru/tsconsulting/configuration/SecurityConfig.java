@@ -22,6 +22,7 @@ import ru.tsconsulting.errorHandling.handler.AuthFailure;
 import ru.tsconsulting.errorHandling.handler.AuthSuccess;
 import ru.tsconsulting.errorHandling.handler.LogoutSuccess;
 import ru.tsconsulting.repositories.AccessHistoryRepository;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.time.Instant;
@@ -32,14 +33,13 @@ import java.util.TimeZone;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private AccessHistoryRepository accessHistoryRepository;
-    private AuthSuccess authSuccessHandler;
-    private AuthFailure authFailureHandler;
-    private AccessDenied accessDeniedHandler;
-    private LogoutSuccess logoutSuccessHandler;
-
-    @Autowired
-    private DataSource dataSource;
+    private final AccessHistoryRepository accessHistoryRepository;
+    private final AuthSuccess authSuccessHandler;
+    private final AuthFailure authFailureHandler;
+    private final AccessDenied accessDeniedHandler;
+    private final LogoutSuccess logoutSuccessHandler;
+    private final DataSource dataSource;
+    private final HttpServletRequest request;
 
 
     @Autowired
@@ -47,15 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                           AuthSuccess authSuccess,
                           AuthFailure authFailure,
                           AccessDenied accessDenied,
-                          LogoutSuccess logoutSuccess) {
+                          LogoutSuccess logoutSuccess, DataSource dataSource, HttpServletRequest request) {
         this.accessHistoryRepository = accessHistoryRepository;
         this.authFailureHandler = authFailure;
         this.authSuccessHandler = authSuccess;
         this.accessDeniedHandler = accessDenied;
         this.logoutSuccessHandler = logoutSuccess;
-    }
-
-    public SecurityConfig() {
+        this.dataSource = dataSource;
+        this.request = request;
     }
 
     @Override
@@ -101,11 +100,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Autowired
-    private HttpServletRequest request;
     @EventListener
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof AuthorizationFailureEvent||event instanceof AbstractAuthenticationFailureEvent) {
+        if (event instanceof AuthorizationFailureEvent || event instanceof AbstractAuthenticationFailureEvent) {
             AccessHistory accessHistory = new AccessHistory();
             LocalDateTime triggerTime =
                     LocalDateTime.ofInstant(Instant.ofEpochMilli(event.getTimestamp()),

@@ -146,10 +146,8 @@ public class EmployeeEndpoint {
             }
         }
         BigDecimal salary = createRequest.getSalary();
-        if (salary!=null)
-        {
-            if (!salary.toString().matches("\\d{0,17}[.]?\\d{0,2}"))
-            {
+        if (salary != null) {
+            if (!salary.toString().matches("\\d{0,17}[.]?\\d{0,2}")) {
                 throw new InvalidSalaryValueException();
             }
         }
@@ -170,14 +168,14 @@ public class EmployeeEndpoint {
         employeeSOAP.setFirstname(employee.getFirstname());
         employeeSOAP.setLastname(employee.getLastname());
         employeeSOAP.setMiddlename(employee.getMiddlename());
-        employeeSOAP.setBirthdate(employee.getBirthdate().toString());
+        if (employee.getBirthdate() != null) {
+            employeeSOAP.setBirthdate(employee.getBirthdate().toString());
+        }
         employeeSOAP.setDepartmentId(employee.jsonGetDepartmentId());
-        if (employee.getPosition()!=null)
-        {
+        if (employee.getPosition() != null) {
             employeeSOAP.setPositionId(employee.getPositionId());
         }
-        if (employee.getGrade()!=null)
-        {
+        if (employee.getGrade() != null) {
             employeeSOAP.setGradeId(employee.getGradeId());
         }
         employeeSOAP.setId(employee.getId());
