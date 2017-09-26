@@ -49,6 +49,9 @@ http://www.springframework.org/schema/jee
         <property name="dataSource" ref="dbDataSource"/>
     </bean>
 
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+    </bean>
+
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <jee:jndi-lookup id="dbDataSource" jndi-name="jdbc/myOracle" expected-type="javax.sql.DataSource"/>

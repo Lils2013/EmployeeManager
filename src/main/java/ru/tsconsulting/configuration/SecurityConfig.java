@@ -1,34 +1,21 @@
 package ru.tsconsulting.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.event.AuthorizationFailureEvent;
-import org.springframework.security.access.event.AuthorizedEvent;
-import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import ru.tsconsulting.entities.AccessHistory;
 import ru.tsconsulting.errorHandling.handler.AccessDenied;
 import ru.tsconsulting.errorHandling.handler.AuthFailure;
 import ru.tsconsulting.errorHandling.handler.AuthSuccess;
 import ru.tsconsulting.errorHandling.handler.LogoutSuccess;
-import ru.tsconsulting.repositories.AccessHistoryRepository;
-import ru.tsconsulting.security.PasswordEncoder;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.TimeZone;
 
 @Configuration
 @EnableWebSecurity
@@ -39,17 +26,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AccessDenied accessDeniedHandler;
     private final LogoutSuccess logoutSuccessHandler;
     private final DataSource dataSource;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public SecurityConfig(AuthSuccess authSuccess,
                           AuthFailure authFailure,
                           AccessDenied accessDenied,
-                          LogoutSuccess logoutSuccess, DataSource dataSource) {
+                          LogoutSuccess logoutSuccess, DataSource dataSource, BCryptPasswordEncoder passwordEncoder) {
         this.authFailureHandler = authFailure;
         this.authSuccessHandler = authSuccess;
         this.accessDeniedHandler = accessDenied;
         this.logoutSuccessHandler = logoutSuccess;
         this.dataSource = dataSource;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -58,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery("select u.username, u.password, (0-u.is_fired)+1 from employee u where u.username = ?")
                 .authoritiesByUsernameQuery("select u.username, ro.role_id from roles_list ro inner join employee u " +
                         "on ro.employee_id=u.id where u.username = ?")
-                .passwordEncoder(PasswordEncoder.getInstance());
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override
