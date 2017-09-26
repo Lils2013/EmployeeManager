@@ -19,6 +19,7 @@ import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
+import ru.tsconsulting.security.PasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -85,8 +86,7 @@ public class EmployeesController {
         } else {
             employee.setDepartment(department);
         }
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        employee.setPassword(encoder.encode(employeeDetails.getPassword()));
+        employee.setPassword(PasswordEncoder.getInstance().encode(employeeDetails.getPassword()));
         employee.getRoles().add(Role.ROLE_USER);
         return employeeRepository.save(employee);
     }

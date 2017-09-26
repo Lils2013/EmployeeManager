@@ -64,6 +64,7 @@ public class Employee {
     @Column(name = "salary", precision = 14, scale = 2)
     private BigDecimal salary;
 
+    @Column(unique = true)
     @NotNull
     @Size(min = 1, max = 32)
     private String username;
@@ -293,7 +294,6 @@ public class Employee {
         @NotNull
         @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only latin alphanumeric characters.")
         @Size(min = 1, max = 32)
-        @Column(unique = true)
         private String username;
 
         @NotNull
