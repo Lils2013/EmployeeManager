@@ -49,8 +49,7 @@ http://www.springframework.org/schema/jee
         <property name="dataSource" ref="dbDataSource"/>
     </bean>
 
-    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
-    </bean>
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
@@ -58,14 +57,13 @@ http://www.springframework.org/schema/jee
 
     <jpa:repositories base-package="ru.tsconsulting.repositories"/>
 
-    <context:component-scan base-package="ru.tsconsulting.errorHandling"/>
+    <context:component-scan base-package="ru.tsconsulting.error_handling"/>
 
     <bean class="ru.tsconsulting.configuration.CachingConfig"/>
     <bean class="ru.tsconsulting.configuration.SecurityConfig"/>
     <bean class="ru.tsconsulting.listeners.AccessListener"/>
 
-    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-    </bean>
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"/>
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="connectionFactory"/>

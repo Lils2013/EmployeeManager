@@ -10,10 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import ru.tsconsulting.errorHandling.handler.AccessDenied;
-import ru.tsconsulting.errorHandling.handler.AuthFailure;
-import ru.tsconsulting.errorHandling.handler.AuthSuccess;
-import ru.tsconsulting.errorHandling.handler.LogoutSuccess;
+import ru.tsconsulting.error_handling.handler.AccessDenied;
+import ru.tsconsulting.error_handling.handler.AuthFailure;
+import ru.tsconsulting.error_handling.handler.AuthSuccess;
+import ru.tsconsulting.error_handling.handler.LogoutSuccess;
 
 import javax.sql.DataSource;
 

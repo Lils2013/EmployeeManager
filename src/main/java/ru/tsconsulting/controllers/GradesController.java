@@ -7,14 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.tsconsulting.entities.Grade;
-import ru.tsconsulting.errorHandling.RestStatus;
-import ru.tsconsulting.errorHandling.Status;
-import ru.tsconsulting.errorHandling.already_exist_exceptions.EntityAlreadyExistsException;
-import ru.tsconsulting.errorHandling.already_exist_exceptions.GradeAlreadyExistsException;
+import ru.tsconsulting.error_handling.RestStatus;
+import ru.tsconsulting.error_handling.Status;
+import ru.tsconsulting.error_handling.already_exist_exceptions.EntityAlreadyExistsException;
+import ru.tsconsulting.error_handling.already_exist_exceptions.GradeAlreadyExistsException;
 import ru.tsconsulting.repositories.GradeRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")

@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.soap.server.endpoint.SoapFaultDefinition;
 import org.springframework.ws.soap.server.endpoint.SoapFaultMappingExceptionResolver;
-import ru.tsconsulting.errorHandling.DetailSoapFaultDefinitionExceptionResolver;
-import ru.tsconsulting.errorHandling.not_found_exceptions.EntityNotFoundException;
+import ru.tsconsulting.error_handling.DetailSoapFaultDefinitionExceptionResolver;
+import ru.tsconsulting.error_handling.not_found_exceptions.EntityNotFoundException;
 
 import java.util.Properties;
 
