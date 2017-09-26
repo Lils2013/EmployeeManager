@@ -118,6 +118,19 @@ public class EmployeeEndpoint {
         return result;
     }
 
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "employeeRequest")
+    @ResponsePayload
+    public EmployeeResponse getEmployee(@RequestPayload EmployeeRequest employeeRequest) {
+        Long employeeId = employeeRequest.getEmployeeId();
+        Employee employee = employeeRepository.findById(employeeId);
+        if (employee == null) {
+            throw new EmployeeNotFoundException(employeeId.toString());
+        }
+        EmployeeResponse employeeResponse = new EmployeeResponse();
+        employeeResponse.setEmployee(parseEmployee(employee));
+        return employeeResponse;
+    }
+
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createRequest")
     @ResponsePayload
@@ -188,11 +201,13 @@ public class EmployeeEndpoint {
         if (employee.getGrade() != null) {
             employeeSOAP.setGradeId(employee.getGradeId());
         }
+        if (employee.getGender() != null) {
+            employeeSOAP.setGender(employee.getGender().toString());
+        }
         employeeSOAP.setId(employee.getId());
         employeeSOAP.setFired(employee.isFired());
         employeeSOAP.setSalary(employee.getSalary());
-        employeeSOAP.setUsername(employee.getUsername());
-        employeeSOAP.setPassword(employee.getPassword());
+        employeeSOAP.setUsername(employee.getUsername());;
         return employeeSOAP;
     }
 }

@@ -62,6 +62,22 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="employeeRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="employeeId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="employeeResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="employee" type="tns:employeeSOAP"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="createRequest">
         <xs:complexType>
             <xs:sequence>
@@ -100,7 +116,7 @@
             <xs:element name="lastname" type="xs:string"/>
             <xs:element name="middlename" type="xs:string"/>
             <xs:element name="positionId" type="xs:long"/>
-            <xs:element name="salary" type="xs:decimal"/>
+            <xs:element name="salary" type="xs:decimal" />
             <xs:element name="username" type="xs:string"/>
             <xs:element name="password" type="xs:string"/>
         </xs:sequence>
