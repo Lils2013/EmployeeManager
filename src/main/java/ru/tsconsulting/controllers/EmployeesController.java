@@ -19,7 +19,6 @@ import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
-import ru.tsconsulting.security.PasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -36,18 +35,20 @@ public class EmployeesController {
     private final GradeRepository gradeRepository;
     private final DepartmentRepository departmentRepository;
     private final AuditReader auditReader;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public EmployeesController(EmployeeRepository employeeRepository,
                                PositionRepository positionRepository,
                                GradeRepository gradeRepository,
                                DepartmentRepository departmentRepository,
-                               AuditReader auditReader) {
+                               AuditReader auditReader, BCryptPasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.positionRepository = positionRepository;
         this.gradeRepository = gradeRepository;
         this.departmentRepository = departmentRepository;
         this.auditReader = auditReader;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @CrossOrigin
@@ -86,7 +87,7 @@ public class EmployeesController {
         } else {
             employee.setDepartment(department);
         }
-        employee.setPassword(PasswordEncoder.getInstance().encode(employeeDetails.getPassword()));
+        employee.setPassword(passwordEncoder.encode(employeeDetails.getPassword()));
         employee.getRoles().add(Role.ROLE_USER);
         return employeeRepository.save(employee);
     }

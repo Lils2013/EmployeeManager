@@ -22,7 +22,6 @@ import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
-import ru.tsconsulting.security.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,17 +37,20 @@ public class EmployeeEndpoint {
     private final AuditReader auditReader;
     private final PositionRepository positionRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
     @Autowired
     public EmployeeEndpoint(EmployeeRepository employeeRepository,
                             DepartmentRepository departmentRepository,
                             AuditReader auditReader,
                             GradeRepository gradeRepository,
-                            PositionRepository positionRepository) {
+                            PositionRepository positionRepository, BCryptPasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
         this.gradeRepository = gradeRepository;
         this.auditReader = auditReader;
         this.positionRepository = positionRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "transferRequest")
@@ -116,6 +118,7 @@ public class EmployeeEndpoint {
         return result;
     }
 
+
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createRequest")
     @ResponsePayload
     public CreateResponse createEmployee(@RequestPayload CreateRequest createRequest) {
@@ -162,7 +165,7 @@ public class EmployeeEndpoint {
         employee.setBirthdate(LocalDate.parse(createRequest.getBirthdate()));
         employee.setUsername(createRequest.getUsername());
         System.err.println(createRequest.getPassword());
-        employee.setPassword(PasswordEncoder.getInstance().encode(createRequest.getPassword()));
+        employee.setPassword(passwordEncoder.encode(createRequest.getPassword()));
         employee.getRoles().add(Role.ROLE_USER);
         employee = employeeRepository.save(employee);
         CreateResponse createResponse = new CreateResponse();
