@@ -22,6 +22,7 @@ import ru.tsconsulting.errorHandling.handler.AuthFailure;
 import ru.tsconsulting.errorHandling.handler.AuthSuccess;
 import ru.tsconsulting.errorHandling.handler.LogoutSuccess;
 import ru.tsconsulting.repositories.AccessHistoryRepository;
+import ru.tsconsulting.security.PasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
@@ -57,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery("select u.username, u.password, (0-u.is_fired)+1 from employee u where u.username = ?")
                 .authoritiesByUsernameQuery("select u.username, ro.role_id from roles_list ro inner join employee u " +
                         "on ro.employee_id=u.id where u.username = ?")
-                .passwordEncoder(new BCryptPasswordEncoder());
+                .passwordEncoder(PasswordEncoder.getInstance());
     }
 
     @Override

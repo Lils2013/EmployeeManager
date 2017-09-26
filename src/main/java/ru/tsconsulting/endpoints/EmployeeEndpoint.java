@@ -4,6 +4,7 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -11,6 +12,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.tsconsulting.employee_ws.*;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
+import ru.tsconsulting.entities.Role;
 import ru.tsconsulting.errorHandling.not_found_exceptions.DepartmentNotFoundException;
 import ru.tsconsulting.errorHandling.not_specified_exceptions.DepartmentNotSpecifiedException;
 import ru.tsconsulting.errorHandling.not_found_exceptions.EmployeeNotFoundException;
@@ -20,6 +22,7 @@ import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
+import ru.tsconsulting.security.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -157,6 +160,10 @@ public class EmployeeEndpoint {
         employee.setGender(createRequest.getGender());
         employee.setSalary(createRequest.getSalary());
         employee.setBirthdate(LocalDate.parse(createRequest.getBirthdate()));
+        employee.setUsername(createRequest.getUsername());
+        System.err.println(createRequest.getPassword());
+        employee.setPassword(PasswordEncoder.getInstance().encode(createRequest.getPassword()));
+        employee.getRoles().add(Role.ROLE_USER);
         employee = employeeRepository.save(employee);
         CreateResponse createResponse = new CreateResponse();
         createResponse.setEmployee(parseEmployee(employee));
@@ -181,6 +188,8 @@ public class EmployeeEndpoint {
         employeeSOAP.setId(employee.getId());
         employeeSOAP.setFired(employee.isFired());
         employeeSOAP.setSalary(employee.getSalary());
+        employeeSOAP.setUsername(employee.getUsername());
+        employeeSOAP.setPassword(employee.getPassword());
         return employeeSOAP;
     }
 }
