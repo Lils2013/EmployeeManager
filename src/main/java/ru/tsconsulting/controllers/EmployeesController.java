@@ -1,21 +1,25 @@
 package ru.tsconsulting.controllers;
 
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.hibernate.envers.AuditReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.tsconsulting.entities.*;
-import ru.tsconsulting.error_handling.*;
-import ru.tsconsulting.error_handling.not_found_exceptions.*;
-import ru.tsconsulting.error_handling.not_specified_exceptions.*;
+import ru.tsconsulting.entities.Employee;
+import ru.tsconsulting.entities.Grade;
+import ru.tsconsulting.entities.Position;
+import ru.tsconsulting.entities.Role;
+import ru.tsconsulting.error_handling.RestStatus;
+import ru.tsconsulting.error_handling.Status;
 import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlreadyFiredException;
 import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlreadyHiredException;
-import ru.tsconsulting.error_handling.notification_exceptions.InvalidSalaryValueException;
-import ru.tsconsulting.error_handling.notification_exceptions.NotUniqueUsernameException;
+import ru.tsconsulting.error_handling.not_found_exceptions.*;
+import ru.tsconsulting.error_handling.not_specified_exceptions.AttributeNotSpecifiedException;
+import ru.tsconsulting.error_handling.not_specified_exceptions.NoAttributesProvidedException;
+import ru.tsconsulting.error_handling.not_specified_exceptions.RolesNotSpecifiedException;
 import ru.tsconsulting.error_handling.notification_exceptions.PasswordFormatException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
@@ -23,8 +27,6 @@ import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -379,17 +381,8 @@ public class EmployeesController {
         return new RestStatus(Status.ALREADY_HIRED, e.getMessage());
     }
 
-    @ExceptionHandler(InvalidSalaryValueException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestStatus invalidSalary(InvalidSalaryValueException e) {
-        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
-    }
 
-//    @ExceptionHandler(NotUniqueUsernameException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public RestStatus invalidUsername(NotUniqueUsernameException e) {
-//        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
-//    }
+
 
     @ExceptionHandler(PasswordFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -401,6 +394,11 @@ public class EmployeesController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestStatus invalidUsername(ru.tsconsulting.error_handling.notification_exceptions.ConstraintViolationException e) {
         return new RestStatus(Status.INVALID_ATTRIBUTE,  e.getMessage());
+    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public RestStatus conflict(Exception e) {
+        return new RestStatus(Status.ALREADY_EXISTS,  e.getMessage());
     }
 
 }

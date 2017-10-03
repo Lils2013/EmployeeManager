@@ -1,6 +1,9 @@
 package ru.tsconsulting.entities;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,6 +17,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 
 @Entity
@@ -44,8 +48,7 @@ public class Employee {
 
     @ApiModelProperty(value = "gender, M or F",
             example="M", allowableValues = "M,m,F,f")
-//    @Pattern(regexp="^([MmFf])$",message="Invalid gender.")
-//    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.ORDINAL)
     private Gender gender;
 
     @Column(name = "IS_FIRED")
@@ -80,6 +83,7 @@ public class Employee {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only latin alphanumeric characters.")
     @Size(min = 1, max = 32)
     @Column(unique = true)
+
     @JsonProperty(required = true)
     private String username;
 
@@ -174,7 +178,12 @@ public class Employee {
     }
 
     public void setGender(String genderString) {
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("^([MmFf])$");
+        Matcher matcher = pattern.matcher(genderString);
 	    if (genderString == null) {
+	        return;
+        }
+        else if(!matcher.matches()) {
 	        return;
         }
         if (Objects.equals(genderString.toLowerCase(), "m")) {
