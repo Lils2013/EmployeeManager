@@ -28,6 +28,9 @@ import javax.validation.Validator;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,6 +112,7 @@ public class EmployeeDeserializer extends StdDeserializer<Employee> {
             password = node.get("password").asText();
         }
 
+
         Employee employee = new Employee();
         employee.setFirstname(firstname);
         employee.setLastname(lastname);
@@ -123,16 +127,41 @@ public class EmployeeDeserializer extends StdDeserializer<Employee> {
         employee.setUsername(username);
         employee.setPassword(password);
 
+
         Validator validator = localValidatorFactoryBean.getValidator();
         Set<ConstraintViolation<Object>> violations = validator.validate(employee);
+        Map<String, String> violationsMap = new HashMap<>();
+
+        if(password == null) {
+            violationsMap.put("Password cannot be null", password);
+        }
+        if(password.length() <1 || password.length() > 32) {
+            violationsMap.put("Password has incorrect length. must be between 1 and 32", password);
+        }
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]*$");
+        Matcher matcher = pattern.matcher(password);
+        if (!matcher.matches()) {
+            violationsMap.put("Password must contain only latin alphanumeric characters.", password);
+        }
 
         if(!violations.isEmpty()) {
 
-            throw new ConstraintViolationException(violations);
+            for(ConstraintViolation<Object> violation : violations) {
+                if(violation.getInvalidValue() != null) {
+                    violationsMap.put(violation.getMessage(), violation.getInvalidValue().toString());
+                }
+                else {
+                    violationsMap.put(violation.getMessage(), null);
+                }
+            }
+        }
+        if(!violationsMap.isEmpty()) {
+            throw new ConstraintViolationException(violationsMap);
         }
         employee.setPassword(passwordEncoder.encode(password));
         return employee;
     }
+
 
 
 }

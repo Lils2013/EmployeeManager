@@ -42,10 +42,10 @@ public class Employee {
     @Size(min = 1, max = 32, message = "Invalid size of middlename string: must be between 1 and 32.")
     private String middlename;
 
-//    @ApiModelProperty(value = "gender, M or F",
-//            example="M", allowableValues = "M,m,F,f")
+    @ApiModelProperty(value = "gender, M or F",
+            example="M", allowableValues = "M,m,F,f")
 //    @Pattern(regexp="^([MmFf])$",message="Invalid gender.")
-    @Enumerated(EnumType.ORDINAL)
+//    @Enumerated(EnumType.ORDINAL)
     private Gender gender;
 
     @Column(name = "IS_FIRED")
@@ -61,7 +61,7 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     private Position position;
 
-    @NotNull
+    @NotNull(message = "Department may not be null")
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Department department;
@@ -76,16 +76,14 @@ public class Employee {
     @Column(name = "salary", precision = 14, scale = 2)
     private BigDecimal salary;
 
-    @NotNull
+    @NotNull(message = "username may not be null")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only latin alphanumeric characters.")
     @Size(min = 1, max = 32)
     @Column(unique = true)
     @JsonProperty(required = true)
     private String username;
 
-    @NotNull
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Password must contain only latin alphanumeric characters.")
-    @Size(min = 1, max = 32)
+    @NotNull(message = "password may not be null")
     @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
 
