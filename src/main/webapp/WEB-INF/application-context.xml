@@ -39,6 +39,7 @@ http://www.springframework.org/schema/jee
         </property>
     </bean>
 
+
     <bean id="auditReader" class="org.hibernate.envers.AuditReaderFactory" factory-method="get">
         <constructor-arg>
             <bean factory-bean="entityManagerFactory" factory-method="createEntityManager"/>

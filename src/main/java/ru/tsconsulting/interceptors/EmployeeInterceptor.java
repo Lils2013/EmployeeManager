@@ -64,14 +64,14 @@ public class EmployeeInterceptor {
 
     //CREATE EMPLOYEE
 
-    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employeeDetails,request)")
-    void afterThrowingCreateEmployee(Employee.EmployeeDetails employeeDetails, HttpServletRequest request)
+    @AfterThrowing("execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employee,request)")
+    void afterThrowingCreateEmployee(Employee employee, HttpServletRequest request)
     {
         EmployeeHistory record = createRecord(0l, request, 7l, false);
         employeeHistoryRepository.save(record);
     }
-    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employeeDetails,request)", returning = "result")
-    void afterReturningCreateEmployee(Employee.EmployeeDetails employeeDetails, HttpServletRequest request, Object result)
+    @AfterReturning(value = "execution(* ru.tsconsulting.controllers.EmployeesController.createEmployee(..))&&args(employee,request)", returning = "result")
+    void afterReturningCreateEmployee(Employee employee, HttpServletRequest request, Object result)
     {
         EmployeeHistory record = createRecord(((Employee)result).getId(), request, 7l, true);
         employeeHistoryRepository.save(record);

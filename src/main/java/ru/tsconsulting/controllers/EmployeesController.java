@@ -3,6 +3,7 @@ package ru.tsconsulting.controllers;
 import io.swagger.annotations.*;
 import org.hibernate.envers.AuditReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -15,12 +16,15 @@ import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlready
 import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlreadyHiredException;
 import ru.tsconsulting.error_handling.notification_exceptions.InvalidSalaryValueException;
 import ru.tsconsulting.error_handling.notification_exceptions.NotUniqueUsernameException;
+import ru.tsconsulting.error_handling.notification_exceptions.PasswordFormatException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,20 +39,18 @@ public class EmployeesController {
     private final GradeRepository gradeRepository;
     private final DepartmentRepository departmentRepository;
     private final AuditReader auditReader;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public EmployeesController(EmployeeRepository employeeRepository,
                                PositionRepository positionRepository,
                                GradeRepository gradeRepository,
                                DepartmentRepository departmentRepository,
-                               AuditReader auditReader, BCryptPasswordEncoder passwordEncoder) {
+                               AuditReader auditReader) {
         this.employeeRepository = employeeRepository;
         this.positionRepository = positionRepository;
         this.gradeRepository = gradeRepository;
         this.departmentRepository = departmentRepository;
         this.auditReader = auditReader;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @CrossOrigin
@@ -61,35 +63,14 @@ public class EmployeesController {
             @ApiResponse(code = 500, message = "Internal server error")}
     )
     @RequestMapping(method = RequestMethod.POST)
-    public Employee createEmployee(@Validated @RequestBody Employee.EmployeeDetails employeeDetails,
+    public Employee createEmployee(@RequestBody Employee employee,
                                    HttpServletRequest request) {
-        if (employeeRepository.findByUsername(employeeDetails.getUsername()) != null) {
-            throw new NotUniqueUsernameException(employeeDetails.getUsername());
-        }
-        Employee employee = new Employee(employeeDetails);
-        if (employeeDetails.getGrade() != null) {
-            if (gradeRepository.findById(employeeDetails.getGrade()) == null) {
-                throw new GradeNotFoundException(employeeDetails.getGrade().toString());
-            } else {
-                employee.setGrade(gradeRepository.findById(employeeDetails.getGrade()));
-            }
-        }
-        if (employeeDetails.getPosition() != null) {
-            if (positionRepository.findById(employeeDetails.getPosition()) == null) {
-                throw new PositionNotFoundException(employeeDetails.getPosition().toString());
-            } else {
-                employee.setPosition(positionRepository.findById(employeeDetails.getPosition()));
-            }
-        }
-        Department department = departmentRepository.findByIdAndIsDismissedIsFalse(employeeDetails.getDepartment());
-        if (department == null) {
-            throw new DepartmentNotFoundException(employeeDetails.getDepartment().toString());
-        } else {
-            employee.setDepartment(department);
-        }
-        employee.setPassword(passwordEncoder.encode(employeeDetails.getPassword()));
-        employee.getRoles().add(Role.ROLE_USER);
-        return employeeRepository.save(employee);
+//        try {
+            return employeeRepository.save(employee);
+//        }catch (Throwable t) {
+//            System.err.println(t.getClass());
+//        }
+//        return null;
     }
 
     @ApiOperation(value = "Return employee")
@@ -404,9 +385,22 @@ public class EmployeesController {
         return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
     }
 
-    @ExceptionHandler(NotUniqueUsernameException.class)
+//    @ExceptionHandler(NotUniqueUsernameException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public RestStatus invalidUsername(NotUniqueUsernameException e) {
+//        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
+//    }
+
+    @ExceptionHandler(PasswordFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestStatus invalidUsername(NotUniqueUsernameException e) {
+    public RestStatus invalidPassword(PasswordFormatException e) {
         return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
     }
+
+    @ExceptionHandler(ru.tsconsulting.error_handling.notification_exceptions.ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public RestStatus invalidUsername(ru.tsconsulting.error_handling.notification_exceptions.ConstraintViolationException e) {
+        return new RestStatus(Status.INVALID_ATTRIBUTE,  e.getMessage());
+    }
+
 }

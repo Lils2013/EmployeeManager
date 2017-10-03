@@ -15,6 +15,7 @@ import java.util.Set;
 @Entity
 @Audited
 @Table(name = "POSITION")
+
 public class Position {
     @Id
 	@Access(AccessType.PROPERTY)
