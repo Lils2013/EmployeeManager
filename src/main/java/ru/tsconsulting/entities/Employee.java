@@ -9,14 +9,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.envers.Audited;
 import ru.tsconsulting.entities.deserialization.EmployeeDeserializer;
+import ru.tsconsulting.error_handling.notification_exceptions.ParameterConstraintViolationException;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 
 
@@ -184,7 +183,9 @@ public class Employee {
 	        return;
         }
         else if(!matcher.matches()) {
-	        return;
+            Map<String,String> violations = new HashMap<String, String>();
+            violations.put(("Invalid gender. Must be M or F"), genderString);
+	        throw new ParameterConstraintViolationException(violations);
         }
         if (Objects.equals(genderString.toLowerCase(), "m")) {
             setGender(Gender.M);

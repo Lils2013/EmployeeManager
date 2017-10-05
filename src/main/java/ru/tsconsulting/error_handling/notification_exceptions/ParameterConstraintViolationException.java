@@ -1,12 +1,10 @@
 package ru.tsconsulting.error_handling.notification_exceptions;
 
-import javax.validation.ConstraintViolation;
-import java.util.*;
-import java.util.Set;
+import java.util.Map;
 
-public class ConstraintViolationException extends RuntimeException {
+public class ParameterConstraintViolationException extends RuntimeException {
     Map<String, String> violations;
-    public ConstraintViolationException(Map<String, String> violations) {
+    public ParameterConstraintViolationException(Map<String, String> violations) {
         this.violations = violations;
     }
     public String getMessage() {

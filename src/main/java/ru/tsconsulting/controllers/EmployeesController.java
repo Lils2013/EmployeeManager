@@ -20,6 +20,7 @@ import ru.tsconsulting.error_handling.not_found_exceptions.*;
 import ru.tsconsulting.error_handling.not_specified_exceptions.AttributeNotSpecifiedException;
 import ru.tsconsulting.error_handling.not_specified_exceptions.NoAttributesProvidedException;
 import ru.tsconsulting.error_handling.not_specified_exceptions.RolesNotSpecifiedException;
+import ru.tsconsulting.error_handling.notification_exceptions.ParameterConstraintViolationException;
 import ru.tsconsulting.error_handling.notification_exceptions.PasswordFormatException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.EmployeeRepository;
@@ -390,9 +391,9 @@ public class EmployeesController {
         return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
     }
 
-    @ExceptionHandler(ru.tsconsulting.error_handling.notification_exceptions.ConstraintViolationException.class)
+    @ExceptionHandler(ParameterConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public RestStatus invalidUsername(ru.tsconsulting.error_handling.notification_exceptions.ConstraintViolationException e) {
+    public RestStatus invalidUsername(ParameterConstraintViolationException e) {
         return new RestStatus(Status.INVALID_ATTRIBUTE,  e.getMessage());
     }
     @ExceptionHandler(Exception.class)

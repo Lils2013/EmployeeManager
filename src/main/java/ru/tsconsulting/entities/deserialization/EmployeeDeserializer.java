@@ -6,19 +6,13 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.tsconsulting.entities.Department;
 import ru.tsconsulting.entities.Employee;
 import ru.tsconsulting.entities.Grade;
 import ru.tsconsulting.entities.Position;
-import ru.tsconsulting.error_handling.RestStatus;
-import ru.tsconsulting.error_handling.Status;
-import ru.tsconsulting.error_handling.notification_exceptions.ConstraintViolationException;
-import ru.tsconsulting.error_handling.notification_exceptions.PasswordFormatException;
+import ru.tsconsulting.error_handling.notification_exceptions.ParameterConstraintViolationException;
 import ru.tsconsulting.repositories.DepartmentRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
@@ -29,7 +23,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -156,7 +149,7 @@ public class EmployeeDeserializer extends StdDeserializer<Employee> {
             }
         }
         if(!violationsMap.isEmpty()) {
-            throw new ConstraintViolationException(violationsMap);
+            throw new ParameterConstraintViolationException(violationsMap);
         }
         employee.setPassword(passwordEncoder.encode(password));
         return employee;
