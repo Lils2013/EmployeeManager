@@ -31,7 +31,6 @@ import ru.tsconsulting.repositories.EmployeeRepository;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/certificates")
 public class CertificatesController {

@@ -16,7 +16,6 @@ import ru.tsconsulting.repositories.GradeRepository;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/grades")
 public class GradesController {
