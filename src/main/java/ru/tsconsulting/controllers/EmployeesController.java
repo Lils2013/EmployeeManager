@@ -67,12 +67,8 @@ public class EmployeesController {
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@RequestBody Employee employee,
                                    HttpServletRequest request) {
-//        try {
             return employeeRepository.save(employee);
-//        }catch (Throwable t) {
-//            System.err.println(t.getClass());
-//        }
-//        return null;
+
     }
 
     @ApiOperation(value = "Return employee")
