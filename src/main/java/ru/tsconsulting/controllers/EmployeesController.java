@@ -14,8 +14,10 @@ import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.entities.Role;
 import ru.tsconsulting.error_handling.RestStatus;
 import ru.tsconsulting.error_handling.Status;
+import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeAlreadyExistException;
 import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlreadyFiredException;
 import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlreadyHiredException;
+import ru.tsconsulting.error_handling.already_exist_exceptions.EntityAlreadyExistsException;
 import ru.tsconsulting.error_handling.not_found_exceptions.*;
 import ru.tsconsulting.error_handling.not_specified_exceptions.AttributeNotSpecifiedException;
 import ru.tsconsulting.error_handling.not_specified_exceptions.NoAttributesProvidedException;
@@ -62,13 +64,17 @@ public class EmployeesController {
             @ApiResponse(code = 200, message = "Successful creation of employee"),
             @ApiResponse(code = 400, message = "Invalid attributes"),
             @ApiResponse(code = 404, message = "Department, position or grade does not exist"),
-            @ApiResponse(code = 500, message = "Internal server error")}
+            @ApiResponse(code = 500, message = "Internal server error"),
+            @ApiResponse(code = 409, message = "Employee already exist")}
     )
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@RequestBody Employee employee,
                                    HttpServletRequest request) {
-            return employeeRepository.save(employee);
-
+        String username = employee.getUsername();
+        if (employeeRepository.findByUsername(username) != null) {
+            throw new EmployeeAlreadyExistException(username);
+        }
+        return employeeRepository.save(employee);
     }
 
     @ApiOperation(value = "Return employee")
@@ -180,7 +186,7 @@ public class EmployeesController {
     @RequestMapping(path = "/{employeeId}/roles", method = RequestMethod.PUT)
     public Employee setPrivileges(@ApiParam(value = "Id of employee, positive integer",
             required = true) @PathVariable Long employeeId, String[] roles,
-                                    HttpServletRequest request) {
+                                  HttpServletRequest request) {
         Employee employee = employeeRepository.findById(employeeId);
         if (employee == null) {
             throw new EmployeeNotFoundException(employeeId.toString());
@@ -378,8 +384,6 @@ public class EmployeesController {
     }
 
 
-
-
     @ExceptionHandler(PasswordFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestStatus invalidPassword(PasswordFormatException e) {
@@ -389,12 +393,13 @@ public class EmployeesController {
     @ExceptionHandler(ParameterConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public RestStatus invalidUsername(ParameterConstraintViolationException e) {
-        return new RestStatus(Status.INVALID_ATTRIBUTE,  e.getMessage());
+        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getMessage());
     }
-    @ExceptionHandler(Exception.class)
+
+    @ExceptionHandler(EntityAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public RestStatus conflict(Exception e) {
-        return new RestStatus(Status.ALREADY_EXISTS,  e.getMessage());
+    public RestStatus conflict(EntityAlreadyExistsException e) {
+        return new RestStatus(Status.ALREADY_EXISTS, e.getMessage());
     }
 
 }

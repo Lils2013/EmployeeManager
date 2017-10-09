@@ -52,7 +52,7 @@ public class EmployeeDeserializer extends StdDeserializer<Employee> {
     LocalValidatorFactoryBean localValidatorFactoryBean;
     @Override
     public Employee deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         String firstname = null;
         String lastname = null;
         String middlename = null;
@@ -128,13 +128,15 @@ public class EmployeeDeserializer extends StdDeserializer<Employee> {
         if(password == null) {
             violationsMap.put("Password cannot be null", password);
         }
-        if(password.length() <1 || password.length() > 32) {
+        else if (password.length() <1 || password.length() > 32) {
             violationsMap.put("Password has incorrect length. must be between 1 and 32", password);
         }
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]*$");
-        Matcher matcher = pattern.matcher(password);
-        if (!matcher.matches()) {
-            violationsMap.put("Password must contain only latin alphanumeric characters.", password);
+        else{
+            Pattern pattern = Pattern.compile("^[a-zA-Z0-9]*$");
+            Matcher matcher = pattern.matcher(password);
+            if (!matcher.matches()) {
+                violationsMap.put("Password must contain only latin alphanumeric characters.", password);
+            }
         }
 
         if(!violations.isEmpty()) {
