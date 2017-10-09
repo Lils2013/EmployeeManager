@@ -59,7 +59,6 @@ public class Employee {
     private LocalDate birthdate;
 
     @JsonIgnore
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Position position;
 

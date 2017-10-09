@@ -14,7 +14,6 @@ import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.entities.Role;
 import ru.tsconsulting.error_handling.RestStatus;
 import ru.tsconsulting.error_handling.Status;
-import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeAlreadyExistException;
 import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlreadyFiredException;
 import ru.tsconsulting.error_handling.already_exist_exceptions.EmployeeIsAlreadyHiredException;
 import ru.tsconsulting.error_handling.already_exist_exceptions.EntityAlreadyExistsException;
@@ -29,6 +28,7 @@ import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -70,10 +70,7 @@ public class EmployeesController {
     @RequestMapping(method = RequestMethod.POST)
     public Employee createEmployee(@RequestBody Employee employee,
                                    HttpServletRequest request) {
-        String username = employee.getUsername();
-        if (employeeRepository.findByUsername(username) != null) {
-            throw new EmployeeAlreadyExistException(username);
-        }
+
         return employeeRepository.save(employee);
     }
 
@@ -400,6 +397,12 @@ public class EmployeesController {
     @ResponseStatus(HttpStatus.CONFLICT)
     public RestStatus conflict(EntityAlreadyExistsException e) {
         return new RestStatus(Status.ALREADY_EXISTS, e.getMessage());
+    }
+
+    @ExceptionHandler(PersistenceException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public RestStatus excepton(PersistenceException e) {
+        return new RestStatus(Status.INVALID_ATTRIBUTE, e.getCause().getCause().getMessage());
     }
 
 }
