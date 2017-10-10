@@ -28,6 +28,7 @@ public class Employee {
     @SequenceGenerator(name = "employeeGenerator", sequenceName = "employee_sequence",
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeGenerator")
+    @JsonProperty(access = Access.READ_ONLY)
     private Long id;
 
     @ApiModelProperty(value = "firstname, string with size between 1 and 32", example="John", required=true)
@@ -123,6 +124,10 @@ public class Employee {
         }
         return grade.getId();
     }
+
+    public Employee() {
+    }
+
     public Long getId() {
         return id;
     }
