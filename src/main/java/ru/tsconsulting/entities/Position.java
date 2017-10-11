@@ -1,9 +1,7 @@
 package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -75,19 +73,26 @@ public class Position {
 	        this.name = name;
 	    }
 
-	    @Override
-	    public boolean equals(Object o) {
-	        if (this == o) return true;
-	        if (o == null || getClass() != o.getClass()) return false;
+        @Override
+        public String toString() {
+            return "PositionDetails{" +
+                    "name='" + name + '\'' +
+                    '}';
+        }
 
-	        PositionDetails that = (PositionDetails) o;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
-	        return name != null ? name.equals(that.name) : that.name == null;
-	    }
+            PositionDetails that = (PositionDetails) o;
 
-	    @Override
-	    public int hashCode() {
-	        return name != null ? name.hashCode() : 0;
-	    }
-	}
+            return name != null ? name.equals(that.name) : that.name == null;
+        }
+
+        @Override
+        public int hashCode() {
+            return name != null ? name.hashCode() : 0;
+        }
+    }
 }

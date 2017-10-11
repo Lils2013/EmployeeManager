@@ -2,10 +2,8 @@ package ru.tsconsulting.entities;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -179,6 +177,15 @@ public class Department {
 
         public void setParent(Long parent) {
             this.parent = parent;
+        }
+
+        @Override
+        public String toString() {
+            return "DepartmentDetails{" +
+                    "name='" + name + '\'' +
+                    ", chiefId=" + chiefId +
+                    ", parent=" + parent +
+                    '}';
         }
 
         @Override

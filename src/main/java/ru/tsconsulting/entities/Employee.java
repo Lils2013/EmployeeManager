@@ -267,12 +267,49 @@ public class Employee {
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", middlename='" + middlename + '\'' +
-                ", gender='" + gender + '\'' +
+                ", gender=" + gender +
+                ", isFired=" + isFired +
                 ", birthdate=" + birthdate +
-                ", grade='" + grade + '\'' +
+                ", position=" + position +
+                ", department=" + department +
+                ", grade=" + grade +
                 ", salary=" + salary +
+                ", username='" + username + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Employee employee = (Employee) o;
+
+        if (id != null ? !id.equals(employee.id) : employee.id != null) return false;
+        if (firstname != null ? !firstname.equals(employee.firstname) : employee.firstname != null) return false;
+        if (lastname != null ? !lastname.equals(employee.lastname) : employee.lastname != null) return false;
+        if (middlename != null ? !middlename.equals(employee.middlename) : employee.middlename != null) return false;
+        if (gender != employee.gender) return false;
+        if (isFired != null ? !isFired.equals(employee.isFired) : employee.isFired != null) return false;
+        if (birthdate != null ? !birthdate.equals(employee.birthdate) : employee.birthdate != null) return false;
+        if (salary != null ? !salary.equals(employee.salary) : employee.salary != null) return false;
+        if (username != null ? !username.equals(employee.username) : employee.username != null) return false;
+        return roles != null ? roles.equals(employee.roles) : employee.roles == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
+        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (middlename != null ? middlename.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + (isFired != null ? isFired.hashCode() : 0);
+        result = 31 * result + (birthdate != null ? birthdate.hashCode() : 0);
+        result = 31 * result + (salary != null ? salary.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
+        return result;
+    }
 }
