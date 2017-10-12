@@ -3,17 +3,12 @@ package ru.tsconsulting.controllers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,38 +19,21 @@ import ru.tsconsulting.entities.Position;
 import ru.tsconsulting.repositories.EmployeeRepository;
 import ru.tsconsulting.repositories.GradeRepository;
 import ru.tsconsulting.repositories.PositionRepository;
-
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.anyOf;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration( "src/main/webapp")
-@ContextConfiguration(locations = {
-        "file:src/main/webapp/WEB-INF/application-context.xml",
-        "file:src/main/webapp/WEB-INF/dispatcher-servlet.xml",
-        "file:src/main/webapp/WEB-INF/spring-ws-servlet.xml",
-        "file:src/main/webapp/WEB-INF/datasource-testcontext.xml"
-})
-
-@Transactional
 public class EmployeeControllerTest {
 	private MockMvc mockMvc;
 
 	@Mock
 	private EmployeeRepository employeeRepositoryMock;
-	@Autowired
-    private EmployeeRepository employeeRepository;
 	@Mock
 	private PositionRepository positionRepositoryMock;
 	@Mock
@@ -63,9 +41,6 @@ public class EmployeeControllerTest {
 
 	@InjectMocks
 	private EmployeesController userController;
-
-	@Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
 
 	@Before
@@ -76,7 +51,7 @@ public class EmployeeControllerTest {
 				.build();
 	}
 
-	private Employee employeeSetUp() {
+	public static Employee employeeSetUp() {
 		Long id = 100L;
 		String firstName = "John";
 		String lastName = "Cena";
@@ -92,6 +67,7 @@ public class EmployeeControllerTest {
 		Department department = new Department();
 		department.setId(1L);
 
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		Employee employee = new Employee();
 		employee.setId(id);
 		employee.setFirstname(firstName);
@@ -180,14 +156,5 @@ public class EmployeeControllerTest {
 
 		when(employeeRepositoryMock.save(employee)).thenReturn(employee);
 	}
-
-
-	@Test
-    public void testCreateAccount() throws Exception {
-        Employee employee = employeeSetUp();
-        System.err.println(employee);
-        System.err.println(employeeSetUp());
-        assertTrue(employee.equals(employeeRepository.save(employee)));
-    }
 }
 
