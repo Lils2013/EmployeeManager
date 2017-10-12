@@ -1,4 +1,4 @@
-package ru.tsconsulting.controllers;
+package ru.tsconsulting.repositories;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import ru.tsconsulting.entities.Employee;
-import ru.tsconsulting.repositories.EmployeeRepository;
 import javax.transaction.Transactional;
 import static org.junit.Assert.assertTrue;
 import static ru.tsconsulting.controllers.EmployeeControllerTest.employeeSetUp;
@@ -20,8 +19,7 @@ import static ru.tsconsulting.controllers.EmployeeControllerTest.employeeSetUp;
         "file:src/main/webapp/WEB-INF/spring-ws-servlet.xml",
         "file:src/main/webapp/WEB-INF/datasource-testcontext.xml"
 })
-
-public class EmployeeControllerIntegrationTest {
+public class EmployeeRepositoryTest {
 
     @Autowired
     private EmployeeRepository employeeRepository;

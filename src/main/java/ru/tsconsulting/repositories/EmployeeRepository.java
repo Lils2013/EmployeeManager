@@ -6,10 +6,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Component;
 import ru.tsconsulting.entities.Employee;
-
-import javax.annotation.Resource;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
